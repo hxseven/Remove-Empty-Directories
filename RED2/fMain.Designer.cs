@@ -81,6 +81,7 @@
             this.cbKeepSystemFolders = new System.Windows.Forms.CheckBox();
             this.cbIgnore0kbFiles = new System.Windows.Forms.CheckBox();
             this.tabAbout = new System.Windows.Forms.TabPage();
+            this.btnDonateMoney = new System.Windows.Forms.Button();
             this.btnCheckForUpdates = new System.Windows.Forms.Button();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
@@ -97,7 +98,6 @@
             this.lbAppTitle = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.btnDonateMoney = new System.Windows.Forms.Button();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -736,11 +736,24 @@
             this.tabAbout.ToolTipText = "Shows the help and about screen";
             this.tabAbout.UseVisualStyleBackColor = true;
             // 
+            // btnDonateMoney
+            // 
+            this.btnDonateMoney.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDonateMoney.FlatAppearance.BorderSize = 0;
+            this.btnDonateMoney.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDonateMoney.Image = global::RED2.Properties.Resources.project_support;
+            this.btnDonateMoney.Location = new System.Drawing.Point(460, 68);
+            this.btnDonateMoney.Name = "btnDonateMoney";
+            this.btnDonateMoney.Size = new System.Drawing.Size(88, 32);
+            this.btnDonateMoney.TabIndex = 25;
+            this.btnDonateMoney.UseVisualStyleBackColor = true;
+            this.btnDonateMoney.Click += new System.EventHandler(this.btnDonateMoney_Click);
+            // 
             // btnCheckForUpdates
             // 
-            this.btnCheckForUpdates.Location = new System.Drawing.Point(426, 19);
+            this.btnCheckForUpdates.Location = new System.Drawing.Point(460, 18);
             this.btnCheckForUpdates.Name = "btnCheckForUpdates";
-            this.btnCheckForUpdates.Size = new System.Drawing.Size(122, 23);
+            this.btnCheckForUpdates.Size = new System.Drawing.Size(88, 43);
             this.btnCheckForUpdates.TabIndex = 24;
             this.btnCheckForUpdates.Text = "&Check for updates...";
             this.btnCheckForUpdates.UseVisualStyleBackColor = true;
@@ -899,16 +912,6 @@
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "Nuvola (Icons - LGPL License)";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
-            // 
-            // btnDonateMoney
-            // 
-            this.btnDonateMoney.Location = new System.Drawing.Point(426, 48);
-            this.btnDonateMoney.Name = "btnDonateMoney";
-            this.btnDonateMoney.Size = new System.Drawing.Size(122, 23);
-            this.btnDonateMoney.TabIndex = 25;
-            this.btnDonateMoney.Text = "&Donate some money";
-            this.btnDonateMoney.UseVisualStyleBackColor = true;
-            this.btnDonateMoney.Click += new System.EventHandler(this.btnDonateMoney_Click);
             // 
             // fMain
             // 

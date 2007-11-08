@@ -1020,7 +1020,7 @@ namespace RED2
 
         private void btnDonateMoney_Click(object sender, EventArgs e)
         {
-            Process.Start("http://www.jonasjohn.de/donating.htm");
+            Process.Start("http://sourceforge.net/project/project_donations.php?group_id=209622");
         }
 
 

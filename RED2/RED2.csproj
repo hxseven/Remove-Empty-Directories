@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="coffee.ico" />
+    <Content Include="Resources\project-support.jpg" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
