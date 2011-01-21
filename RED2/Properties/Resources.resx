@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btn_scan_again" xml:space="preserve">
     <value>Scan again</value>
@@ -142,13 +142,13 @@
     <value>C:\</value>
   </data>
   <data name="found_x_empty_folders" xml:space="preserve">
-    <value>Found {0} empty folders (checked {1} folders)</value>
+    <value>Found {0} empty directories (checked {1} directories)</value>
   </data>
   <data name="icon_contains_trash" xml:space="preserve">
     <value>Contains trash</value>
   </data>
   <data name="icon_default" xml:space="preserve">
-    <value>Default folder</value>
+    <value>Empty folder</value>
   </data>
   <data name="icon_deleted_folder" xml:space="preserve">
     <value>Deleted folder</value>
@@ -180,7 +180,7 @@
   <data name="keep_system_folders" xml:space="preserve">
     <value>True</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo2.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -205,14 +205,14 @@
   <data name="registry_name" xml:space="preserve">
     <value>Remove empty dirs</value>
   </data>
+  <data name="removing_empty_folders" xml:space="preserve">
+    <value>Deleting empty directories ({0}/{1})...</value>
+  </data>
   <data name="rem_empty_folders" xml:space="preserve">
     <value>Removing empty folders...</value>
   </data>
-  <data name="removing_empty_folders" xml:space="preserve">
-    <value>Removing empty folders ({0}/{1})...</value>
-  </data>
   <data name="scanning_folders" xml:space="preserve">
-    <value>Scanning folders...</value>
+    <value>Scanning directories...</value>
   </data>
   <data name="searching_empty_folders" xml:space="preserve">
     <value>Searching empty folders...</value>

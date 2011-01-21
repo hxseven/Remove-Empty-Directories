@@ -8,7 +8,10 @@ using System.Text.RegularExpressions;
 
 namespace RED2
 {
-	public class FolderFindWorker : BackgroundWorker
+    /// <summary>
+    /// Scans for empty directories
+    /// </summary>
+	public class FindEmptyDirectoryWorker : BackgroundWorker
 	{
         #region Class variables
 
@@ -59,7 +62,7 @@ namespace RED2
 
         #endregion
 	
-		public FolderFindWorker(){			
+		public FindEmptyDirectoryWorker(){			
 			WorkerReportsProgress = true;
 			WorkerSupportsCancellation = true;
 		}
@@ -140,7 +143,7 @@ namespace RED2
 
 			// update status progress bar after 100 steps:
 			if (this.folderCount % 100 == 0)
-				ReportProgress(folderCount, "Checking folder: " + _StartFolder.Name);
+				ReportProgress(folderCount, "Scanning folder: " + _StartFolder.Name);
 
 			// Is the folder really empty?
 			bool ContainsFiles = false;

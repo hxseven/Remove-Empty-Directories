@@ -7,7 +7,10 @@ using System.IO;
 
 namespace RED2
 {
-	public class FolderScanWorker : BackgroundWorker
+    /// <summary>
+    /// Calculates the directory count
+    /// </summary>
+	public class CalculateDirectoryCountWorker : BackgroundWorker
 	{
 		#region Private members
 		private int folderCount = 0;
@@ -32,7 +35,7 @@ namespace RED2
 		#endregion
 
 		#region Constructor
-		public FolderScanWorker(){
+		public CalculateDirectoryCountWorker(){
 			WorkerReportsProgress = true;
 			WorkerSupportsCancellation = true;
 		}
@@ -47,7 +50,7 @@ namespace RED2
 			// Be sure not to manipulate any Windows Forms controls created
 			// on the UI thread from this method.
 
-			this.CalculateMaxFolders(_StartFolder, 1);
+			this.calculateMaxFolders(_StartFolder, 1);
 
 			if (CancellationPending)
 			{
@@ -59,7 +62,12 @@ namespace RED2
 			e.Result = this.folderCount; 
 		}
 
-		protected void CalculateMaxFolders(DirectoryInfo _StartFolder, int _depth)
+        /// <summary>
+        /// Loop recursive trough all folders
+        /// </summary>
+        /// <param name="_StartFolder"></param>
+        /// <param name="_depth"></param>
+		protected void calculateMaxFolders(DirectoryInfo _StartFolder, int _depth)
 		{
 			if (this.maxDepth != -1 && _depth > this.maxDepth)
 				return;
@@ -67,24 +75,25 @@ namespace RED2
 			if (CancellationPending)
 				return;
 
-            DirectoryInfo[] SubFolders = null;
+            DirectoryInfo[] subFoldersList = null;
 
             try
             {
-                SubFolders = _StartFolder.GetDirectories();
+                subFoldersList = _StartFolder.GetDirectories();
             }
             catch {
                 // Could not scan sub folder
                 return;
             }
 
-			if (SubFolders.Length == 0)
+			if (subFoldersList.Length == 0)
 				return;
 
-			foreach (DirectoryInfo Folder in SubFolders)
+			foreach (DirectoryInfo Folder in subFoldersList)
 			{
 				this.folderCount++;
-				this.CalculateMaxFolders(Folder, _depth+1);
+
+				this.calculateMaxFolders(Folder, _depth+1);
 			}
 		}
 
