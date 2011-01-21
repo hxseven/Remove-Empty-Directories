@@ -88,7 +88,7 @@ namespace RED2
 
             #endregion
 
-            UI_SetIcons();
+            DrawDirectoryIcons();
 
             #region Read config settings
 
@@ -102,10 +102,6 @@ namespace RED2
             this.tbFolder.Text = this.settings.Read("folder", RED2.Properties.Resources.folder);
 
             bool KeepSystemFolders = this.settings.Read("keep_system_folders", Boolean.Parse(RED2.Properties.Resources.keep_system_folders));
-
-            if (!KeepSystemFolders)
-                this.cbKeepSystemFolders.Tag = 1; // this disables the warning message
-
             this.cbKeepSystemFolders.Checked = KeepSystemFolders;
 
             this.cbIgnoreHiddenFolders.Checked = this.settings.Read("dont_scan_hidden_folders", Boolean.Parse(RED2.Properties.Resources.dont_scan_hidden_folders));
@@ -121,7 +117,7 @@ namespace RED2
 
             deletedFolderCount = this.settings.Read("delete_stats", 0);
 
-            UI_UpdateDeleteStats(this.deletedFolderCount);
+            UpdateDeletionStats(this.deletedFolderCount);
 
             #endregion
 
@@ -133,9 +129,88 @@ namespace RED2
                 this.tbFolder.Text = Arguments[1].ToString();
 
             #endregion
+
+            this.attachOptions();
         }
 
-        private void UI_SetIcons()
+        private void attachOptions()
+        {
+            foreach (Control cb in this.gpOptions.Controls)
+            {
+                if (cb is CheckBox)
+                    ((CheckBox)cb).CheckedChanged += new EventHandler(Options_CheckedChanged);
+            }
+        }
+
+        void Options_CheckedChanged(object sender, EventArgs e)
+        {
+            var cb = (CheckBox)sender;
+
+            switch ((string)cb.Tag)
+            {
+                case "explorer_integration":
+                    SystemFunctions.AddOrRemoveRegKey(this.cbIntegrateIntoWindowsExplorer.Checked, MenuName, Command);
+                    break;
+
+                case "ignore_0kb_files":
+                    this.settings.Write("ignore_0kb_files", this.cbIgnore0kbFiles.Checked);
+                    break;
+
+                case "clipboard_detection":
+                    break;
+
+                case "keep_system_dirs":
+
+                    if (!this.cbKeepSystemFolders.Checked)
+                    {
+                        if (MessageBox.Show(this, Helpers_FixText(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
+                            this.cbKeepSystemFolders.Checked = true;
+                    }
+
+                    this.settings.Write("keep_system_folders", this.cbKeepSystemFolders.Checked);
+
+                    break;
+
+                case "ignore_hidden":
+                    this.settings.Write("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders.Checked);
+                    break;
+
+                case "recycle_bin":
+                    break;
+
+                case "simulate_deletion":
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+        #region Save setting functions
+
+        private void nuMaxDepth_ValueChanged(object sender, EventArgs e)
+        {
+            this.settings.Write("max_depth", (int)this.nuMaxDepth.Value);
+        }
+
+        private void nuPause_ValueChanged(object sender, EventArgs e)
+        {
+            this.settings.Write("pause_between", (int)this.nuPause.Value);
+        }
+
+        private void tbIgnoreFiles_TextChanged(object sender, EventArgs e)
+        {
+            this.settings.Write("ignore_files", tbIgnoreFiles.Text);
+        }
+
+        private void tbIgnoreFolders_TextChanged(object sender, EventArgs e)
+        {
+            this.settings.Write("ignore_folders", tbIgnoreFolders.Text);
+        }
+        #endregion
+
+        private void DrawDirectoryIcons()
         {
             #region Set and display folder status icons
 
@@ -147,7 +222,7 @@ namespace RED2
             Icons.Add("folder_hidden", RED2.Properties.Resources.icon_hidden_folder);
             Icons.Add("folder_lock", RED2.Properties.Resources.icon_locked_folder);
             Icons.Add("folder_warning", RED2.Properties.Resources.icon_warning);
-            Icons.Add("protected", RED2.Properties.Resources.icon_protected_folder);
+            Icons.Add("protected_icon", RED2.Properties.Resources.icon_protected_folder);
             Icons.Add("deleted", RED2.Properties.Resources.icon_deleted_folder);
 
             int xpos = 6;
@@ -260,7 +335,7 @@ namespace RED2
 
             this.StartFolder = Folder;
 
-            this.core.step1_calcDirectoryCount(Folder, (int)this.nuMaxDepth.Value);
+            this.core.CalculateDirectoryCount(Folder, (int)this.nuMaxDepth.Value);
         }
 
         void core_OnCalcDirWorkerFinished(object sender, REDCoreCalcDirWorkerFinishedEventArgs e)
@@ -270,10 +345,12 @@ namespace RED2
             // Set max value:
             this.pbProgressStatus.Maximum = e.MaxFolderCount + 1;
 
-            this.treeMan.CreateRootNode(StartFolder, "home");
+            this.treeMan.CreateRootNode(StartFolder, REDIcons.home);
 
-            this.core.step2_startSearchingEmptyDirectories(
-                this.StartFolder, this.tbIgnoreFiles.Text, this.tbIgnoreFolders.Text, this.cbIgnore0kbFiles.Checked, this.cbIgnoreHiddenFolders.Checked, this.cbKeepSystemFolders.Checked, (int)this.nuMaxDepth.Value
+            this.core.SearchingForEmptyDirectories(
+                this.StartFolder,
+                this.tbIgnoreFiles.Text, this.tbIgnoreFolders.Text, this.cbIgnore0kbFiles.Checked, this.cbIgnoreHiddenFolders.Checked, this.cbKeepSystemFolders.Checked,
+                (int)this.nuMaxDepth.Value
             );
         }
 
@@ -309,14 +386,20 @@ namespace RED2
 
         void core_OnDeleteProcessChanged(object sender, REDCoreDeleteProcessUpdateEventArgs e)
         {
-            if (e.Status == REDDirStatus.Deleted)
+            switch (e.Status)
             {
-                this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
-                this.treeMan.UpdateItemIcon(e.Folder, "deleted");
-            }
-            else
-            {
-                this.treeMan.UpdateItemIcon(e.Folder, "folder_warning");
+                case REDDirStatus.Deleted:
+                    this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
+                    this.treeMan.UpdateItemIcon(e.Folder, REDIcons.deleted);
+                    break;
+
+                case REDDirStatus.Protected:
+                    this.treeMan.UpdateItemIcon(e.Folder, REDIcons.protected_icon);
+                    break;
+
+                default:
+                    this.treeMan.UpdateItemIcon(e.Folder, REDIcons.folder_warning);
+                    break;
             }
 
             this.pbProgressStatus.Value = e.ProgressStatus;
@@ -333,9 +416,11 @@ namespace RED2
             this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.DeletedFolderCount, e.FailedFolderCount);
 
             #region Update delete stats
+
             this.deletedFolderCount += e.DeletedFolderCount;
             this.settings.Write("delete_stats", this.deletedFolderCount);
-            UI_UpdateDeleteStats(this.deletedFolderCount);
+            UpdateDeletionStats(this.deletedFolderCount);
+
             #endregion
         }
 
@@ -353,7 +438,7 @@ namespace RED2
             this.btnScan.Enabled = false;
             this.btnCancel.Enabled = false;
 
-            this.core.CancelProcess();
+            this.core.CancelCurrentProcess();
         }
 
         private void btnCheckForUpdates_Click(object sender, EventArgs e)
@@ -380,7 +465,7 @@ namespace RED2
         private void btnDelete_Click(object sender, EventArgs e)
         {
             this.core.SimulateDeletion = this.cbSimulateDeletion.Checked;
-            this.core.StartDelete(Helpers_FormatAndSplit(this.tbIgnoreFiles.Text), this.cbIgnore0kbFiles.Checked, (double)this.nuPause.Value);
+            this.core.StartDelete(Helpers_FormatAndSplit(this.tbIgnoreFiles.Text), this.cbIgnore0kbFiles.Checked, (double)this.nuPause.Value, this.cbDeleteToRecycleBin.Checked);
         }
 
         void core_OnFoundEmptyDir(object sender, REDCoreFoundDirEventArgs e)
@@ -394,8 +479,6 @@ namespace RED2
             this.lbStatus.Text = (string)e.UserState;
             this.pbProgressStatus.Value = e.ProgressPercentage;
         }
-
-   
 
         private void proToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -417,15 +500,7 @@ namespace RED2
             SystemFunctions.OpenDirectoryWithExplorer(this.treeMan.GetSelectedFolderPath());
         }
 
-        /// <summary>
-        /// Integrates RED into the Windows explorer
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void cbIntegrateIntoWindowsExplorer_CheckedChanged(object sender, EventArgs e)
-        {
-            SystemFunctions.AddOrRemoveRegKey(this.cbIntegrateIntoWindowsExplorer.Checked, MenuName, Command);
-        }
+
 
         /// <summary>
         /// Part of the drag & drop functions 
@@ -464,15 +539,15 @@ namespace RED2
         {
             // Detect paths in the clipboard
 
-            //if (Clipboard.ContainsText(TextDataFormat.Text))
-            //{
-            //    var clipValue = Clipboard.GetText(TextDataFormat.Text);
+            if (this.cbClipboardDetection.Checked && Clipboard.ContainsText(TextDataFormat.Text))
+            {
+                var clipValue = Clipboard.GetText(TextDataFormat.Text);
 
-            //    if (clipValue.Contains(":\\"))
-            //    {
-            //        this.tbFolder.Text = clipValue;
-            //    }
-            //}
+                if (clipValue.Contains(":\\"))
+                {
+                    this.tbFolder.Text = clipValue;
+                }
+            }
         }
 
         private void tbFolder_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -480,7 +555,7 @@ namespace RED2
             this.tbFolder.SelectAll();
         }
 
-        private void UI_UpdateDeleteStats(int count)
+        private void UpdateDeletionStats(int count)
         {
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, count);
         }
@@ -507,56 +582,7 @@ namespace RED2
 
         #endregion
 
-        #region Save setting functions
 
-        private void cbKeepSystemFolders_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.cbKeepSystemFolders.Tag == null)
-            {
-                if (!this.cbKeepSystemFolders.Checked)
-                {
-                    if (MessageBox.Show(this, Helpers_FixText(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
-                        this.cbKeepSystemFolders.Checked = true;
-                }
-
-                this.settings.Write("keep_system_folders", this.cbKeepSystemFolders.Checked);
-            }
-            else
-            {
-                this.cbKeepSystemFolders.Tag = null;
-            }
-        }
-
-        private void cbIgnoreHiddenFolders_CheckedChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders.Checked);
-        }
-
-        private void cbIgnore0kbFiles_CheckedChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("ignore_0kb_files", this.cbIgnore0kbFiles.Checked);
-        }
-
-        private void nuMaxDepth_ValueChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("max_depth", (int)this.nuMaxDepth.Value);
-        }
-
-        private void nuPause_ValueChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("pause_between", (int)this.nuPause.Value);
-        }
-
-        private void tbIgnoreFiles_TextChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("ignore_files", tbIgnoreFiles.Text);
-        }
-
-        private void tbIgnoreFolders_TextChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("ignore_folders", tbIgnoreFolders.Text);
-        }
-        #endregion
 
         #region Folder protection
 
@@ -574,8 +600,8 @@ namespace RED2
 
             this.core.AddProtectedFolder(Folder.FullName, Node.ImageKey + "|" + Node.ForeColor.ToArgb().ToString());
 
-            Node.ImageKey = "protected";
-            Node.SelectedImageKey = "protected";
+            Node.ImageKey = "protected_icon";
+            Node.SelectedImageKey = "protected_icon";
             Node.ForeColor = Color.Blue;
 
             if (!this.treeMan.IsRootNode(Node.Parent))

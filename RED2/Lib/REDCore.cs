@@ -44,7 +44,7 @@ namespace RED2
             this.set_step(REDWorkflowSteps.Init);
         }
 
-        public void step1_calcDirectoryCount(DirectoryInfo Folder, int MaxDepth)
+        public void CalculateDirectoryCount(DirectoryInfo Folder, int MaxDepth)
         {
             emptyFolderList = new List<DirectoryInfo>();
 
@@ -102,7 +102,7 @@ namespace RED2
         /// <summary>
         /// Start searching empty folders
         /// </summary>
-        public void step2_startSearchingEmptyDirectories(DirectoryInfo StartFolder, string tbIgnoreFiles, string tbIgnoreFolders, bool cbIgnore0kbFiles, bool cbIgnoreHiddenFolders, bool cbKeepSystemFolders, int nuMaxDepth)
+        public void SearchingForEmptyDirectories(DirectoryInfo StartFolder, string tbIgnoreFiles, string tbIgnoreFolders, bool cbIgnore0kbFiles, bool cbIgnoreHiddenFolders, bool cbKeepSystemFolders, int nuMaxDepth)
         {
             #region Initialize the FolderFindWorker-Object
 
@@ -194,30 +194,12 @@ namespace RED2
             }
         }
 
-
-        internal void cancelDirCountWorker()
-        {
-            if (this.calcDirCountWorker == null) return;
-
-            if ((this.calcDirCountWorker.IsBusy == true) || (calcDirCountWorker.CancellationPending == false))
-                calcDirCountWorker.CancelAsync();
-        }
-
-        internal void cancelSearchEmptyFolderWorker()
-        {
-            if (this.searchEmptyFoldersWorker == null) return;
-
-            if ((this.searchEmptyFoldersWorker.IsBusy == true) || (searchEmptyFoldersWorker.CancellationPending == false))
-                searchEmptyFoldersWorker.CancelAsync();
-        }
-
-
         /// <summary>
         /// Finally delete a folder (with security checks before)
         /// </summary>
         /// <param name="_StartFolder"></param>
         /// <returns></returns>
-        public bool SecureDelete(DirectoryInfo _StartFolder, String[] ignoreFiles, bool cbIgnore0kbFiles)
+        public bool SecureDelete(DirectoryInfo _StartFolder, String[] ignoreFiles, bool cbIgnore0kbFiles, bool deleteToRecycleBin)
         {
             if (this.SimulateDeletion)
                 return true;
@@ -276,18 +258,24 @@ namespace RED2
 
             // End cleanup
 
-            return SystemFunctions.SecureDelete(_StartFolder);
+            return SystemFunctions.SecureDelete(_StartFolder, deleteToRecycleBin);
         }
 
-        internal void CancelProcess()
+        internal void CancelCurrentProcess()
         {
             if (this.currentProcessStep == REDWorkflowSteps.StartingCalcDirCount)
             {
-                this.cancelDirCountWorker();
+                if (this.calcDirCountWorker == null) return;
+
+                if ((this.calcDirCountWorker.IsBusy == true) || (calcDirCountWorker.CancellationPending == false))
+                    calcDirCountWorker.CancelAsync();
             }
             else if (this.currentProcessStep == REDWorkflowSteps.StartSearchingForEmptyDirs)
             {
-                this.cancelSearchEmptyFolderWorker();
+                if (this.searchEmptyFoldersWorker == null) return;
+
+                if ((this.searchEmptyFoldersWorker.IsBusy == true) || (searchEmptyFoldersWorker.CancellationPending == false))
+                    searchEmptyFoldersWorker.CancelAsync();
             }
             else if (this.currentProcessStep == REDWorkflowSteps.DeleteProcessRunning)
             {
@@ -295,7 +283,7 @@ namespace RED2
             }
         }
 
-        internal void StartDelete(String[] ignoreFileList, bool cbIgnore0kbFiles, double pauseTime)
+        internal void StartDelete(String[] ignoreFileList, bool cbIgnore0kbFiles, double pauseTime, bool deleteToRecycleBin)
         {
             this.set_step(REDWorkflowSteps.DeleteProcessRunning);
 
@@ -314,7 +302,7 @@ namespace RED2
                 // Do not delete protected folders:
                 if (!this.protectedFolderList.ContainsKey(Folder.FullName))
                 {
-                    if (this.SecureDelete(Folder, ignoreFileList, cbIgnore0kbFiles))
+                    if (this.SecureDelete(Folder, ignoreFileList, cbIgnore0kbFiles, deleteToRecycleBin))
                     {
                         status = REDDirStatus.Deleted;
                         DeletedFolderCount++;

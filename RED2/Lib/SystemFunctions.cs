@@ -5,25 +5,33 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Microsoft.VisualBasic.FileIO;
 
 namespace RED2
 {
     public class SystemFunctions
     {
-
-        public static bool SecureDelete(DirectoryInfo Folder)
+        public static bool SecureDelete(DirectoryInfo Folder, bool deleteToRecycleBin)
         {
             // last security check (for files):
             if (Folder.GetFiles().Length == 0 && Folder.GetDirectories().Length == 0)
             {
                 try
                 {
-                    Folder.Delete();
+                    if (deleteToRecycleBin)
+                    {
+                        FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                    }
+                    else
+                    {
+                        Folder.Delete();
+                    }
                     return true;
                 }
-                catch
+                catch(Exception ex)
                 {
                     // Do something useful
+                    MessageBox.Show("Error during deletion: " + ex.Message);
                 }
             }
             return false;

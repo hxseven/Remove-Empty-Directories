@@ -7,14 +7,10 @@ namespace RED2
 {
     public enum REDWorkflowSteps
     {
+        Init,
         StartSearchingForEmptyDirs,
         StartingCalcDirCount,
-        // DirectoryCountWorkerFinished, = unused
         DeleteProcessRunning,
-        //IdleAfterCancel,
-        // FindEmptyDirectoryWorkerFinished = unused
-        //IdleAfterCancel2, = unused
-        Init
     }
 
     public enum REDDirStatus
@@ -25,4 +21,11 @@ namespace RED2
         Protected
     }
 
+    public enum REDIcons
+    {
+        home,
+        deleted,
+        protected_icon,
+        folder_warning
+    }
 }

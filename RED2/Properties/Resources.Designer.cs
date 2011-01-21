@@ -292,13 +292,6 @@ namespace RED2.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap project_support {
-            get {
-                object obj = ResourceManager.GetObject("project_support", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die RED deleted {0} directories for you! ähnelt.
         /// </summary>

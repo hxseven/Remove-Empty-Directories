@@ -32,12 +32,12 @@ namespace RED2
         /// <param name="StartFolder"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        internal void CreateRootNode(DirectoryInfo StartFolder, string imageKey)
+        internal void CreateRootNode(DirectoryInfo StartFolder, REDIcons imageKey)
         {
             RootNode = new TreeNode(StartFolder.Name);
             RootNode.Tag = StartFolder;
-            RootNode.ImageKey = imageKey;
-            RootNode.SelectedImageKey = imageKey;
+            RootNode.ImageKey = imageKey.ToString();
+            RootNode.SelectedImageKey = imageKey.ToString();
 
             directoryToTreeNodeMapping = new Dictionary<String, TreeNode>();
             directoryToTreeNodeMapping.Add(StartFolder.FullName, RootNode);
@@ -65,11 +65,11 @@ namespace RED2
         /// </summary>
         /// <param name="folder"></param>
         /// <param name="iconKey"></param>
-        internal void UpdateItemIcon(DirectoryInfo folder, string iconKey)
+        internal void UpdateItemIcon(DirectoryInfo folder, REDIcons iconKey)
         {
             TreeNode FNode = this._findTreeNodeByFolder(folder);
-            FNode.ImageKey = iconKey;
-            FNode.SelectedImageKey = iconKey;
+            FNode.ImageKey = iconKey.ToString();
+            FNode.SelectedImageKey = iconKey.ToString();
             FNode.EnsureVisible();
         }
 
