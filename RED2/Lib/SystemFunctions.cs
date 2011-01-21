@@ -11,7 +11,7 @@ namespace RED2
 {
     public class SystemFunctions
     {
-        public static bool SecureDelete(DirectoryInfo Folder, bool deleteToRecycleBin)
+        public static bool SecureDeleteDirectory(DirectoryInfo Folder, bool deleteToRecycleBin)
         {
             // last security check (for files):
             if (Folder.GetFiles().Length == 0 && Folder.GetDirectories().Length == 0)
@@ -20,7 +20,8 @@ namespace RED2
                 {
                     if (deleteToRecycleBin)
                     {
-                        FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                        // FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                        FileSystem.DeleteDirectory(Folder.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                     }
                     else
                     {
@@ -28,12 +29,36 @@ namespace RED2
                     }
                     return true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    // Do something useful
-                    MessageBox.Show("Error during deletion: " + ex.Message);
+                    // Do something useful -> convert to event
+                    MessageBox.Show("Error during deletion of directory: " + ex.Message);
                 }
             }
+            return false;
+        }
+
+        public static bool SecureDeleteFile(FileInfo File, bool deleteToRecycleBin)
+        {
+            try
+            {
+                if (deleteToRecycleBin)
+                {
+                    // FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                    FileSystem.DeleteFile(File.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                }
+                else
+                {
+                    File.Delete();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Do something useful -> convert to event
+                MessageBox.Show("Error during deletion of file: " + ex.Message);
+            }
+
             return false;
         }
 

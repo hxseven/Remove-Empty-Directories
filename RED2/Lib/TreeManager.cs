@@ -10,14 +10,14 @@ namespace RED2
 {
     public class TreeManager
     {
-        private TreeView tvFolders = null;
+        private TreeView treeView = null;
         private Dictionary<String, TreeNode> directoryToTreeNodeMapping = null;
 
         private TreeNode RootNode = null;
 
         public TreeManager(TreeView dirTree)
         {
-            this.tvFolders = dirTree;
+            this.treeView = dirTree;
             this.Init();
         }
 
@@ -42,20 +42,20 @@ namespace RED2
             directoryToTreeNodeMapping = new Dictionary<String, TreeNode>();
             directoryToTreeNodeMapping.Add(StartFolder.FullName, RootNode);
 
-            this.tvFolders.Nodes.Add(RootNode);
+            this.treeView.Nodes.Add(RootNode);
         }
 
-        internal void EnsureRootVis()
+        internal void EnsureRootNodeIsVisible()
         {
             this.RootNode.EnsureVisible();
         }
 
-        internal bool ContainsDir(string FolderFullName)
+        internal bool ContainsDirectory(string FolderFullName)
         {
             return directoryToTreeNodeMapping.ContainsKey(FolderFullName);
         }
 
-        internal TreeNode GetDir(string FolderFullName)
+        internal TreeNode GetDirectory(string FolderFullName)
         {
             return directoryToTreeNodeMapping[FolderFullName];
         }
@@ -67,7 +67,7 @@ namespace RED2
         /// <param name="iconKey"></param>
         internal void UpdateItemIcon(DirectoryInfo folder, REDIcons iconKey)
         {
-            TreeNode FNode = this._findTreeNodeByFolder(folder);
+            TreeNode FNode = this.findTreeNodeByFolder(folder);
             FNode.ImageKey = iconKey.ToString();
             FNode.SelectedImageKey = iconKey.ToString();
             FNode.EnsureVisible();
@@ -78,13 +78,13 @@ namespace RED2
         /// </summary>
         /// <param name="Folder"></param>
         /// <returns></returns>
-        private TreeNode _findTreeNodeByFolder(DirectoryInfo Folder)
+        private TreeNode findTreeNodeByFolder(DirectoryInfo Folder)
         {
             // Folder exists already:
             if (directoryToTreeNodeMapping.ContainsKey(Folder.FullName))
                 return directoryToTreeNodeMapping[Folder.FullName];
             else
-                return UI_AddEmptyFolderToTreeView(Folder, false);
+                return AddEmptyFolderToTreeView(Folder, false);
         }
 
         /// <summary>
@@ -93,58 +93,61 @@ namespace RED2
         /// <param name="Folder"></param>
         /// <param name="_isEmpty"></param>
         /// <returns></returns>
-        public TreeNode UI_AddEmptyFolderToTreeView(DirectoryInfo Folder, bool _isEmpty)
+        public TreeNode AddEmptyFolderToTreeView(DirectoryInfo Folder, bool _isEmpty)
         {
             // exists already:
-            if (this.ContainsDir(Folder.FullName))
+            if (this.ContainsDirectory(Folder.FullName))
             {
-                TreeNode n = this.GetDir(Folder.FullName);
+                TreeNode n = this.GetDirectory(Folder.FullName);
                 n.ForeColor = Color.Red;
                 return n;
             }
 
             bool parentIsRoot = (Folder.Parent.FullName.Trim('\\') == ((DirectoryInfo)this.RootNode.Tag).FullName.Trim('\\'));
 
-            return this.CreateNewDir(Folder, _isEmpty, parentIsRoot);
+            return this.AddNewDirectory(Folder, _isEmpty, parentIsRoot);
         }
 
-        internal TreeNode CreateNewDir(DirectoryInfo Folder, bool _isEmpty, bool parentIsRoot)
+        internal TreeNode AddNewDirectory(DirectoryInfo directory, bool isEmpty, bool parentIsRoot)
         {
-            TreeNode NewNode = new TreeNode(Folder.Name);
-            NewNode.ForeColor = (_isEmpty) ? Color.Red : Color.Gray;
+            TreeNode newTreeNode = new TreeNode(directory.Name);
+            newTreeNode.ForeColor = (isEmpty) ? Color.Red : Color.Gray;
 
-            bool containsTrash = (!(Folder.GetFiles().Length == 0) && _isEmpty);
+            var fileCount = directory.GetFiles().Length;
 
-            NewNode.ImageKey = containsTrash ? "folder_trash_files" : "folder";
+            bool containsTrash = (fileCount > 0 && isEmpty);
 
-            if ((Folder.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-                NewNode.ImageKey = containsTrash ? "folder_hidden_trash_files" : "folder_hidden";
+            newTreeNode.ImageKey = containsTrash ? "folder_trash_files" : "folder";
 
-            if ((Folder.Attributes & FileAttributes.Encrypted) == FileAttributes.Encrypted)
-                NewNode.ImageKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
+            if ((directory.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                newTreeNode.ImageKey = containsTrash ? "folder_hidden_trash_files" : "folder_hidden";
 
-            if ((Folder.Attributes & FileAttributes.System) == FileAttributes.System)
-                NewNode.ImageKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
+            if ((directory.Attributes & FileAttributes.Encrypted) == FileAttributes.Encrypted)
+                newTreeNode.ImageKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
 
-            NewNode.SelectedImageKey = NewNode.ImageKey;
+            if ((directory.Attributes & FileAttributes.System) == FileAttributes.System)
+                newTreeNode.ImageKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
 
-            NewNode.Tag = Folder;
+            newTreeNode.SelectedImageKey = newTreeNode.ImageKey;
+
+            newTreeNode.Tag = directory;
+
+            if (containsTrash)
+                newTreeNode.Text += " (" + fileCount.ToString() + " files)";
 
             if (parentIsRoot)
-                this.RootNode.Nodes.Add(NewNode);
+                this.RootNode.Nodes.Add(newTreeNode);
             else
             {
-                TreeNode ParentNode = this._findTreeNodeByFolder(Folder.Parent);
-                ParentNode.Nodes.Add(NewNode);
+                TreeNode ParentNode = this.findTreeNodeByFolder(directory.Parent);
+                ParentNode.Nodes.Add(newTreeNode);
             }
 
-            directoryToTreeNodeMapping.Add(Folder.FullName, NewNode);
+            directoryToTreeNodeMapping.Add(directory.FullName, newTreeNode);
 
-            // !?? this.CreateNewDir(Folder.FullName);
+            newTreeNode.EnsureVisible();
 
-            NewNode.EnsureVisible();
-
-            return NewNode;
+            return newTreeNode;
         }
 
         internal bool IsRootNode(TreeNode treeNode)
@@ -158,9 +161,9 @@ namespace RED2
         /// <returns></returns>
         public string GetSelectedFolderPath()
         {
-            if (this.tvFolders.SelectedNode != null && this.tvFolders.SelectedNode.Tag != null)
+            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
             {
-                DirectoryInfo folder = (DirectoryInfo)this.tvFolders.SelectedNode.Tag;
+                DirectoryInfo folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
                 return folder.FullName;
             }
             return "";

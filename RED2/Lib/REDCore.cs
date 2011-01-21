@@ -12,9 +12,15 @@ namespace RED2
     {
         private REDWorkflowSteps currentProcessStep = REDWorkflowSteps.Init;
 
+        public bool SimulateDeletion { get; set; }
+        private List<DirectoryInfo> emptyFolderList = null;
+        private bool stopDeleteProcessTrigger = false;
+        private Dictionary<String, String> protectedFolderList = new Dictionary<string, string>();
+
         private CalculateDirectoryCountWorker calcDirCountWorker = null;
         private FindEmptyDirectoryWorker searchEmptyFoldersWorker = null;
 
+        // Events
         public event EventHandler<REDCoreWorkflowStepChangedEventArgs> OnWorkflowStepChanged;
         public event EventHandler<REDCoreErrorEventArgs> OnError;
         public event EventHandler<REDCoreCalcDirWorkerFinishedEventArgs> OnCalcDirWorkerFinished;
@@ -25,13 +31,6 @@ namespace RED2
         public event EventHandler<REDCoreDeleteProcessUpdateEventArgs> OnDeleteProcessChanged;
         public event EventHandler<REDCoreDeleteProcessFinishedEventArgs> OnDeleteProcessFinished;
 
-        public bool SimulateDeletion { get; set; }
-
-        private List<DirectoryInfo> emptyFolderList = null;
-
-        private bool stopDeleteProcessTrigger = false;
-        private Dictionary<String, String> protectedFolderList = new Dictionary<string, string>();
-
         public REDCore()
         {
             this.SimulateDeletion = false;
@@ -39,7 +38,6 @@ namespace RED2
 
         public void init()
         {
-
             protectedFolderList = new Dictionary<string, string>();
             this.set_step(REDWorkflowSteps.Init);
         }
@@ -98,7 +96,6 @@ namespace RED2
                 this.OnError(this, new REDCoreErrorEventArgs(errorMessage));
         }
 
-
         /// <summary>
         /// Start searching empty folders
         /// </summary>
@@ -137,7 +134,6 @@ namespace RED2
             searchEmptyFoldersWorker.RunWorkerAsync(StartFolder);
 
             #endregion
-
         }
 
         /// <summary>
@@ -197,20 +193,21 @@ namespace RED2
         /// <summary>
         /// Finally delete a folder (with security checks before)
         /// </summary>
-        /// <param name="_StartFolder"></param>
+        /// <param name="startFolder"></param>
         /// <returns></returns>
-        public bool SecureDelete(DirectoryInfo _StartFolder, String[] ignoreFiles, bool cbIgnore0kbFiles, bool deleteToRecycleBin)
+        public bool SecureDelete(DirectoryInfo startFolder, String[] ignoreFileList, bool ignore_0kb_files, bool deleteToRecycleBin)
         {
             if (this.SimulateDeletion)
                 return true;
 
-            if (!Directory.Exists(_StartFolder.FullName))
+            if (!Directory.Exists(startFolder.FullName))
                 return false;
 
 
             // Cleanup folder
 
-            FileInfo[] Files = _StartFolder.GetFiles();
+            FileInfo[] Files = startFolder.GetFiles();
+            Regex RgxPattern = null;
 
             if (Files != null && Files.Length != 0)
             {
@@ -219,46 +216,49 @@ namespace RED2
                 {
                     FileInfo file = Files[f];
 
-                    bool matches_a_pattern = false;
+                    bool deleteTrashFile = false;
 
-                    for (int p = 0; (p < ignoreFiles.Length && !matches_a_pattern); p++)
+                    for (int p = 0; (p < ignoreFileList.Length && !deleteTrashFile); p++)
                     {
-                        string pattern = ignoreFiles[p];
+                        string pattern = ignoreFileList[p];
 
-                        if (cbIgnore0kbFiles && file.Length == 0)
-                            matches_a_pattern = true;
+                        if (ignore_0kb_files && file.Length == 0)
+                        {
+                            deleteTrashFile = true;
+                        }
                         else if (pattern.ToLower() == file.Name.ToLower())
-                            matches_a_pattern = true;
+                        {
+                            deleteTrashFile = true;
+                        }
                         else if (pattern.Contains("*"))
                         {
                             pattern = Regex.Escape(pattern);
                             pattern = pattern.Replace("\\*", ".*");
 
-                            Regex RgxPattern = new Regex("^" + pattern + "$");
+                            RgxPattern = new Regex("^" + pattern + "$");
 
                             if (RgxPattern.IsMatch(file.Name))
-                                matches_a_pattern = true;
+                                deleteTrashFile = true;
                         }
                         else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
                         {
-                            Regex RgxPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
+                            RgxPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
 
                             if (RgxPattern.IsMatch(file.Name))
-                                matches_a_pattern = true;
+                                deleteTrashFile = true;
                         }
 
                     }
 
                     // If only one file is good, then stop.
-                    if (matches_a_pattern)
-                        file.Delete();
-
+                    if (deleteTrashFile)
+                        SystemFunctions.SecureDeleteFile(file, deleteToRecycleBin);
                 }
             }
 
             // End cleanup
 
-            return SystemFunctions.SecureDelete(_StartFolder, deleteToRecycleBin);
+            return SystemFunctions.SecureDeleteDirectory(startFolder, deleteToRecycleBin);
         }
 
         internal void CancelCurrentProcess()
@@ -341,7 +341,6 @@ namespace RED2
         internal void RemoveProtected(string FolderFullName)
         {
             this.protectedFolderList.Remove(FolderFullName);
-
         }
 
         internal bool ProtectedContainsKey(string FolderFullName)

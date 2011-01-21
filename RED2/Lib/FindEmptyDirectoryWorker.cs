@@ -259,13 +259,12 @@ namespace RED2
                     {
                         if (Folder.FullName.ToLower().Contains(f.ToLower()))
                             ignoreFolder = true;
-                        
-
                     }
                 }
 
 				// Scan sub folder:
 				bool isSubFolderEmpty = false;
+
 				if (!ignoreFolder)
 					isSubFolderEmpty = this.ScanFolders(Folder, _depth+1);
 
@@ -273,7 +272,7 @@ namespace RED2
 				if (isSubFolderEmpty && !ignoreFolder)
 				{
 					this.emptyFolderCount++;
-
+                    
 					// Folder is empty, report that to the gui:
 					this.ReportProgress(-1, Folder);
 				}

@@ -100,6 +100,7 @@
             this.lbAppTitle = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.btnShowConfig = new System.Windows.Forms.Button();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -543,6 +544,7 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnShowConfig);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.nuMaxDepth);
             this.groupBox3.Controls.Add(this.label8);
@@ -950,6 +952,16 @@
             this.linkLabel2.Text = "Nuvola (Icons - LGPL License)";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
+            // btnShowConfig
+            // 
+            this.btnShowConfig.Location = new System.Drawing.Point(13, 64);
+            this.btnShowConfig.Name = "btnShowConfig";
+            this.btnShowConfig.Size = new System.Drawing.Size(155, 23);
+            this.btnShowConfig.TabIndex = 7;
+            this.btnShowConfig.Text = "Show config file";
+            this.btnShowConfig.UseVisualStyleBackColor = true;
+            this.btnShowConfig.Click += new System.EventHandler(this.btnShowConfig_Click);
+            // 
             // fMain
             // 
             this.AllowDrop = true;
@@ -1061,6 +1073,7 @@
         private System.Windows.Forms.CheckBox cbSimulateDeletion;
         private System.Windows.Forms.CheckBox cbClipboardDetection;
         private System.Windows.Forms.CheckBox cbDeleteToRecycleBin;
+        private System.Windows.Forms.Button btnShowConfig;
 	}
 }
 

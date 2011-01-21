@@ -13,7 +13,7 @@ namespace RED2
     public partial class fMain : Form
     {
         private REDCore core = null;
-        private TreeManager treeMan = null;
+        private TreeManager tree = null;
 
         private DirectoryInfo StartFolder = null;
 
@@ -64,7 +64,7 @@ namespace RED2
 
         private void UI_Init()
         {
-            treeMan = new TreeManager(this.tvFolders);
+            tree = new TreeManager(this.tvFolders);
 
             Assembly REDAssembly = Assembly.GetExecutingAssembly();
             AssemblyName AssemblyName = REDAssembly.GetName();
@@ -88,7 +88,7 @@ namespace RED2
 
             #endregion
 
-            DrawDirectoryIcons();
+            drawDirectoryIcons();
 
             #region Read config settings
 
@@ -117,7 +117,7 @@ namespace RED2
 
             deletedFolderCount = this.settings.Read("delete_stats", 0);
 
-            UpdateDeletionStats(this.deletedFolderCount);
+            updateDeletionStats(this.deletedFolderCount);
 
             #endregion
 
@@ -210,7 +210,7 @@ namespace RED2
         }
         #endregion
 
-        private void DrawDirectoryIcons()
+        private void drawDirectoryIcons()
         {
             #region Set and display folder status icons
 
@@ -320,7 +320,7 @@ namespace RED2
         /// <param name="e"></param>
         private void btnScan_Click(object sender, EventArgs e)
         {
-            this.treeMan.Init();
+            this.tree.Init();
 
             // Check given folder:
             DirectoryInfo Folder = new DirectoryInfo(this.tbFolder.Text);
@@ -345,7 +345,7 @@ namespace RED2
             // Set max value:
             this.pbProgressStatus.Maximum = e.MaxFolderCount + 1;
 
-            this.treeMan.CreateRootNode(StartFolder, REDIcons.home);
+            this.tree.CreateRootNode(StartFolder, REDIcons.home);
 
             this.core.SearchingForEmptyDirectories(
                 this.StartFolder,
@@ -375,7 +375,7 @@ namespace RED2
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
 
-            this.treeMan.EnsureRootVis();
+            this.tree.EnsureRootNodeIsVisible();
 
             this.btnScan.Text = RED2.Properties.Resources.btn_scan_again;
         }
@@ -390,15 +390,15 @@ namespace RED2
             {
                 case REDDirStatus.Deleted:
                     this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
-                    this.treeMan.UpdateItemIcon(e.Folder, REDIcons.deleted);
+                    this.tree.UpdateItemIcon(e.Folder, REDIcons.deleted);
                     break;
 
                 case REDDirStatus.Protected:
-                    this.treeMan.UpdateItemIcon(e.Folder, REDIcons.protected_icon);
+                    this.tree.UpdateItemIcon(e.Folder, REDIcons.protected_icon);
                     break;
 
                 default:
-                    this.treeMan.UpdateItemIcon(e.Folder, REDIcons.folder_warning);
+                    this.tree.UpdateItemIcon(e.Folder, REDIcons.folder_warning);
                     break;
             }
 
@@ -419,7 +419,7 @@ namespace RED2
 
             this.deletedFolderCount += e.DeletedFolderCount;
             this.settings.Write("delete_stats", this.deletedFolderCount);
-            UpdateDeletionStats(this.deletedFolderCount);
+            updateDeletionStats(this.deletedFolderCount);
 
             #endregion
         }
@@ -446,15 +446,12 @@ namespace RED2
             Assembly REDAssembly = Assembly.GetExecutingAssembly();
             AssemblyName AssemblyName = REDAssembly.GetName();
 
-            string UpdateUrl = string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", AssemblyName.Version.ToString());
-
-            Process.Start(UpdateUrl);
+            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", AssemblyName.Version.ToString()));
         }
 
         private void tvFolders_MouseClick(object sender, MouseEventArgs e)
         {
-            TreeNode TvNode = this.tvFolders.GetNodeAt(e.X, e.Y);
-            this.tvFolders.SelectedNode = TvNode;
+            this.tvFolders.SelectedNode = this.tvFolders.GetNodeAt(e.X, e.Y);
         }
 
         /// <summary>
@@ -470,12 +467,11 @@ namespace RED2
 
         void core_OnFoundEmptyDir(object sender, REDCoreFoundDirEventArgs e)
         {
-            this.treeMan.UI_AddEmptyFolderToTreeView(e.Directory, true);
+            this.tree.AddEmptyFolderToTreeView(e.Directory, true);
         }
 
         void core_OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            // Just update the progress bar
             this.lbStatus.Text = (string)e.UserState;
             this.pbProgressStatus.Value = e.ProgressPercentage;
         }
@@ -497,9 +493,8 @@ namespace RED2
         /// <param name="e"></param>
         private void tvFolders_DoubleClick(object sender, EventArgs e)
         {
-            SystemFunctions.OpenDirectoryWithExplorer(this.treeMan.GetSelectedFolderPath());
+            SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
         }
-
 
 
         /// <summary>
@@ -527,10 +522,7 @@ namespace RED2
         private void fMain_DragEnter(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
                 e.Effect = DragDropEffects.None;
-                return;
-            }
             else
                 e.Effect = DragDropEffects.Copy;
         }
@@ -544,9 +536,7 @@ namespace RED2
                 var clipValue = Clipboard.GetText(TextDataFormat.Text);
 
                 if (clipValue.Contains(":\\"))
-                {
                     this.tbFolder.Text = clipValue;
-                }
             }
         }
 
@@ -555,7 +545,7 @@ namespace RED2
             this.tbFolder.SelectAll();
         }
 
-        private void UpdateDeletionStats(int count)
+        private void updateDeletionStats(int count)
         {
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, count);
         }
@@ -577,7 +567,7 @@ namespace RED2
 
         private void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SystemFunctions.OpenDirectoryWithExplorer(this.treeMan.GetSelectedFolderPath());
+            SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
         }
 
         #endregion
@@ -604,7 +594,7 @@ namespace RED2
             Node.SelectedImageKey = "protected_icon";
             Node.ForeColor = Color.Blue;
 
-            if (!this.treeMan.IsRootNode(Node.Parent))
+            if (!this.tree.IsRootNode(Node.Parent))
                 ProtectNode(Node.Parent);
 
         }
@@ -688,6 +678,11 @@ namespace RED2
         }
 
         #endregion
+
+        private void btnShowConfig_Click(object sender, EventArgs e)
+        {
+            SystemFunctions.OpenDirectoryWithExplorer(Application.StartupPath);
+        }
     }
 
 }
