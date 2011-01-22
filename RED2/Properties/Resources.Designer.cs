@@ -97,7 +97,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die The directory you picked is not a folder or does not exist! ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, the path you picked is not a directory or does not exist! ähnelt.
         /// </summary>
         internal static string error_dir_does_not_exist {
             get {
@@ -232,7 +232,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN ähnelt.
         /// </summary>
         internal static string ignore_folders {
             get {
@@ -293,7 +293,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die RED deleted {0} directories for you! ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die RED deleted {0} directories for you :) ähnelt.
         /// </summary>
         internal static string red_deleted {
             get {

@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace RED2
 {
-    public partial class fMain : Form
+    public partial class MainWindow : Form
     {
         private REDCore core = null;
         private TreeManager tree = null;
@@ -33,7 +33,7 @@ namespace RED2
         /// <summary>
         /// Constructor
         /// </summary>
-        public fMain()
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -78,17 +78,28 @@ namespace RED2
             this.pbProgressStatus.Minimum = 0;
             this.pbProgressStatus.Step = 5;
 
-            #region Check for the registry key
+            this.btnShowLog.Enabled = false;
 
-            RegistryKey RegistryShellKey = Registry.ClassesRoot.OpenSubKey(MenuName);
-            if (RegistryShellKey == null)
-                this.cbIntegrateIntoWindowsExplorer.Checked = false;
-            else
-                this.cbIntegrateIntoWindowsExplorer.Checked = true;
-
-            #endregion
+            this.prepareOptionsPanel();
+            this.attachOptionEvents();
 
             drawDirectoryIcons();
+
+            deletedFolderCount = this.settings.Read("delete_stats", 0);
+            updateDeletionStats(this.deletedFolderCount);
+
+            #region Read and apply command line arguments
+
+            string[] Arguments = Environment.GetCommandLineArgs();
+
+            if (Arguments.Length > 1)
+                this.tbFolder.Text = Arguments[1].ToString();
+
+            #endregion
+        }
+
+        private void prepareOptionsPanel()
+        {
 
             #region Read config settings
 
@@ -115,25 +126,18 @@ namespace RED2
 
             this.tbIgnoreFolders.Text = this.settings.Read("ignore_folders", Helpers_FixText(RED2.Properties.Resources.ignore_folders));
 
-            deletedFolderCount = this.settings.Read("delete_stats", 0);
-
-            updateDeletionStats(this.deletedFolderCount);
-
             #endregion
 
-            #region Read and apply command line arguments
+            foreach (var d in DeleteModeItem.GetList())
+                this.cbDeleteMode.Items.Add(new DeleteModeItem(d));
 
-            string[] Arguments = Environment.GetCommandLineArgs();
+            this.cbDeleteMode.SelectedIndex = 0;
 
-            if (Arguments.Length > 1)
-                this.tbFolder.Text = Arguments[1].ToString();
+            this.cbIntegrateIntoWindowsExplorer.Checked = SystemFunctions.IsRegKeyIntegratedIntoWindowsExplorer(MenuName);
 
-            #endregion
-
-            this.attachOptions();
         }
 
-        private void attachOptions()
+        private void attachOptionEvents()
         {
             foreach (Control cb in this.gpOptions.Controls)
             {
@@ -255,11 +259,11 @@ namespace RED2
         {
             switch (e.NewStep)
             {
-                case REDWorkflowSteps.Init:
+                case WorkflowSteps.Init:
                     this.UI_Init();
                     break;
 
-                case REDWorkflowSteps.StartingCalcDirCount:
+                case WorkflowSteps.StartingCalcDirCount:
 
                     // Update button states
                     this.btnCancel.Enabled = true;
@@ -276,11 +280,11 @@ namespace RED2
 
                     break;
 
-                case REDWorkflowSteps.StartSearchingForEmptyDirs:
+                case WorkflowSteps.StartSearchingForEmptyDirs:
                     this.lbStatus.Text = RED2.Properties.Resources.searching_empty_folders;
                     break;
 
-                case REDWorkflowSteps.DeleteProcessRunning:
+                case WorkflowSteps.DeleteProcessRunning:
 
                     this.lbStatus.Text = RED2.Properties.Resources.rem_empty_folders;
 
@@ -321,6 +325,8 @@ namespace RED2
         private void btnScan_Click(object sender, EventArgs e)
         {
             this.tree.Init();
+            
+            this.btnShowLog.Enabled = false;
 
             // Check given folder:
             DirectoryInfo Folder = new DirectoryInfo(this.tbFolder.Text);
@@ -345,7 +351,7 @@ namespace RED2
             // Set max value:
             this.pbProgressStatus.Maximum = e.MaxFolderCount + 1;
 
-            this.tree.CreateRootNode(StartFolder, REDIcons.home);
+            this.tree.CreateRootNode(StartFolder, DirectoryIcons.home);
 
             this.core.SearchingForEmptyDirectories(
                 this.StartFolder,
@@ -388,17 +394,17 @@ namespace RED2
         {
             switch (e.Status)
             {
-                case REDDirStatus.Deleted:
+                case DirectoryStatusTypes.Deleted:
                     this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
-                    this.tree.UpdateItemIcon(e.Folder, REDIcons.deleted);
+                    this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.deleted);
                     break;
 
-                case REDDirStatus.Protected:
-                    this.tree.UpdateItemIcon(e.Folder, REDIcons.protected_icon);
+                case DirectoryStatusTypes.Protected:
+                    this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.protected_icon);
                     break;
 
                 default:
-                    this.tree.UpdateItemIcon(e.Folder, REDIcons.folder_warning);
+                    this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.folder_warning);
                     break;
             }
 
@@ -412,6 +418,7 @@ namespace RED2
             this.btnDelete.Enabled = false;
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
+            this.btnShowLog.Enabled = true;
 
             this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.DeletedFolderCount, e.FailedFolderCount);
 
@@ -461,8 +468,9 @@ namespace RED2
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            this.core.SimulateDeletion = this.cbSimulateDeletion.Checked;
-            this.core.StartDelete(Helpers_FormatAndSplit(this.tbIgnoreFiles.Text), this.cbIgnore0kbFiles.Checked, (double)this.nuPause.Value, this.cbDeleteToRecycleBin.Checked);
+            this.core.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
+            
+            this.core.StartDelete(Helpers_FormatAndSplit(this.tbIgnoreFiles.Text), this.cbIgnore0kbFiles.Checked, (double)this.nuPause.Value);
         }
 
         void core_OnFoundEmptyDir(object sender, REDCoreFoundDirEventArgs e)
@@ -625,10 +633,7 @@ namespace RED2
                 this.core.RemoveProtected(selectedFolder.FullName);
 
                 foreach (TreeNode SubNode in Node.Nodes)
-                {
                     this.UnProtectNode(SubNode);
-                }
-
             }
         }
 
@@ -682,6 +687,19 @@ namespace RED2
         private void btnShowConfig_Click(object sender, EventArgs e)
         {
             SystemFunctions.OpenDirectoryWithExplorer(Application.StartupPath);
+        }
+
+        private void btnShowLog_Click(object sender, EventArgs e)
+        {
+            var logWindow = new LogWindow();
+            logWindow.SetLog(this.core.GetLog());
+            logWindow.ShowDialog();
+            logWindow.Dispose();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

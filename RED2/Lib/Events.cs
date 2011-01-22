@@ -8,9 +8,9 @@ namespace RED2
 {
     public class REDCoreWorkflowStepChangedEventArgs : EventArgs
     {
-        public REDWorkflowSteps NewStep { get; set; }
+        public WorkflowSteps NewStep { get; set; }
 
-        public REDCoreWorkflowStepChangedEventArgs(REDWorkflowSteps NewStep)
+        public REDCoreWorkflowStepChangedEventArgs(WorkflowSteps NewStep)
         {
             this.NewStep = NewStep;
         }
@@ -63,10 +63,10 @@ namespace RED2
     {
         public int ProgressStatus { get; set; }
         public DirectoryInfo Folder { get; set; }
-        public REDDirStatus Status { get; set; }
+        public DirectoryStatusTypes Status { get; set; }
         public int FolderCount { get; set; }
 
-        public REDCoreDeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, REDDirStatus Status, int FolderCount)
+        public REDCoreDeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, DirectoryStatusTypes Status, int FolderCount)
         {
             this.ProgressStatus = ProgressStatus;
             this.Folder = Folder;

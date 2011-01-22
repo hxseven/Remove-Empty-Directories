@@ -9,57 +9,39 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace RED2
 {
+    /// <summary>
+    /// A collection of (generic) system functions
+    /// 
+    /// Exception handling should be made by the caller
+    /// </summary>
     public class SystemFunctions
     {
-        public static bool SecureDeleteDirectory(DirectoryInfo Folder, bool deleteToRecycleBin)
+        public static void SecureDeleteDirectory(DirectoryInfo Folder, DeleteModes deleteMode)
         {
             // last security check (for files):
             if (Folder.GetFiles().Length == 0 && Folder.GetDirectories().Length == 0)
             {
-                try
-                {
-                    if (deleteToRecycleBin)
-                    {
-                        // FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                        FileSystem.DeleteDirectory(Folder.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                    }
-                    else
-                    {
-                        Folder.Delete();
-                    }
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    // Do something useful -> convert to event
-                    MessageBox.Show("Error during deletion of directory: " + ex.Message);
-                }
+                if (deleteMode == DeleteModes.Recycle_bin)
+                    FileSystem.DeleteDirectory(Folder.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                else if (deleteMode == DeleteModes.Recycle_bin)
+                    FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                else if (deleteMode == DeleteModes.Directly)
+                    Folder.Delete();
+                else
+                    throw new Exception("Unknown delete mode: " + deleteMode.ToString());
             }
-            return false;
         }
 
-        public static bool SecureDeleteFile(FileInfo File, bool deleteToRecycleBin)
+        public static void SecureDeleteFile(FileInfo File, DeleteModes deleteMode)
         {
-            try
-            {
-                if (deleteToRecycleBin)
-                {
-                    // FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                    FileSystem.DeleteFile(File.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                }
-                else
-                {
-                    File.Delete();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // Do something useful -> convert to event
-                MessageBox.Show("Error during deletion of file: " + ex.Message);
-            }
-
-            return false;
+            if (deleteMode == DeleteModes.Recycle_bin)
+                FileSystem.DeleteFile(File.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+            else if (deleteMode == DeleteModes.Recycle_bin_with_question)
+                FileSystem.DeleteDirectory(File.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+            else if (deleteMode == DeleteModes.Directly)
+                File.Delete();
+            else
+                throw new Exception("Unknown delete mode: " + deleteMode.ToString());
         }
 
         public static string ChooseDirectoryDialog(string path)
@@ -97,6 +79,15 @@ namespace RED2
             string windows_folder = Environment.GetEnvironmentVariable("SystemRoot");
 
             Process.Start(windows_folder + "\\explorer.exe", "/e,\"" + path + "\"");
+        }
+
+        /// <summary>
+        /// Check for the registry key
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsRegKeyIntegratedIntoWindowsExplorer(string MenuName)
+        {
+            return (Registry.ClassesRoot.OpenSubKey(MenuName) != null);
         }
 
         internal static void AddOrRemoveRegKey(bool remove, string MenuName, string Command)
