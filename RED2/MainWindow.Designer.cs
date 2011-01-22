@@ -63,11 +63,19 @@
             this.btnChooseFolder = new System.Windows.Forms.Button();
             this.lblPickAFolder = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.gpOptions = new System.Windows.Forms.GroupBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.cbDeleteMode = new System.Windows.Forms.ComboBox();
+            this.cbClipboardDetection = new System.Windows.Forms.CheckBox();
+            this.cbIgnoreHiddenFolders = new System.Windows.Forms.CheckBox();
+            this.cbKeepSystemFolders = new System.Windows.Forms.CheckBox();
+            this.cbIgnore0kbFiles = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tbIgnoreFolders = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.btnShowConfig = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.nuMaxDepth = new System.Windows.Forms.NumericUpDown();
@@ -78,12 +86,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tbIgnoreFiles = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.gpOptions = new System.Windows.Forms.GroupBox();
-            this.cbClipboardDetection = new System.Windows.Forms.CheckBox();
-            this.cbSimulateDeletion = new System.Windows.Forms.CheckBox();
-            this.cbIgnoreHiddenFolders = new System.Windows.Forms.CheckBox();
-            this.cbKeepSystemFolders = new System.Windows.Forms.CheckBox();
-            this.cbIgnore0kbFiles = new System.Windows.Forms.CheckBox();
             this.tabAbout = new System.Windows.Forms.TabPage();
             this.btnCheckForUpdates = new System.Windows.Forms.Button();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -101,19 +103,17 @@
             this.lbAppTitle = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.cbDeleteMode = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
             this.cmStrip.SuspendLayout();
             this.tabSettings.SuspendLayout();
+            this.gpOptions.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
             this.groupBox2.SuspendLayout();
-            this.gpOptions.SuspendLayout();
             this.tabAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -350,18 +350,18 @@
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.Location = new System.Drawing.Point(4, 6);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(108, 13);
+            this.label12.Size = new System.Drawing.Size(98, 13);
             this.label12.TabIndex = 0;
-            this.label12.Text = "Icon descriptions:";
+            this.label12.Text = "Icon description";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(7, 13);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(156, 13);
+            this.label6.Size = new System.Drawing.Size(170, 13);
             this.label6.TabIndex = 15;
-            this.label6.Text = "Please choose a folder to scan:";
+            this.label6.Text = "Please choose a directory to scan:";
             // 
             // lbStatus
             // 
@@ -509,6 +509,93 @@
             this.tabSettings.ToolTipText = "Application settings";
             this.tabSettings.UseVisualStyleBackColor = true;
             // 
+            // gpOptions
+            // 
+            this.gpOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gpOptions.Controls.Add(this.label15);
+            this.gpOptions.Controls.Add(this.cbDeleteMode);
+            this.gpOptions.Controls.Add(this.cbClipboardDetection);
+            this.gpOptions.Controls.Add(this.cbIntegrateIntoWindowsExplorer);
+            this.gpOptions.Controls.Add(this.cbIgnoreHiddenFolders);
+            this.gpOptions.Controls.Add(this.cbKeepSystemFolders);
+            this.gpOptions.Controls.Add(this.cbIgnore0kbFiles);
+            this.gpOptions.Location = new System.Drawing.Point(10, 6);
+            this.gpOptions.Name = "gpOptions";
+            this.gpOptions.Size = new System.Drawing.Size(533, 149);
+            this.gpOptions.TabIndex = 19;
+            this.gpOptions.TabStop = false;
+            this.gpOptions.Text = "General options";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(13, 29);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(70, 13);
+            this.label15.TabIndex = 14;
+            this.label15.Text = "Delete mode:";
+            // 
+            // cbDeleteMode
+            // 
+            this.cbDeleteMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbDeleteMode.FormattingEnabled = true;
+            this.cbDeleteMode.Location = new System.Drawing.Point(89, 25);
+            this.cbDeleteMode.Name = "cbDeleteMode";
+            this.cbDeleteMode.Size = new System.Drawing.Size(431, 21);
+            this.cbDeleteMode.TabIndex = 7;
+            this.cbDeleteMode.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // cbClipboardDetection
+            // 
+            this.cbClipboardDetection.AutoSize = true;
+            this.cbClipboardDetection.Checked = true;
+            this.cbClipboardDetection.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbClipboardDetection.Location = new System.Drawing.Point(326, 87);
+            this.cbClipboardDetection.Name = "cbClipboardDetection";
+            this.cbClipboardDetection.Size = new System.Drawing.Size(162, 17);
+            this.cbClipboardDetection.TabIndex = 5;
+            this.cbClipboardDetection.Tag = "clipboard_detection";
+            this.cbClipboardDetection.Text = "Detect paths in the clipboard";
+            this.cbClipboardDetection.UseVisualStyleBackColor = true;
+            // 
+            // cbIgnoreHiddenFolders
+            // 
+            this.cbIgnoreHiddenFolders.AutoSize = true;
+            this.cbIgnoreHiddenFolders.Location = new System.Drawing.Point(326, 61);
+            this.cbIgnoreHiddenFolders.Name = "cbIgnoreHiddenFolders";
+            this.cbIgnoreHiddenFolders.Size = new System.Drawing.Size(125, 17);
+            this.cbIgnoreHiddenFolders.TabIndex = 4;
+            this.cbIgnoreHiddenFolders.Tag = "ignore_hidden";
+            this.cbIgnoreHiddenFolders.Text = "Ignore hidden folders";
+            this.cbIgnoreHiddenFolders.UseVisualStyleBackColor = true;
+            // 
+            // cbKeepSystemFolders
+            // 
+            this.cbKeepSystemFolders.AutoSize = true;
+            this.cbKeepSystemFolders.Checked = true;
+            this.cbKeepSystemFolders.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbKeepSystemFolders.Location = new System.Drawing.Point(16, 113);
+            this.cbKeepSystemFolders.Name = "cbKeepSystemFolders";
+            this.cbKeepSystemFolders.Size = new System.Drawing.Size(218, 17);
+            this.cbKeepSystemFolders.TabIndex = 2;
+            this.cbKeepSystemFolders.Tag = "keep_system_dirs";
+            this.cbKeepSystemFolders.Text = "Ignore system directories (recommended)";
+            this.cbKeepSystemFolders.UseVisualStyleBackColor = true;
+            // 
+            // cbIgnore0kbFiles
+            // 
+            this.cbIgnore0kbFiles.AutoSize = true;
+            this.cbIgnore0kbFiles.Checked = true;
+            this.cbIgnore0kbFiles.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbIgnore0kbFiles.Location = new System.Drawing.Point(16, 87);
+            this.cbIgnore0kbFiles.Name = "cbIgnore0kbFiles";
+            this.cbIgnore0kbFiles.Size = new System.Drawing.Size(272, 17);
+            this.cbIgnore0kbFiles.TabIndex = 3;
+            this.cbIgnore0kbFiles.Tag = "ignore_0kb_files";
+            this.cbIgnore0kbFiles.Text = "Directories with files that are all 0 KB count as empty";
+            this.cbIgnore0kbFiles.UseVisualStyleBackColor = true;
+            // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -561,6 +648,7 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.label20);
             this.groupBox3.Controls.Add(this.btnShowConfig);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.nuMaxDepth);
@@ -574,9 +662,18 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Advanced";
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(252, 64);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(145, 13);
+            this.label20.TabIndex = 19;
+            this.label20.Text = "(Might freeze GUI if too small)";
+            // 
             // btnShowConfig
             // 
-            this.btnShowConfig.Location = new System.Drawing.Point(11, 64);
+            this.btnShowConfig.Location = new System.Drawing.Point(11, 63);
             this.btnShowConfig.Name = "btnShowConfig";
             this.btnShowConfig.Size = new System.Drawing.Size(181, 23);
             this.btnShowConfig.TabIndex = 7;
@@ -698,88 +795,6 @@
             this.label2.TabIndex = 10;
             this.label2.Text = "Mark folders as empty if they only contain \r\nfiles that matches these patterns:";
             // 
-            // gpOptions
-            // 
-            this.gpOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gpOptions.Controls.Add(this.label15);
-            this.gpOptions.Controls.Add(this.cbDeleteMode);
-            this.gpOptions.Controls.Add(this.cbClipboardDetection);
-            this.gpOptions.Controls.Add(this.cbSimulateDeletion);
-            this.gpOptions.Controls.Add(this.cbIntegrateIntoWindowsExplorer);
-            this.gpOptions.Controls.Add(this.cbIgnoreHiddenFolders);
-            this.gpOptions.Controls.Add(this.cbKeepSystemFolders);
-            this.gpOptions.Controls.Add(this.cbIgnore0kbFiles);
-            this.gpOptions.Location = new System.Drawing.Point(10, 6);
-            this.gpOptions.Name = "gpOptions";
-            this.gpOptions.Size = new System.Drawing.Size(533, 149);
-            this.gpOptions.TabIndex = 19;
-            this.gpOptions.TabStop = false;
-            this.gpOptions.Text = "General options";
-            // 
-            // cbClipboardDetection
-            // 
-            this.cbClipboardDetection.AutoSize = true;
-            this.cbClipboardDetection.Checked = true;
-            this.cbClipboardDetection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbClipboardDetection.Location = new System.Drawing.Point(337, 87);
-            this.cbClipboardDetection.Name = "cbClipboardDetection";
-            this.cbClipboardDetection.Size = new System.Drawing.Size(162, 17);
-            this.cbClipboardDetection.TabIndex = 5;
-            this.cbClipboardDetection.Tag = "clipboard_detection";
-            this.cbClipboardDetection.Text = "Detect paths in the clipboard";
-            this.cbClipboardDetection.UseVisualStyleBackColor = true;
-            // 
-            // cbSimulateDeletion
-            // 
-            this.cbSimulateDeletion.AutoSize = true;
-            this.cbSimulateDeletion.Checked = true;
-            this.cbSimulateDeletion.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSimulateDeletion.Location = new System.Drawing.Point(337, 113);
-            this.cbSimulateDeletion.Name = "cbSimulateDeletion";
-            this.cbSimulateDeletion.Size = new System.Drawing.Size(182, 17);
-            this.cbSimulateDeletion.TabIndex = 1;
-            this.cbSimulateDeletion.Tag = "simulate_deletion";
-            this.cbSimulateDeletion.Text = "Simulate deletion (for Debugging)";
-            this.cbSimulateDeletion.UseVisualStyleBackColor = true;
-            // 
-            // cbIgnoreHiddenFolders
-            // 
-            this.cbIgnoreHiddenFolders.AutoSize = true;
-            this.cbIgnoreHiddenFolders.Location = new System.Drawing.Point(337, 61);
-            this.cbIgnoreHiddenFolders.Name = "cbIgnoreHiddenFolders";
-            this.cbIgnoreHiddenFolders.Size = new System.Drawing.Size(146, 17);
-            this.cbIgnoreHiddenFolders.TabIndex = 4;
-            this.cbIgnoreHiddenFolders.Tag = "ignore_hidden";
-            this.cbIgnoreHiddenFolders.Text = "Don\'t scan hidden folders";
-            this.cbIgnoreHiddenFolders.UseVisualStyleBackColor = true;
-            // 
-            // cbKeepSystemFolders
-            // 
-            this.cbKeepSystemFolders.AutoSize = true;
-            this.cbKeepSystemFolders.Checked = true;
-            this.cbKeepSystemFolders.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbKeepSystemFolders.Location = new System.Drawing.Point(16, 113);
-            this.cbKeepSystemFolders.Name = "cbKeepSystemFolders";
-            this.cbKeepSystemFolders.Size = new System.Drawing.Size(213, 17);
-            this.cbKeepSystemFolders.TabIndex = 2;
-            this.cbKeepSystemFolders.Tag = "keep_system_dirs";
-            this.cbKeepSystemFolders.Text = "Keep system directories (recommended)";
-            this.cbKeepSystemFolders.UseVisualStyleBackColor = true;
-            // 
-            // cbIgnore0kbFiles
-            // 
-            this.cbIgnore0kbFiles.AutoSize = true;
-            this.cbIgnore0kbFiles.Checked = true;
-            this.cbIgnore0kbFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbIgnore0kbFiles.Location = new System.Drawing.Point(16, 87);
-            this.cbIgnore0kbFiles.Name = "cbIgnore0kbFiles";
-            this.cbIgnore0kbFiles.Size = new System.Drawing.Size(272, 17);
-            this.cbIgnore0kbFiles.TabIndex = 3;
-            this.cbIgnore0kbFiles.Tag = "ignore_0kb_files";
-            this.cbIgnore0kbFiles.Text = "Directories with files that are all 0 KB count as empty";
-            this.cbIgnore0kbFiles.UseVisualStyleBackColor = true;
-            // 
             // tabAbout
             // 
             this.tabAbout.Controls.Add(this.btnCheckForUpdates);
@@ -801,7 +816,7 @@
             this.tabAbout.ImageKey = "help";
             this.tabAbout.Location = new System.Drawing.Point(4, 23);
             this.tabAbout.Name = "tabAbout";
-            this.tabAbout.Size = new System.Drawing.Size(570, 506);
+            this.tabAbout.Size = new System.Drawing.Size(570, 496);
             this.tabAbout.TabIndex = 2;
             this.tabAbout.Text = "About";
             this.tabAbout.ToolTipText = "Shows the help and about screen";
@@ -820,7 +835,7 @@
             // linkLabel3
             // 
             this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Location = new System.Drawing.Point(23, 252);
+            this.linkLabel3.Location = new System.Drawing.Point(23, 254);
             this.linkLabel3.Name = "linkLabel3";
             this.linkLabel3.Size = new System.Drawing.Size(179, 13);
             this.linkLabel3.TabIndex = 23;
@@ -831,7 +846,7 @@
             // linkLabel4
             // 
             this.linkLabel4.AutoSize = true;
-            this.linkLabel4.Location = new System.Drawing.Point(23, 200);
+            this.linkLabel4.Location = new System.Drawing.Point(23, 202);
             this.linkLabel4.Name = "linkLabel4";
             this.linkLabel4.Size = new System.Drawing.Size(158, 13);
             this.linkLabel4.TabIndex = 21;
@@ -952,7 +967,7 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(23, 226);
+            this.linkLabel1.Location = new System.Drawing.Point(23, 228);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(253, 13);
             this.linkLabel1.TabIndex = 22;
@@ -963,32 +978,13 @@
             // linkLabel2
             // 
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(23, 176);
+            this.linkLabel2.Location = new System.Drawing.Point(23, 178);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(152, 13);
             this.linkLabel2.TabIndex = 20;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "Nuvola (Icons - LGPL License)";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
-            // 
-            // cbDeleteMode
-            // 
-            this.cbDeleteMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbDeleteMode.FormattingEnabled = true;
-            this.cbDeleteMode.Location = new System.Drawing.Point(97, 25);
-            this.cbDeleteMode.Name = "cbDeleteMode";
-            this.cbDeleteMode.Size = new System.Drawing.Size(423, 21);
-            this.cbDeleteMode.TabIndex = 7;
-            this.cbDeleteMode.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(13, 29);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(70, 13);
-            this.label15.TabIndex = 14;
-            this.label15.Text = "Delete mode:";
             // 
             // MainWindow
             // 
@@ -1012,6 +1008,8 @@
             this.pnlIcons.PerformLayout();
             this.cmStrip.ResumeLayout(false);
             this.tabSettings.ResumeLayout(false);
+            this.gpOptions.ResumeLayout(false);
+            this.gpOptions.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -1020,8 +1018,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.gpOptions.ResumeLayout(false);
-            this.gpOptions.PerformLayout();
             this.tabAbout.ResumeLayout(false);
             this.tabAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -1098,12 +1094,12 @@
         private System.Windows.Forms.ToolStripMenuItem unprotectFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem proToolStripMenuItem;
-        private System.Windows.Forms.CheckBox cbSimulateDeletion;
         private System.Windows.Forms.CheckBox cbClipboardDetection;
         private System.Windows.Forms.Button btnShowConfig;
         private System.Windows.Forms.Button btnShowLog;
         private System.Windows.Forms.ComboBox cbDeleteMode;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label20;
 	}
 }
 

@@ -20,6 +20,7 @@ namespace RED2
         private CalculateDirectoryCountWorker calcDirCountWorker = null;
         private FindEmptyDirectoryWorker searchEmptyFoldersWorker = null;
         private StringBuilder log = new StringBuilder();
+        private bool ignoreAllErrors = false;
 
         // Events
         public event EventHandler<REDCoreWorkflowStepChangedEventArgs> OnWorkflowStepChanged;
@@ -299,6 +300,7 @@ namespace RED2
             }
         }
 
+
         internal void StartDelete(String[] ignoreFileList, bool cbIgnore0kbFiles, double pauseTime)
         {
             this.set_step(WorkflowSteps.DeleteProcessRunning);
@@ -330,8 +332,33 @@ namespace RED2
                     catch (Exception ex)
                     {
                         // Todo: Ask user to continue...? -- stop??
-                        this.showErrorMsg("A error occured while I was trying to delete: " + folder.FullName + Environment.NewLine + ex.Message);
-                        //this.stopDeleteProcessTrigger = true;
+
+                        if (!this.ignoreAllErrors)
+                        {
+                            var dlg = new DeletionError();
+
+                            dlg.SetPath(folder.FullName);
+                            dlg.SetErrorMessage(ex.GetType().ToString() + ": " + ex.Message);
+
+                            var result = dlg.ShowDialog();
+
+                            if (result == DialogResult.Abort)
+                            {
+                                //this.core.CancelCurrentProcess();
+                                this.stopDeleteProcessTrigger = true;
+
+                                if (this.OnCancelled != null)
+                                    this.OnCancelled(this, new EventArgs());
+
+                                return;
+                            }
+                            else if (result == DialogResult.Retry) // retry = ignore all errors
+                            {
+                                this.ignoreAllErrors = true;
+                            }
+
+                            dlg.Dispose();
+                        }
 
                         status = DirectoryStatusTypes.Warning;
                         FailedFolderCount++;

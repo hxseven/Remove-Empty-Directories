@@ -142,7 +142,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Contains trash ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Contains &quot;trash&quot; ähnelt.
         /// </summary>
         internal static string icon_contains_trash {
             get {
@@ -151,7 +151,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Empty folder ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Empty ähnelt.
         /// </summary>
         internal static string icon_default {
             get {
@@ -160,7 +160,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted folder ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted ähnelt.
         /// </summary>
         internal static string icon_deleted_folder {
             get {
@@ -169,7 +169,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Hidden folder ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hidden ähnelt.
         /// </summary>
         internal static string icon_hidden_folder {
             get {
@@ -178,7 +178,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Locked folder ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Locked ähnelt.
         /// </summary>
         internal static string icon_locked_folder {
             get {
@@ -187,7 +187,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Protected folder ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Protected ähnelt.
         /// </summary>
         internal static string icon_protected_folder {
             get {
@@ -196,7 +196,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Root Folder ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Root ähnelt.
         /// </summary>
         internal static string icon_root {
             get {
@@ -205,7 +205,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Could not delete ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed ähnelt.
         /// </summary>
         internal static string icon_warning {
             get {

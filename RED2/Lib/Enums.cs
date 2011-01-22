@@ -64,19 +64,19 @@ namespace RED2
                     return "Delete to recycle bin (Default)";
 
                 case DeleteModes.Recycle_bin_with_question:
-                    return "Delete to recycle bin and ask before deletion of any directories";
+                    return "Delete to recycle bin and ask before every deletion (Can be annoying)";
 
                 case DeleteModes.Directly:
-                    return "Delete directly and don't ask no questions";
+                    return "Delete directly and don't ask any questions (No turning back)";
 
                 case DeleteModes.Simulate:
                     return "Simulate deletion (Don't delete anything)";
 
+                // Idee Move all files?
+
                 default:
                     throw new Exception("Unknown delete mode");
             }
-
-            return "";
         }
     }
 

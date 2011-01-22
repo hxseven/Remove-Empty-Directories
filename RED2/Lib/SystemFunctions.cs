@@ -23,12 +23,12 @@ namespace RED2
             {
                 if (deleteMode == DeleteModes.Recycle_bin)
                     FileSystem.DeleteDirectory(Folder.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                else if (deleteMode == DeleteModes.Recycle_bin)
+                else if (deleteMode == DeleteModes.Recycle_bin_with_question)
                     FileSystem.DeleteDirectory(Folder.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                 else if (deleteMode == DeleteModes.Directly)
                     Folder.Delete();
-                else
-                    throw new Exception("Unknown delete mode: " + deleteMode.ToString());
+                else if (deleteMode != DeleteModes.Simulate)
+                    throw new Exception("Unknown delete mode: \"" + deleteMode.ToString() + "\"");
             }
         }
 
@@ -40,8 +40,8 @@ namespace RED2
                 FileSystem.DeleteDirectory(File.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
             else if (deleteMode == DeleteModes.Directly)
                 File.Delete();
-            else
-                throw new Exception("Unknown delete mode: " + deleteMode.ToString());
+            else if (deleteMode != DeleteModes.Simulate)
+                throw new Exception("Unknown delete mode: \"" + deleteMode.ToString() + "\"");
         }
 
         public static string ChooseDirectoryDialog(string path)
