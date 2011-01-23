@@ -87,22 +87,13 @@
             this.tbIgnoreFiles = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabAbout = new System.Windows.Forms.TabPage();
-            this.btnCheckForUpdates = new System.Windows.Forms.Button();
-            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.tbCredits = new System.Windows.Forms.TextBox();
             this.lblRedStats = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.llWebsite = new System.Windows.Forms.LinkLabel();
             this.lbAppTitle = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.cbIgnoreErrors = new System.Windows.Forms.CheckBox();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -115,7 +106,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabAbout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // cbIntegrateIntoWindowsExplorer
@@ -197,6 +187,7 @@
             // 
             // btnShowLog
             // 
+            this.btnShowLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnShowLog.Location = new System.Drawing.Point(336, 452);
             this.btnShowLog.Name = "btnShowLog";
             this.btnShowLog.Size = new System.Drawing.Size(73, 34);
@@ -367,15 +358,16 @@
             // 
             this.lbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbStatus.AutoSize = true;
-            this.lbStatus.Location = new System.Drawing.Point(166, 425);
+            this.lbStatus.Location = new System.Drawing.Point(166, 426);
             this.lbStatus.Name = "lbStatus";
-            this.lbStatus.Size = new System.Drawing.Size(0, 13);
+            this.lbStatus.Size = new System.Drawing.Size(57, 13);
             this.lbStatus.TabIndex = 13;
+            this.lbStatus.Text = "Status text";
             // 
             // pbProgressStatus
             // 
             this.pbProgressStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pbProgressStatus.Location = new System.Drawing.Point(10, 425);
+            this.pbProgressStatus.Location = new System.Drawing.Point(10, 426);
             this.pbProgressStatus.Name = "pbProgressStatus";
             this.pbProgressStatus.Size = new System.Drawing.Size(153, 13);
             this.pbProgressStatus.TabIndex = 12;
@@ -388,10 +380,10 @@
             this.tvFolders.ContextMenuStrip = this.cmStrip;
             this.tvFolders.ImageKey = "folder";
             this.tvFolders.ImageList = this.ilFolderIcons;
-            this.tvFolders.Location = new System.Drawing.Point(9, 58);
+            this.tvFolders.Location = new System.Drawing.Point(10, 58);
             this.tvFolders.Name = "tvFolders";
             this.tvFolders.SelectedImageKey = "folder";
-            this.tvFolders.Size = new System.Drawing.Size(432, 362);
+            this.tvFolders.Size = new System.Drawing.Size(430, 362);
             this.tvFolders.TabIndex = 3;
             this.tvFolders.DoubleClick += new System.EventHandler(this.tvFolders_DoubleClick);
             this.tvFolders.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
@@ -408,44 +400,44 @@
             this.cmStrip.Name = "cmStrip";
             this.cmStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmStrip.ShowImageMargin = false;
-            this.cmStrip.Size = new System.Drawing.Size(188, 104);
+            this.cmStrip.Size = new System.Drawing.Size(200, 104);
             // 
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.openFolderToolStripMenuItem.Text = "&Open folder";
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.openFolderToolStripMenuItem.Text = "&Open";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
             // 
             // protectFolderFromBeingDeletedToolStripMenuItem
             // 
             this.protectFolderFromBeingDeletedToolStripMenuItem.Name = "protectFolderFromBeingDeletedToolStripMenuItem";
-            this.protectFolderFromBeingDeletedToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.protectFolderFromBeingDeletedToolStripMenuItem.Text = "Protect folder (once)";
+            this.protectFolderFromBeingDeletedToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.protectFolderFromBeingDeletedToolStripMenuItem.Text = "Protect from deletion (once)";
             this.protectFolderFromBeingDeletedToolStripMenuItem.Click += new System.EventHandler(this.protectFolderFromBeingDeletedToolStripMenuItem_Click);
             // 
             // unprotectFolderToolStripMenuItem
             // 
             this.unprotectFolderToolStripMenuItem.Name = "unprotectFolderToolStripMenuItem";
-            this.unprotectFolderToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.unprotectFolderToolStripMenuItem.Text = "Unprotect folder";
+            this.unprotectFolderToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.unprotectFolderToolStripMenuItem.Text = "Unprotect";
             this.unprotectFolderToolStripMenuItem.Click += new System.EventHandler(this.unprotectFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
             // 
             // proToolStripMenuItem
             // 
             this.proToolStripMenuItem.Name = "proToolStripMenuItem";
-            this.proToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.proToolStripMenuItem.Text = "Protect folder (every time)";
+            this.proToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.proToolStripMenuItem.Text = "Add to ignore list";
             this.proToolStripMenuItem.Click += new System.EventHandler(this.proToolStripMenuItem_Click);
             // 
             // btnExit
@@ -467,7 +459,7 @@
             // 
             this.tbFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbFolder.Location = new System.Drawing.Point(9, 30);
+            this.tbFolder.Location = new System.Drawing.Point(10, 29);
             this.tbFolder.Name = "tbFolder";
             this.tbFolder.Size = new System.Drawing.Size(486, 20);
             this.tbFolder.TabIndex = 1;
@@ -477,7 +469,7 @@
             // btnChooseFolder
             // 
             this.btnChooseFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnChooseFolder.Location = new System.Drawing.Point(499, 30);
+            this.btnChooseFolder.Location = new System.Drawing.Point(499, 29);
             this.btnChooseFolder.Name = "btnChooseFolder";
             this.btnChooseFolder.Size = new System.Drawing.Size(63, 20);
             this.btnChooseFolder.TabIndex = 2;
@@ -488,7 +480,7 @@
             // lblPickAFolder
             // 
             this.lblPickAFolder.AutoSize = true;
-            this.lblPickAFolder.Location = new System.Drawing.Point(6, 13);
+            this.lblPickAFolder.Location = new System.Drawing.Point(10, 13);
             this.lblPickAFolder.Name = "lblPickAFolder";
             this.lblPickAFolder.Size = new System.Drawing.Size(0, 13);
             this.lblPickAFolder.TabIndex = 3;
@@ -513,6 +505,7 @@
             // 
             this.gpOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.gpOptions.Controls.Add(this.cbIgnoreErrors);
             this.gpOptions.Controls.Add(this.label15);
             this.gpOptions.Controls.Add(this.cbDeleteMode);
             this.gpOptions.Controls.Add(this.cbClipboardDetection);
@@ -520,9 +513,9 @@
             this.gpOptions.Controls.Add(this.cbIgnoreHiddenFolders);
             this.gpOptions.Controls.Add(this.cbKeepSystemFolders);
             this.gpOptions.Controls.Add(this.cbIgnore0kbFiles);
-            this.gpOptions.Location = new System.Drawing.Point(10, 6);
+            this.gpOptions.Location = new System.Drawing.Point(15, 14);
             this.gpOptions.Name = "gpOptions";
-            this.gpOptions.Size = new System.Drawing.Size(533, 149);
+            this.gpOptions.Size = new System.Drawing.Size(533, 141);
             this.gpOptions.TabIndex = 19;
             this.gpOptions.TabStop = false;
             this.gpOptions.Text = "General options";
@@ -544,14 +537,13 @@
             this.cbDeleteMode.Name = "cbDeleteMode";
             this.cbDeleteMode.Size = new System.Drawing.Size(431, 21);
             this.cbDeleteMode.TabIndex = 7;
-            this.cbDeleteMode.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // cbClipboardDetection
             // 
             this.cbClipboardDetection.AutoSize = true;
             this.cbClipboardDetection.Checked = true;
             this.cbClipboardDetection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbClipboardDetection.Location = new System.Drawing.Point(326, 87);
+            this.cbClipboardDetection.Location = new System.Drawing.Point(322, 87);
             this.cbClipboardDetection.Name = "cbClipboardDetection";
             this.cbClipboardDetection.Size = new System.Drawing.Size(162, 17);
             this.cbClipboardDetection.TabIndex = 5;
@@ -562,7 +554,7 @@
             // cbIgnoreHiddenFolders
             // 
             this.cbIgnoreHiddenFolders.AutoSize = true;
-            this.cbIgnoreHiddenFolders.Location = new System.Drawing.Point(326, 61);
+            this.cbIgnoreHiddenFolders.Location = new System.Drawing.Point(322, 61);
             this.cbIgnoreHiddenFolders.Name = "cbIgnoreHiddenFolders";
             this.cbIgnoreHiddenFolders.Size = new System.Drawing.Size(125, 17);
             this.cbIgnoreHiddenFolders.TabIndex = 4;
@@ -598,14 +590,14 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Controls.Add(this.tbIgnoreFolders);
             this.groupBox4.Controls.Add(this.label10);
-            this.groupBox4.Location = new System.Drawing.Point(254, 161);
+            this.groupBox4.Location = new System.Drawing.Point(284, 161);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(294, 221);
+            this.groupBox4.Size = new System.Drawing.Size(264, 221);
             this.groupBox4.TabIndex = 22;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Skip these folders";
@@ -630,7 +622,7 @@
             this.tbIgnoreFolders.Multiline = true;
             this.tbIgnoreFolders.Name = "tbIgnoreFolders";
             this.tbIgnoreFolders.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFolders.Size = new System.Drawing.Size(260, 149);
+            this.tbIgnoreFolders.Size = new System.Drawing.Size(230, 149);
             this.tbIgnoreFolders.TabIndex = 6;
             this.tbIgnoreFolders.WordWrap = false;
             this.tbIgnoreFolders.TextChanged += new System.EventHandler(this.tbIgnoreFolders_TextChanged);
@@ -665,7 +657,7 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(252, 64);
+            this.label20.Location = new System.Drawing.Point(266, 65);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(145, 13);
             this.label20.TabIndex = 19;
@@ -675,7 +667,7 @@
             // 
             this.btnShowConfig.Location = new System.Drawing.Point(11, 63);
             this.btnShowConfig.Name = "btnShowConfig";
-            this.btnShowConfig.Size = new System.Drawing.Size(181, 23);
+            this.btnShowConfig.Size = new System.Drawing.Size(203, 23);
             this.btnShowConfig.TabIndex = 7;
             this.btnShowConfig.Text = "Show config file";
             this.btnShowConfig.UseVisualStyleBackColor = true;
@@ -704,7 +696,7 @@
             0,
             -2147483648});
             this.nuMaxDepth.Name = "nuMaxDepth";
-            this.nuMaxDepth.Size = new System.Drawing.Size(176, 20);
+            this.nuMaxDepth.Size = new System.Drawing.Size(201, 20);
             this.nuMaxDepth.TabIndex = 7;
             this.nuMaxDepth.Value = new decimal(new int[] {
             1,
@@ -716,7 +708,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(378, 40);
+            this.label8.Location = new System.Drawing.Point(347, 42);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(66, 13);
             this.label8.TabIndex = 18;
@@ -724,14 +716,14 @@
             // 
             // nuPause
             // 
-            this.nuPause.Location = new System.Drawing.Point(255, 38);
+            this.nuPause.Location = new System.Drawing.Point(269, 37);
             this.nuPause.Maximum = new decimal(new int[] {
             999999,
             0,
             0,
             0});
             this.nuPause.Name = "nuPause";
-            this.nuPause.Size = new System.Drawing.Size(120, 20);
+            this.nuPause.Size = new System.Drawing.Size(72, 20);
             this.nuPause.TabIndex = 8;
             this.nuPause.Value = new decimal(new int[] {
             150,
@@ -743,7 +735,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(252, 20);
+            this.label7.Location = new System.Drawing.Point(266, 21);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(183, 13);
             this.label7.TabIndex = 17;
@@ -751,12 +743,15 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.tbIgnoreFiles);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(15, 161);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(221, 221);
+            this.groupBox2.Size = new System.Drawing.Size(264, 221);
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Ignore these files";
@@ -781,7 +776,7 @@
             this.tbIgnoreFiles.Multiline = true;
             this.tbIgnoreFiles.Name = "tbIgnoreFiles";
             this.tbIgnoreFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFiles.Size = new System.Drawing.Size(196, 149);
+            this.tbIgnoreFiles.Size = new System.Drawing.Size(239, 149);
             this.tbIgnoreFiles.TabIndex = 5;
             this.tbIgnoreFiles.WordWrap = false;
             this.tbIgnoreFiles.TextChanged += new System.EventHandler(this.tbIgnoreFiles_TextChanged);
@@ -797,22 +792,12 @@
             // 
             // tabAbout
             // 
-            this.tabAbout.Controls.Add(this.btnCheckForUpdates);
-            this.tabAbout.Controls.Add(this.linkLabel3);
-            this.tabAbout.Controls.Add(this.linkLabel4);
+            this.tabAbout.Controls.Add(this.linkLabel1);
+            this.tabAbout.Controls.Add(this.tbCredits);
             this.tabAbout.Controls.Add(this.lblRedStats);
-            this.tabAbout.Controls.Add(this.panel4);
-            this.tabAbout.Controls.Add(this.label16);
-            this.tabAbout.Controls.Add(this.label19);
-            this.tabAbout.Controls.Add(this.label14);
-            this.tabAbout.Controls.Add(this.label13);
-            this.tabAbout.Controls.Add(this.pictureBox1);
             this.tabAbout.Controls.Add(this.label5);
-            this.tabAbout.Controls.Add(this.label4);
             this.tabAbout.Controls.Add(this.llWebsite);
             this.tabAbout.Controls.Add(this.lbAppTitle);
-            this.tabAbout.Controls.Add(this.linkLabel1);
-            this.tabAbout.Controls.Add(this.linkLabel2);
             this.tabAbout.ImageKey = "help";
             this.tabAbout.Location = new System.Drawing.Point(4, 23);
             this.tabAbout.Name = "tabAbout";
@@ -822,135 +807,61 @@
             this.tabAbout.ToolTipText = "Shows the help and about screen";
             this.tabAbout.UseVisualStyleBackColor = true;
             // 
-            // btnCheckForUpdates
+            // linkLabel1
             // 
-            this.btnCheckForUpdates.Location = new System.Drawing.Point(414, 11);
-            this.btnCheckForUpdates.Name = "btnCheckForUpdates";
-            this.btnCheckForUpdates.Size = new System.Drawing.Size(134, 39);
-            this.btnCheckForUpdates.TabIndex = 24;
-            this.btnCheckForUpdates.Text = "&Check for updates... (opens browser)";
-            this.btnCheckForUpdates.UseVisualStyleBackColor = true;
-            this.btnCheckForUpdates.Click += new System.EventHandler(this.btnCheckForUpdates_Click);
+            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(448, 39);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(89, 13);
+            this.linkLabel1.TabIndex = 26;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Check for update";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
-            // linkLabel3
+            // tbCredits
             // 
-            this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Location = new System.Drawing.Point(23, 254);
-            this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(179, 13);
-            this.linkLabel3.TabIndex = 23;
-            this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "Coffee icon by victorward (at sxc.hu)";
-            this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
-            // 
-            // linkLabel4
-            // 
-            this.linkLabel4.AutoSize = true;
-            this.linkLabel4.Location = new System.Drawing.Point(23, 202);
-            this.linkLabel4.Name = "linkLabel4";
-            this.linkLabel4.Size = new System.Drawing.Size(158, 13);
-            this.linkLabel4.TabIndex = 21;
-            this.linkLabel4.TabStop = true;
-            this.linkLabel4.Text = "NuoveXT (Icons - GPL License)";
-            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+            this.tbCredits.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCredits.Location = new System.Drawing.Point(18, 67);
+            this.tbCredits.Multiline = true;
+            this.tbCredits.Name = "tbCredits";
+            this.tbCredits.ReadOnly = true;
+            this.tbCredits.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbCredits.Size = new System.Drawing.Size(530, 418);
+            this.tbCredits.TabIndex = 25;
+            this.tbCredits.Text = resources.GetString("tbCredits.Text");
             // 
             // lblRedStats
             // 
             this.lblRedStats.AutoSize = true;
-            this.lblRedStats.Location = new System.Drawing.Point(118, 106);
+            this.lblRedStats.Location = new System.Drawing.Point(15, 46);
             this.lblRedStats.Name = "lblRedStats";
             this.lblRedStats.Size = new System.Drawing.Size(166, 13);
             this.lblRedStats.TabIndex = 20;
             this.lblRedStats.Text = "RED deleted 0 directories for you!";
             // 
-            // panel4
-            // 
-            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel4.BackColor = System.Drawing.SystemColors.Control;
-            this.panel4.Location = new System.Drawing.Point(18, 137);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(530, 2);
-            this.panel4.TabIndex = 19;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label16.Location = new System.Drawing.Point(15, 290);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(38, 14);
-            this.label16.TabIndex = 12;
-            this.label16.Text = "Hints:";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(23, 311);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(206, 13);
-            this.label19.TabIndex = 11;
-            this.label19.Text = "Right click on a folder to get more options.";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(118, 60);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(176, 13);
-            this.label14.TabIndex = 8;
-            this.label14.Text = "RED is Open Source (GPL License)";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label13.Location = new System.Drawing.Point(15, 156);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(131, 14);
-            this.label13.TabIndex = 7;
-            this.label13.Text = "Credits (Things used):";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.InitialImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(18, 19);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(90, 100);
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(118, 36);
+            this.label5.Location = new System.Drawing.Point(15, 25);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(182, 14);
             this.label5.TabIndex = 5;
             this.label5.Text = "Copyright © 2006 - 2011 Jonas John";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(118, 78);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Website:";
-            // 
             // llWebsite
             // 
+            this.llWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.llWebsite.AutoSize = true;
-            this.llWebsite.Location = new System.Drawing.Point(164, 78);
+            this.llWebsite.Location = new System.Drawing.Point(448, 18);
             this.llWebsite.Name = "llWebsite";
-            this.llWebsite.Size = new System.Drawing.Size(94, 13);
+            this.llWebsite.Size = new System.Drawing.Size(98, 13);
             this.llWebsite.TabIndex = 19;
             this.llWebsite.TabStop = true;
-            this.llWebsite.Text = "www.jonasjohn.de";
+            this.llWebsite.Text = "Author\'s homepage";
             this.llWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llWebsite_LinkClicked);
             // 
             // lbAppTitle
@@ -958,33 +869,24 @@
             this.lbAppTitle.AutoSize = true;
             this.lbAppTitle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbAppTitle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lbAppTitle.Location = new System.Drawing.Point(118, 18);
+            this.lbAppTitle.Location = new System.Drawing.Point(15, 10);
             this.lbAppTitle.Name = "lbAppTitle";
             this.lbAppTitle.Size = new System.Drawing.Size(209, 14);
             this.lbAppTitle.TabIndex = 0;
             this.lbAppTitle.Text = "Remove Empty Directories - Version ";
             // 
-            // linkLabel1
+            // cbIgnoreErrors
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(23, 228);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(253, 13);
-            this.linkLabel1.TabIndex = 22;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "famfamfam.com (Icons - CC - Attribution 2.5 License)";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(23, 178);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(152, 13);
-            this.linkLabel2.TabIndex = 20;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Nuvola (Icons - LGPL License)";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.cbIgnoreErrors.AutoSize = true;
+            this.cbIgnoreErrors.Checked = true;
+            this.cbIgnoreErrors.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbIgnoreErrors.Location = new System.Drawing.Point(322, 113);
+            this.cbIgnoreErrors.Name = "cbIgnoreErrors";
+            this.cbIgnoreErrors.Size = new System.Drawing.Size(157, 17);
+            this.cbIgnoreErrors.TabIndex = 15;
+            this.cbIgnoreErrors.Tag = "ignore_errors";
+            this.cbIgnoreErrors.Text = "Ignore errors during deletion\r\n";
+            this.cbIgnoreErrors.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
@@ -1020,7 +922,6 @@
             this.groupBox2.PerformLayout();
             this.tabAbout.ResumeLayout(false);
             this.tabAbout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -1050,7 +951,6 @@
 		private System.Windows.Forms.Button btnScan;
 		private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.LinkLabel llWebsite;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.NumericUpDown nuMaxDepth;
@@ -1068,23 +968,12 @@
         private System.Windows.Forms.ImageList ilFolderIcons;
         private System.Windows.Forms.Panel pnlIcons;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label lblRedStats;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
-        private System.Windows.Forms.LinkLabel linkLabel4;
-        private System.Windows.Forms.LinkLabel linkLabel3;
-        private System.Windows.Forms.Button btnCheckForUpdates;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.ContextMenuStrip cmStrip;
@@ -1100,6 +989,9 @@
         private System.Windows.Forms.ComboBox cbDeleteMode;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox tbCredits;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.CheckBox cbIgnoreErrors;
 	}
 }
 

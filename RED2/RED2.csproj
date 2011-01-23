@@ -77,8 +77,8 @@
     <Compile Include="Lib\Enums.cs" />
     <Compile Include="Lib\Events.cs" />
     <Compile Include="Lib\TreeManager.cs" />
-    <Compile Include="Lib\REDCore.cs" />
-    <Compile Include="Lib\cSettings.cs" />
+    <Compile Include="Lib\Core.cs" />
+    <Compile Include="Lib\XMLSettings.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

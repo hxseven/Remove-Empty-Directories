@@ -21,7 +21,7 @@ namespace RED2
         private string MenuName = "Folder\\shell\\{0}";
         private string Command = "Folder\\shell\\{0}\\command";
 
-        private cSettings settings = null;
+        private XMLSettings settings = null;
 
         private PictureBox picIcon = new PictureBox();
         private Label picLabel = new Label();
@@ -64,7 +64,7 @@ namespace RED2
 
         private void UI_Init()
         {
-            tree = new TreeManager(this.tvFolders);
+            this.tree = new TreeManager(this.tvFolders);
 
             Assembly REDAssembly = Assembly.GetExecutingAssembly();
             AssemblyName AssemblyName = REDAssembly.GetName();
@@ -107,7 +107,7 @@ namespace RED2
             string configPath = Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file);
 
             // Settings object:
-            settings = new cSettings(configPath);
+            settings = new XMLSettings(configPath);
 
             // Read folder from the config file
             this.tbFolder.Text = this.settings.Read("folder", RED2.Properties.Resources.folder);
@@ -179,7 +179,7 @@ namespace RED2
                     this.settings.Write("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders.Checked);
                     break;
 
-                case "recycle_bin":
+                case "ignore_errors":
                     break;
 
                 case "simulate_deletion":
@@ -448,14 +448,6 @@ namespace RED2
             this.core.CancelCurrentProcess();
         }
 
-        private void btnCheckForUpdates_Click(object sender, EventArgs e)
-        {
-            Assembly REDAssembly = Assembly.GetExecutingAssembly();
-            AssemblyName AssemblyName = REDAssembly.GetName();
-
-            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", AssemblyName.Version.ToString()));
-        }
-
         private void tvFolders_MouseClick(object sender, MouseEventArgs e)
         {
             this.tvFolders.SelectedNode = this.tvFolders.GetNodeAt(e.X, e.Y);
@@ -657,11 +649,6 @@ namespace RED2
 
         #region Weblinks
 
-        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("http://www.sxc.hu/photo/593924");
-        }
-
         private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://www.jonasjohn.de/");
@@ -669,17 +656,10 @@ namespace RED2
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.famfamfam.com/");
-        }
+            Assembly REDAssembly = Assembly.GetExecutingAssembly();
+            AssemblyName AssemblyName = REDAssembly.GetName();
 
-        private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("http://nuovext.pwsp.net/");
-        }
-
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("http://icon-king.com/?p=15");
+            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", AssemblyName.Version.ToString()));
         }
 
         #endregion
@@ -695,11 +675,6 @@ namespace RED2
             logWindow.SetLog(this.core.GetLog());
             logWindow.ShowDialog();
             logWindow.Dispose();
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 

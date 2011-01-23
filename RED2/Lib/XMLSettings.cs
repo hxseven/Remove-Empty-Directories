@@ -5,22 +5,22 @@ using System.IO;
 using System.Xml;
 
 /*
- * By: Burgpflanze 
- * 
+ * Original code was written by "Burgpflanze" 
  * Source: http://www.mycsharp.de/wbb2/thread.php?threadid=6439&threadview=0&hilight=&hilightuser=0&page=2
- * 
- * Modified by Myself.
  */
 
 namespace RED2
 {
-    class cSettings
+    /// <summary>
+    /// XML based settings class
+    /// </summary>
+    class XMLSettings
     {
         private XmlDocument xmlDoc;
 	    private XmlElement root = null;
 	    private string xmlConfigPath;
     	
-	    public cSettings (string configPath)
+	    public XMLSettings (string configPath)
 	    {
             xmlConfigPath = configPath;
 

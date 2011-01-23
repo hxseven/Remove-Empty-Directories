@@ -9,18 +9,22 @@ using System.Text;
 
 namespace RED2
 {
+    /// <summary>
+    /// RED core class, handles all the "hard work" and communicates with the GUI by using various events.
+    /// </summary>
     public class REDCore
     {
         private WorkflowSteps currentProcessStep = WorkflowSteps.Init;
 
         private List<DirectoryInfo> emptyFolderList = null;
-        private bool stopDeleteProcessTrigger = false;
         private Dictionary<String, String> protectedFolderList = new Dictionary<string, string>();
 
         private CalculateDirectoryCountWorker calcDirCountWorker = null;
         private FindEmptyDirectoryWorker searchEmptyFoldersWorker = null;
         private StringBuilder log = new StringBuilder();
+
         private bool ignoreAllErrors = false;
+        private bool stopDeleteProcessTrigger = false;
 
         // Events
         public event EventHandler<REDCoreWorkflowStepChangedEventArgs> OnWorkflowStepChanged;
@@ -33,7 +37,9 @@ namespace RED2
         public event EventHandler<REDCoreDeleteProcessUpdateEventArgs> OnDeleteProcessChanged;
         public event EventHandler<REDCoreDeleteProcessFinishedEventArgs> OnDeleteProcessFinished;
 
-        // Public settings
+        // Configuration
+        public bool IgnoreErrors { get; set; }
+        public bool DisableLogging { get; set; }
         public DeleteModes DeleteMode { get; set; }
 
         public REDCore()
@@ -300,7 +306,6 @@ namespace RED2
             }
         }
 
-
         internal void StartDelete(String[] ignoreFileList, bool cbIgnore0kbFiles, double pauseTime)
         {
             this.set_step(WorkflowSteps.DeleteProcessRunning);
@@ -316,7 +321,6 @@ namespace RED2
             {
                 DirectoryInfo folder = emptyFolderList[i];
                 DirectoryStatusTypes status = DirectoryStatusTypes.Ignored;
-
 
                 // Do not delete protected folders:
                 if (!this.protectedFolderList.ContainsKey(folder.FullName))
@@ -335,12 +339,12 @@ namespace RED2
 
                         if (!this.ignoreAllErrors)
                         {
-                            var dlg = new DeletionError();
+                            var errorDialog = new DeletionError();
 
-                            dlg.SetPath(folder.FullName);
-                            dlg.SetErrorMessage(ex.GetType().ToString() + ": " + ex.Message);
+                            errorDialog.SetPath(folder.FullName);
+                            errorDialog.SetErrorMessage(ex.GetType().ToString() + ": " + ex.Message);
 
-                            var result = dlg.ShowDialog();
+                            var result = errorDialog.ShowDialog();
 
                             if (result == DialogResult.Abort)
                             {
@@ -357,7 +361,7 @@ namespace RED2
                                 this.ignoreAllErrors = true;
                             }
 
-                            dlg.Dispose();
+                            errorDialog.Dispose();
                         }
 
                         status = DirectoryStatusTypes.Warning;

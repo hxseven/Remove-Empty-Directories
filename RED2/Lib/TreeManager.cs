@@ -8,6 +8,9 @@ using System.Drawing;
 
 namespace RED2
 {
+    /// <summary>
+    /// Handles all tree related things
+    /// </summary>
     public class TreeManager
     {
         private TreeView treeView = null;
