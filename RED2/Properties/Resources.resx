@@ -220,4 +220,10 @@
   <data name="warning_really_delete" xml:space="preserve">
     <value>Warning, do you really want to delete empty system folders?\nThis may harm your operating system.</value>
   </data>
+  <data name="default_delete_mode" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="process_aborted" xml:space="preserve">
+    <value>Deletion was aborted.</value>
+  </data>
 </root>

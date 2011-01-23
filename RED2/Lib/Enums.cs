@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RED2
 {
@@ -29,14 +26,6 @@ namespace RED2
         folder_warning
     }
 
-    public enum DeleteModes
-    {
-        Recycle_bin,
-        Recycle_bin_with_question,
-        Directly,
-        Simulate
-    }
-
     public class DeleteModeItem
     {
         public DeleteModes DeleteMode { get; set; }
@@ -49,9 +38,9 @@ namespace RED2
         public static DeleteModes[] GetList()
         {
             return new DeleteModes[] { 
-                DeleteModes.Recycle_bin, 
-                DeleteModes.Recycle_bin_with_question,
-                DeleteModes.Directly,
+                DeleteModes.RecycleBin, 
+                DeleteModes.RecycleBinWithQuestion,
+                DeleteModes.Direct,
                 DeleteModes.Simulate
             };
         }
@@ -60,13 +49,13 @@ namespace RED2
         {
             switch (this.DeleteMode)
             {
-                case DeleteModes.Recycle_bin:
+                case DeleteModes.RecycleBin:
                     return "Delete to recycle bin (Default)";
 
-                case DeleteModes.Recycle_bin_with_question:
+                case DeleteModes.RecycleBinWithQuestion:
                     return "Delete to recycle bin and ask before every deletion (Can be annoying)";
 
-                case DeleteModes.Directly:
+                case DeleteModes.Direct:
                     return "Delete directly and don't ask any questions (No turning back)";
 
                 case DeleteModes.Simulate:

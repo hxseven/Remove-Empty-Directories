@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System.Text;
 
 namespace RED2
 {
@@ -14,10 +14,11 @@ namespace RED2
     /// </summary>
     public class REDCore
     {
+        public DirectoryInfo StartFolder { get; set; }
         private WorkflowSteps currentProcessStep = WorkflowSteps.Init;
 
         private List<DirectoryInfo> emptyFolderList = null;
-        private Dictionary<String, String> protectedFolderList = new Dictionary<string, string>();
+        private Dictionary<String, bool> protectedFolderList = new Dictionary<string, bool>();
 
         private CalculateDirectoryCountWorker calcDirCountWorker = null;
         private FindEmptyDirectoryWorker searchEmptyFoldersWorker = null;
@@ -31,6 +32,7 @@ namespace RED2
         public event EventHandler<REDCoreErrorEventArgs> OnError;
         public event EventHandler<REDCoreCalcDirWorkerFinishedEventArgs> OnCalcDirWorkerFinished;
         public event EventHandler OnCancelled;
+        public event EventHandler OnAborted;
         public event EventHandler<ProgressChangedEventArgs> OnProgressChanged;
         public event EventHandler<REDCoreFoundDirEventArgs> OnFoundEmptyDir;
         public event EventHandler<REDCoreFinishedScanForEmptyDirsEventArgs> OnFinishedScanForEmptyDirs;
@@ -42,6 +44,15 @@ namespace RED2
         public bool DisableLogging { get; set; }
         public DeleteModes DeleteMode { get; set; }
 
+        public string IgnoreFiles { get; set; }
+        public string IgnoreFolders { get; set; }
+
+        public bool Ignore0kbFiles { get; set; }
+        public bool IgnoreHiddenFolders { get; set; }
+        public bool KeepSystemFolders { get; set; }
+        public double PauseTime { get; set; }
+        public int MaxDepth { get; set; }
+
         public REDCore()
         {
         }
@@ -49,11 +60,11 @@ namespace RED2
         public void init()
         {
             this.log = new StringBuilder();
-            this.protectedFolderList = new Dictionary<string, string>();
+            this.protectedFolderList = new Dictionary<string, bool>();
             this.set_step(WorkflowSteps.Init);
         }
 
-        public void CalculateDirectoryCount(DirectoryInfo Folder, int MaxDepth)
+        public void CalculateDirectoryCount()
         {
             emptyFolderList = new List<DirectoryInfo>();
 
@@ -62,8 +73,8 @@ namespace RED2
             // Create new blank worker
             this.calcDirCountWorker = new CalculateDirectoryCountWorker();
             this.calcDirCountWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FSWorker_RunWorkerCompleted);
-            this.calcDirCountWorker.MaxDepth = MaxDepth;
-            this.calcDirCountWorker.RunWorkerAsync(Folder);
+            this.calcDirCountWorker.MaxDepth = this.MaxDepth;
+            this.calcDirCountWorker.RunWorkerAsync(this.StartFolder);
         }
 
         private void set_step(WorkflowSteps step)
@@ -101,18 +112,11 @@ namespace RED2
             }
         }
 
-        private void showErrorMsg(string errorMessage)
-        {
-            if (this.OnError != null)
-                this.OnError(this, new REDCoreErrorEventArgs(errorMessage));
-        }
-
         /// <summary>
         /// Start searching empty folders
         /// </summary>
-        public void SearchingForEmptyDirectories(DirectoryInfo StartFolder, string tbIgnoreFiles, string tbIgnoreFolders, bool cbIgnore0kbFiles, bool cbIgnoreHiddenFolders, bool cbKeepSystemFolders, int nuMaxDepth)
+        public void SearchingForEmptyDirectories()
         {
-            #region Initialize the FolderFindWorker-Object
 
             this.emptyFolderList = new List<DirectoryInfo>();
 
@@ -123,28 +127,27 @@ namespace RED2
             searchEmptyFoldersWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FFWorker_RunWorkerCompleted);
 
             // set options:
-            if (!searchEmptyFoldersWorker.SetIgnoreFiles(tbIgnoreFiles))
+            if (!searchEmptyFoldersWorker.SetIgnoreFiles(IgnoreFiles))
             {
                 showErrorMsg(RED2.Properties.Resources.error_ignore_settings);
                 return;
             }
 
-            if (!searchEmptyFoldersWorker.SetIgnoreFolders(tbIgnoreFolders))
+            if (!searchEmptyFoldersWorker.SetIgnoreFolders(this.IgnoreFolders))
             {
                 showErrorMsg(RED2.Properties.Resources.error_ignore_settings);
                 return;
             }
 
-            searchEmptyFoldersWorker.Ignore0kbFiles = cbIgnore0kbFiles;
-            searchEmptyFoldersWorker.IgnoreHiddenFolders = cbIgnoreHiddenFolders;
-            searchEmptyFoldersWorker.IgnoreSystemFolders = cbKeepSystemFolders;
+            searchEmptyFoldersWorker.Ignore0kbFiles = Ignore0kbFiles;
+            searchEmptyFoldersWorker.IgnoreHiddenFolders = IgnoreHiddenFolders;
+            searchEmptyFoldersWorker.IgnoreSystemFolders = KeepSystemFolders;
 
-            searchEmptyFoldersWorker.MaxDepth = nuMaxDepth;
+            searchEmptyFoldersWorker.MaxDepth = MaxDepth;
 
             // Start worker
             searchEmptyFoldersWorker.RunWorkerAsync(StartFolder);
 
-            #endregion
         }
 
         /// <summary>
@@ -201,17 +204,133 @@ namespace RED2
             }
         }
 
+        internal void CancelCurrentProcess()
+        {
+            if (this.currentProcessStep == WorkflowSteps.StartingCalcDirCount)
+            {
+                if (this.calcDirCountWorker == null) return;
+
+                if ((this.calcDirCountWorker.IsBusy == true) || (calcDirCountWorker.CancellationPending == false))
+                    calcDirCountWorker.CancelAsync();
+            }
+            else if (this.currentProcessStep == WorkflowSteps.StartSearchingForEmptyDirs)
+            {
+                if (this.searchEmptyFoldersWorker == null) return;
+
+                if ((this.searchEmptyFoldersWorker.IsBusy == true) || (searchEmptyFoldersWorker.CancellationPending == false))
+                    searchEmptyFoldersWorker.CancelAsync();
+            }
+            else if (this.currentProcessStep == WorkflowSteps.DeleteProcessRunning)
+            {
+                this.stopDeleteProcessTrigger = true;
+            }
+        }
+
+        internal void StartDelete()
+        {
+            this.set_step(WorkflowSteps.DeleteProcessRunning);
+
+            this.stopDeleteProcessTrigger = false;
+
+            int DeletedFolderCount = 0;
+            int FailedFolderCount = 0;
+
+            int FolderCount = emptyFolderList.Count;
+
+            for (int i = 0; (i < emptyFolderList.Count && !this.stopDeleteProcessTrigger); i++)
+            {
+                DirectoryInfo folder = emptyFolderList[i];
+                DirectoryStatusTypes status = DirectoryStatusTypes.Ignored;
+
+                // Do not delete protected folders:
+                if (!this.protectedFolderList.ContainsKey(folder.FullName))
+                {
+                    try
+                    {
+                        // Try to delete the directory
+                        this.secureDelete(folder);
+
+                        status = DirectoryStatusTypes.Deleted;
+                        DeletedFolderCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Todo: Ask user to continue...? -- stop??
+
+                        if (!this.ignoreAllErrors)
+                        {
+                            var errorDialog = new DeletionError();
+
+                            errorDialog.SetPath(folder.FullName);
+                            errorDialog.SetErrorMessage(ex.GetType().ToString() + ": " + ex.Message);
+
+                            var result = errorDialog.ShowDialog();
+
+                            if (result == DialogResult.Abort)
+                            {
+                                //this.core.CancelCurrentProcess();
+                                this.stopDeleteProcessTrigger = true;
+
+                                if (this.OnAborted != null)
+                                    this.OnAborted(this, new EventArgs());
+
+                                return;
+                            }
+                            else if (result == DialogResult.Retry) // retry = ignore all errors
+                            {
+                                this.ignoreAllErrors = true;
+                            }
+
+                            errorDialog.Dispose();
+                        }
+
+                        status = DirectoryStatusTypes.Warning;
+                        FailedFolderCount++;
+                    }
+
+                    // Hack to allow the user to cancel the deletion process
+                    Application.DoEvents();
+                    Thread.Sleep(TimeSpan.FromMilliseconds(PauseTime));
+                }
+                else
+                    status = DirectoryStatusTypes.Protected;
+
+                if (this.OnDeleteProcessChanged != null)
+                    this.OnDeleteProcessChanged(this, new REDCoreDeleteProcessUpdateEventArgs(i, folder, status, FolderCount));
+            }
+
+            if (this.OnDeleteProcessFinished != null)
+                this.OnDeleteProcessFinished(this, new REDCoreDeleteProcessFinishedEventArgs(DeletedFolderCount, FailedFolderCount));
+
+        }
+
+        internal void AddProtectedFolder(string path)
+        {
+            if (!this.protectedFolderList.ContainsKey(path))
+                this.protectedFolderList.Add(path, true);
+        }
+
+        internal void RemoveProtected(string FolderFullName)
+        {
+            if (this.protectedFolderList.ContainsKey(FolderFullName))
+                this.protectedFolderList.Remove(FolderFullName);
+        }
+
+        public string GetLog() { return this.log.ToString(); }
+
         /// <summary>
         /// Finally delete a folder (with security checks before)
         /// </summary>
         /// <param name="emptyDirectory"></param>
         /// <returns></returns>
-        private void secureDelete(DirectoryInfo emptyDirectory, String[] ignoreFileList, bool ignore_0kb_files)
+        private void secureDelete(DirectoryInfo emptyDirectory)
         {
             if (!Directory.Exists(emptyDirectory.FullName))
                 throw new Exception("Directory does not exist anymore?");
 
             // Cleanup folder
+
+            String[] ignoreFileList = this.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
 
             FileInfo[] Files = emptyDirectory.GetFiles();
             Regex regexPattern = null;
@@ -232,7 +351,7 @@ namespace RED2
                     {
                         var pattern = ignoreFileList[p];
 
-                        if (ignore_0kb_files && file.Length == 0)
+                        if (this.Ignore0kbFiles && file.Length == 0)
                         {
                             delPattern = "[empty file (0 KB)]";
                             deleteTrashFile = true;
@@ -284,128 +403,10 @@ namespace RED2
             SystemFunctions.SecureDeleteDirectory(emptyDirectory, this.DeleteMode);
         }
 
-        internal void CancelCurrentProcess()
+        private void showErrorMsg(string errorMessage)
         {
-            if (this.currentProcessStep == WorkflowSteps.StartingCalcDirCount)
-            {
-                if (this.calcDirCountWorker == null) return;
-
-                if ((this.calcDirCountWorker.IsBusy == true) || (calcDirCountWorker.CancellationPending == false))
-                    calcDirCountWorker.CancelAsync();
-            }
-            else if (this.currentProcessStep == WorkflowSteps.StartSearchingForEmptyDirs)
-            {
-                if (this.searchEmptyFoldersWorker == null) return;
-
-                if ((this.searchEmptyFoldersWorker.IsBusy == true) || (searchEmptyFoldersWorker.CancellationPending == false))
-                    searchEmptyFoldersWorker.CancelAsync();
-            }
-            else if (this.currentProcessStep == WorkflowSteps.DeleteProcessRunning)
-            {
-                this.stopDeleteProcessTrigger = true;
-            }
+            if (this.OnError != null)
+                this.OnError(this, new REDCoreErrorEventArgs(errorMessage));
         }
-
-        internal void StartDelete(String[] ignoreFileList, bool cbIgnore0kbFiles, double pauseTime)
-        {
-            this.set_step(WorkflowSteps.DeleteProcessRunning);
-
-            this.stopDeleteProcessTrigger = false;
-
-            int DeletedFolderCount = 0;
-            int FailedFolderCount = 0;
-
-            int FolderCount = emptyFolderList.Count;
-
-            for (int i = 0; (i < emptyFolderList.Count && !this.stopDeleteProcessTrigger); i++)
-            {
-                DirectoryInfo folder = emptyFolderList[i];
-                DirectoryStatusTypes status = DirectoryStatusTypes.Ignored;
-
-                // Do not delete protected folders:
-                if (!this.protectedFolderList.ContainsKey(folder.FullName))
-                {
-                    try
-                    {
-                        // Try to delete the directory
-                        this.secureDelete(folder, ignoreFileList, cbIgnore0kbFiles);
-
-                        status = DirectoryStatusTypes.Deleted;
-                        DeletedFolderCount++;
-                    }
-                    catch (Exception ex)
-                    {
-                        // Todo: Ask user to continue...? -- stop??
-
-                        if (!this.ignoreAllErrors)
-                        {
-                            var errorDialog = new DeletionError();
-
-                            errorDialog.SetPath(folder.FullName);
-                            errorDialog.SetErrorMessage(ex.GetType().ToString() + ": " + ex.Message);
-
-                            var result = errorDialog.ShowDialog();
-
-                            if (result == DialogResult.Abort)
-                            {
-                                //this.core.CancelCurrentProcess();
-                                this.stopDeleteProcessTrigger = true;
-
-                                if (this.OnCancelled != null)
-                                    this.OnCancelled(this, new EventArgs());
-
-                                return;
-                            }
-                            else if (result == DialogResult.Retry) // retry = ignore all errors
-                            {
-                                this.ignoreAllErrors = true;
-                            }
-
-                            errorDialog.Dispose();
-                        }
-
-                        status = DirectoryStatusTypes.Warning;
-                        FailedFolderCount++;
-                    }
-
-                    // Hack to allow the user to cancel the deletion process
-                    Application.DoEvents();
-                    Thread.Sleep(TimeSpan.FromMilliseconds(pauseTime));
-                }
-                else
-                    status = DirectoryStatusTypes.Protected;
-
-                if (this.OnDeleteProcessChanged != null)
-                    this.OnDeleteProcessChanged(this, new REDCoreDeleteProcessUpdateEventArgs(i, folder, status, FolderCount));
-            }
-
-            if (this.OnDeleteProcessFinished != null)
-                this.OnDeleteProcessFinished(this, new REDCoreDeleteProcessFinishedEventArgs(DeletedFolderCount, FailedFolderCount));
-
-        }
-
-        internal void AddProtectedFolder(string FullName, string Key)
-        {
-            if (!this.protectedFolderList.ContainsKey(FullName))
-                this.protectedFolderList.Add(FullName, Key);
-
-        }
-
-        internal void RemoveProtected(string FolderFullName)
-        {
-            this.protectedFolderList.Remove(FolderFullName);
-        }
-
-        internal bool ProtectedContainsKey(string FolderFullName)
-        {
-            return this.protectedFolderList.ContainsKey(FolderFullName);
-        }
-
-        internal string[] GetProtectedNode(string selectedFolderFullName)
-        {
-            return ((string)this.protectedFolderList[selectedFolderFullName]).Split('|');
-        }
-
-        public string GetLog() { return this.log.ToString(); }
     }
 }

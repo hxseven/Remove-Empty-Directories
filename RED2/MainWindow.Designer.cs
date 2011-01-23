@@ -386,7 +386,6 @@
             this.tvFolders.Size = new System.Drawing.Size(430, 362);
             this.tvFolders.TabIndex = 3;
             this.tvFolders.DoubleClick += new System.EventHandler(this.tvFolders_DoubleClick);
-            this.tvFolders.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
             // 
             // cmStrip
             // 
@@ -625,7 +624,6 @@
             this.tbIgnoreFolders.Size = new System.Drawing.Size(230, 149);
             this.tbIgnoreFolders.TabIndex = 6;
             this.tbIgnoreFolders.WordWrap = false;
-            this.tbIgnoreFolders.TextChanged += new System.EventHandler(this.tbIgnoreFolders_TextChanged);
             // 
             // label10
             // 
@@ -703,7 +701,6 @@
             0,
             0,
             -2147483648});
-            this.nuMaxDepth.ValueChanged += new System.EventHandler(this.nuMaxDepth_ValueChanged);
             // 
             // label8
             // 
@@ -730,7 +727,6 @@
             0,
             0,
             0});
-            this.nuPause.ValueChanged += new System.EventHandler(this.nuPause_ValueChanged);
             // 
             // label7
             // 
@@ -779,7 +775,6 @@
             this.tbIgnoreFiles.Size = new System.Drawing.Size(239, 149);
             this.tbIgnoreFiles.TabIndex = 5;
             this.tbIgnoreFiles.WordWrap = false;
-            this.tbIgnoreFiles.TextChanged += new System.EventHandler(this.tbIgnoreFiles_TextChanged);
             // 
             // label2
             // 

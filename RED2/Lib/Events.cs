@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace RED2
@@ -87,4 +84,15 @@ namespace RED2
         }
     }
 
+    public class ProtectionStatusChangedEventArgs : EventArgs
+    {
+        public string Path { get; set; }
+        public bool Protected { get; set; }
+
+        public ProtectionStatusChangedEventArgs(string Path, bool Protected)
+        {
+            this.Path = Path;
+            this.Protected = Protected;
+        }
+    }
 }

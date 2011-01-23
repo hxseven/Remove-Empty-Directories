@@ -74,6 +74,7 @@
     <Compile Include="DeletionError.Designer.cs">
       <DependentUpon>DeletionError.cs</DependentUpon>
     </Compile>
+    <Compile Include="Lib\ConfigurationManger.cs" />
     <Compile Include="Lib\Enums.cs" />
     <Compile Include="Lib\Events.cs" />
     <Compile Include="Lib\TreeManager.cs" />

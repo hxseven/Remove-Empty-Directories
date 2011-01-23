@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
 using System.Diagnostics;
-using Microsoft.Win32;
+using System.Drawing;
+using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace RED2
 {
@@ -14,19 +13,7 @@ namespace RED2
     {
         private REDCore core = null;
         private TreeManager tree = null;
-
-        private DirectoryInfo StartFolder = null;
-
-        // Registry keys
-        private string MenuName = "Folder\\shell\\{0}";
-        private string Command = "Folder\\shell\\{0}\\command";
-
-        private XMLSettings settings = null;
-
-        private PictureBox picIcon = new PictureBox();
-        private Label picLabel = new Label();
-
-        private int deletedFolderCount = 0;
+        private ConfigurationManger config = null;
 
         #region Generic stuff
 
@@ -45,12 +32,16 @@ namespace RED2
         /// <param name="e"></param>
         private void fMain_Load(object sender, EventArgs e)
         {
+            this.config = new ConfigurationManger(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
+            this.config.OnSettingsSaved += new EventHandler(config_OnSettingsSaved);
+
             this.core = new REDCore();
 
             // Attach events
             this.core.OnWorkflowStepChanged += new EventHandler<REDCoreWorkflowStepChangedEventArgs>(core_OnWorkflowStepChanged);
             this.core.OnError += new EventHandler<REDCoreErrorEventArgs>(core_OnError);
             this.core.OnCancelled += new EventHandler(core_OnCancelled);
+            this.core.OnAborted += new EventHandler(core_OnAborted);
 
             this.core.OnCalcDirWorkerFinished += new EventHandler<REDCoreCalcDirWorkerFinishedEventArgs>(core_OnCalcDirWorkerFinished);
             this.core.OnProgressChanged += new EventHandler<ProgressChangedEventArgs>(core_OnProgressChanged);
@@ -62,177 +53,88 @@ namespace RED2
             this.core.init();
         }
 
-        private void UI_Init()
+        void config_OnSettingsSaved(object sender, EventArgs e)
+        {
+            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
+        }
+
+        private void Init()
         {
             this.tree = new TreeManager(this.tvFolders);
+            this.tree.OnProtectionStatusChanged += new EventHandler<ProtectionStatusChangedEventArgs>(tree_OnProtectionStatusChanged);
 
             Assembly REDAssembly = Assembly.GetExecutingAssembly();
             AssemblyName AssemblyName = REDAssembly.GetName();
 
             this.lbAppTitle.Text += string.Format("{0}", AssemblyName.Version.ToString());
 
-            this.MenuName = String.Format(MenuName, RED2.Properties.Resources.registry_name);
-            this.Command = String.Format(Command, RED2.Properties.Resources.registry_name);
-
-            this.pbProgressStatus.Maximum = 100;
-            this.pbProgressStatus.Minimum = 0;
-            this.pbProgressStatus.Step = 5;
-
-            this.btnShowLog.Enabled = false;
-
-            this.prepareOptionsPanel();
-            this.attachOptionEvents();
-
-            drawDirectoryIcons();
-
-            deletedFolderCount = this.settings.Read("delete_stats", 0);
-            updateDeletionStats(this.deletedFolderCount);
-
-            #region Read and apply command line arguments
-
-            string[] Arguments = Environment.GetCommandLineArgs();
-
-            if (Arguments.Length > 1)
-                this.tbFolder.Text = Arguments[1].ToString();
-
-            #endregion
-        }
-
-        private void prepareOptionsPanel()
-        {
-
             #region Read config settings
 
-            // settings path:
-            string configPath = Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file);
-
-            // Settings object:
-            settings = new XMLSettings(configPath);
-
             // Read folder from the config file
-            this.tbFolder.Text = this.settings.Read("folder", RED2.Properties.Resources.folder);
+            this.config.AddControl("folder", this.tbFolder, RED2.Properties.Resources.folder);
 
-            bool KeepSystemFolders = this.settings.Read("keep_system_folders", Boolean.Parse(RED2.Properties.Resources.keep_system_folders));
-            this.cbKeepSystemFolders.Checked = KeepSystemFolders;
+            this.config.AddControl("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders, RED2.Properties.Resources.dont_scan_hidden_folders);
+            this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.ignore_0kb_files);
+            this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.keep_system_folders);
 
-            this.cbIgnoreHiddenFolders.Checked = this.settings.Read("dont_scan_hidden_folders", Boolean.Parse(RED2.Properties.Resources.dont_scan_hidden_folders));
+            this.config.AddControl("ignore_files", this.tbIgnoreFiles, RED2.Properties.Resources.ignore_files);
+            this.config.AddControl("ignore_folders", this.tbIgnoreFolders, RED2.Properties.Resources.ignore_folders);
 
-            this.cbIgnore0kbFiles.Checked = this.settings.Read("ignore_0kb_files", Boolean.Parse(RED2.Properties.Resources.ignore_0kb_files));
+            this.config.AddControl("max_depth", this.nuMaxDepth, RED2.Properties.Resources.max_depth);
+            this.config.AddControl("pause_between", this.nuPause, RED2.Properties.Resources.pause_between);
 
-            this.nuMaxDepth.Value = (int)this.settings.Read("max_depth", Int32.Parse(RED2.Properties.Resources.max_depth));
-            this.nuPause.Value = (int)this.settings.Read("pause_between", Int32.Parse(RED2.Properties.Resources.pause_between));
-
-            this.tbIgnoreFiles.Text = this.settings.Read("ignore_files", Helpers_FixText(RED2.Properties.Resources.ignore_files));
-
-            this.tbIgnoreFolders.Text = this.settings.Read("ignore_folders", Helpers_FixText(RED2.Properties.Resources.ignore_folders));
-
-            #endregion
+            // Special fields
+            this.config.AddControl("delete_stats", this.lblRedStats, "0");
+            this.config.AddControl("registry_explorer_integration", this.cbIntegrateIntoWindowsExplorer, "");
+            this.config.AddControl("delete_mode", this.cbDeleteMode, RED2.Properties.Resources.default_delete_mode);
 
             foreach (var d in DeleteModeItem.GetList())
                 this.cbDeleteMode.Items.Add(new DeleteModeItem(d));
 
-            this.cbDeleteMode.SelectedIndex = 0;
+            // settings path:
+            this.config.LoadOptions();
 
-            this.cbIntegrateIntoWindowsExplorer.Checked = SystemFunctions.IsRegKeyIntegratedIntoWindowsExplorer(MenuName);
+            #endregion
 
+            drawDirectoryIcons();
+
+            #region Read and apply command line arguments
+
+            string[] args = Environment.GetCommandLineArgs();
+
+            if (args.Length > 1)
+                this.tbFolder.Text = args[1].ToString();
+
+            #endregion
         }
 
-        private void attachOptionEvents()
+        void tree_OnProtectionStatusChanged(object sender, ProtectionStatusChangedEventArgs e)
         {
-            foreach (Control cb in this.gpOptions.Controls)
-            {
-                if (cb is CheckBox)
-                    ((CheckBox)cb).CheckedChanged += new EventHandler(Options_CheckedChanged);
-            }
+            if (e.Protected)
+                this.core.AddProtectedFolder(e.Path);
+            else
+                this.core.RemoveProtected(e.Path);
         }
-
-        void Options_CheckedChanged(object sender, EventArgs e)
-        {
-            var cb = (CheckBox)sender;
-
-            switch ((string)cb.Tag)
-            {
-                case "explorer_integration":
-                    SystemFunctions.AddOrRemoveRegKey(this.cbIntegrateIntoWindowsExplorer.Checked, MenuName, Command);
-                    break;
-
-                case "ignore_0kb_files":
-                    this.settings.Write("ignore_0kb_files", this.cbIgnore0kbFiles.Checked);
-                    break;
-
-                case "clipboard_detection":
-                    break;
-
-                case "keep_system_dirs":
-
-                    if (!this.cbKeepSystemFolders.Checked)
-                    {
-                        if (MessageBox.Show(this, Helpers_FixText(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
-                            this.cbKeepSystemFolders.Checked = true;
-                    }
-
-                    this.settings.Write("keep_system_folders", this.cbKeepSystemFolders.Checked);
-
-                    break;
-
-                case "ignore_hidden":
-                    this.settings.Write("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders.Checked);
-                    break;
-
-                case "ignore_errors":
-                    break;
-
-                case "simulate_deletion":
-                    break;
-
-                default:
-                    break;
-            }
-
-        }
-
-        #region Save setting functions
-
-        private void nuMaxDepth_ValueChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("max_depth", (int)this.nuMaxDepth.Value);
-        }
-
-        private void nuPause_ValueChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("pause_between", (int)this.nuPause.Value);
-        }
-
-        private void tbIgnoreFiles_TextChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("ignore_files", tbIgnoreFiles.Text);
-        }
-
-        private void tbIgnoreFolders_TextChanged(object sender, EventArgs e)
-        {
-            this.settings.Write("ignore_folders", tbIgnoreFolders.Text);
-        }
-        #endregion
-
+        
         private void drawDirectoryIcons()
         {
             #region Set and display folder status icons
 
-            Dictionary<string, string> Icons = new Dictionary<string, string>();
+            Dictionary<string, string> icons = new Dictionary<string, string>();
 
-            Icons.Add("home", RED2.Properties.Resources.icon_root);
-            Icons.Add("folder", RED2.Properties.Resources.icon_default);
-            Icons.Add("folder_trash_files", RED2.Properties.Resources.icon_contains_trash);
-            Icons.Add("folder_hidden", RED2.Properties.Resources.icon_hidden_folder);
-            Icons.Add("folder_lock", RED2.Properties.Resources.icon_locked_folder);
-            Icons.Add("folder_warning", RED2.Properties.Resources.icon_warning);
-            Icons.Add("protected_icon", RED2.Properties.Resources.icon_protected_folder);
-            Icons.Add("deleted", RED2.Properties.Resources.icon_deleted_folder);
+            icons.Add("home", RED2.Properties.Resources.icon_root);
+            icons.Add("folder", RED2.Properties.Resources.icon_default);
+            icons.Add("folder_trash_files", RED2.Properties.Resources.icon_contains_trash);
+            icons.Add("folder_hidden", RED2.Properties.Resources.icon_hidden_folder);
+            icons.Add("folder_lock", RED2.Properties.Resources.icon_locked_folder);
+            icons.Add("folder_warning", RED2.Properties.Resources.icon_warning);
+            icons.Add("protected_icon", RED2.Properties.Resources.icon_protected_folder);
+            icons.Add("deleted", RED2.Properties.Resources.icon_deleted_folder);
 
             int xpos = 6;
             int ypos = 30;
 
-            foreach (string key in Icons.Keys)
+            foreach (string key in icons.Keys)
             {
                 Image Icon = (Image)this.ilFolderIcons.Images[key];
 
@@ -243,7 +145,7 @@ namespace RED2
                 picIcon.Size = new System.Drawing.Size(Icon.Width, Icon.Height);
 
                 Label picLabel = new Label();
-                picLabel.Text = Icons[key];
+                picLabel.Text = icons[key];
                 picLabel.Location = new System.Drawing.Point(xpos + Icon.Width + 2, ypos + 2);
                 picLabel.Name = "picLabel";
 
@@ -252,6 +154,7 @@ namespace RED2
 
                 ypos += Icon.Height + 6;
             }
+
             #endregion
         }
 
@@ -260,7 +163,17 @@ namespace RED2
             switch (e.NewStep)
             {
                 case WorkflowSteps.Init:
-                    this.UI_Init();
+
+                    this.Init();
+
+                    this.lbStatus.Text = "";
+
+                    this.pbProgressStatus.Maximum = 100;
+                    this.pbProgressStatus.Minimum = 0;
+                    this.pbProgressStatus.Step = 5;
+
+                    this.btnShowLog.Enabled = false;
+
                     break;
 
                 case WorkflowSteps.StartingCalcDirCount:
@@ -310,7 +223,19 @@ namespace RED2
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
             this.lbStatus.Text = RED2.Properties.Resources.process_cancelled;
             this.btnScan.Enabled = true;
+            this.btnCancel.Enabled = false;
             this.btnDelete.Enabled = false;
+            this.btnShowLog.Enabled = true;
+        }
+
+        void core_OnAborted(object sender, EventArgs e)
+        {
+            this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
+            this.lbStatus.Text = RED2.Properties.Resources.process_aborted;
+            this.btnScan.Enabled = true;
+            this.btnCancel.Enabled = false;
+            this.btnDelete.Enabled = false;
+            this.btnShowLog.Enabled = true;
         }
 
         #endregion
@@ -325,23 +250,24 @@ namespace RED2
         private void btnScan_Click(object sender, EventArgs e)
         {
             this.tree.Init();
-            
+
             this.btnShowLog.Enabled = false;
 
             // Check given folder:
-            DirectoryInfo Folder = new DirectoryInfo(this.tbFolder.Text);
+            DirectoryInfo selectedDirectory = new DirectoryInfo(this.tbFolder.Text);
 
-            if (!Folder.Exists)
+            if (!selectedDirectory.Exists)
             {
                 MessageBox.Show(RED2.Properties.Resources.error_dir_does_not_exist);
                 return;
             }
 
-            this.settings.Write("folder", Folder.FullName);
+            this.config.Save();
 
-            this.StartFolder = Folder;
+            this.core.StartFolder = selectedDirectory;
+            this.core.MaxDepth = (int)this.nuMaxDepth.Value;
 
-            this.core.CalculateDirectoryCount(Folder, (int)this.nuMaxDepth.Value);
+            this.core.CalculateDirectoryCount();
         }
 
         void core_OnCalcDirWorkerFinished(object sender, REDCoreCalcDirWorkerFinishedEventArgs e)
@@ -351,13 +277,16 @@ namespace RED2
             // Set max value:
             this.pbProgressStatus.Maximum = e.MaxFolderCount + 1;
 
-            this.tree.CreateRootNode(StartFolder, DirectoryIcons.home);
+            this.tree.CreateRootNode(this.core.StartFolder, DirectoryIcons.home);
 
-            this.core.SearchingForEmptyDirectories(
-                this.StartFolder,
-                this.tbIgnoreFiles.Text, this.tbIgnoreFolders.Text, this.cbIgnore0kbFiles.Checked, this.cbIgnoreHiddenFolders.Checked, this.cbKeepSystemFolders.Checked,
-                (int)this.nuMaxDepth.Value
-            );
+            this.core.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.core.IgnoreFolders = this.tbIgnoreFolders.Text;
+            this.core.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.core.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
+            this.core.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
+            this.core.MaxDepth = (int)this.nuMaxDepth.Value;
+
+            this.core.SearchingForEmptyDirectories();
         }
 
         #endregion
@@ -422,13 +351,8 @@ namespace RED2
 
             this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.DeletedFolderCount, e.FailedFolderCount);
 
-            #region Update delete stats
-
-            this.deletedFolderCount += e.DeletedFolderCount;
-            this.settings.Write("delete_stats", this.deletedFolderCount);
-            updateDeletionStats(this.deletedFolderCount);
-
-            #endregion
+            this.config.DeletedFolderCount += e.DeletedFolderCount;
+            this.config.Save();
         }
 
         #endregion
@@ -448,11 +372,6 @@ namespace RED2
             this.core.CancelCurrentProcess();
         }
 
-        private void tvFolders_MouseClick(object sender, MouseEventArgs e)
-        {
-            this.tvFolders.SelectedNode = this.tvFolders.GetNodeAt(e.X, e.Y);
-        }
-
         /// <summary>
         /// Deletes all empty folders
         /// </summary>
@@ -460,9 +379,12 @@ namespace RED2
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            this.core.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.core.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.core.PauseTime = (double)this.nuPause.Value;
             this.core.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
-            
-            this.core.StartDelete(Helpers_FormatAndSplit(this.tbIgnoreFiles.Text), this.cbIgnore0kbFiles.Checked, (double)this.nuPause.Value);
+
+            this.core.StartDelete();
         }
 
         void core_OnFoundEmptyDir(object sender, REDCoreFoundDirEventArgs e)
@@ -495,7 +417,6 @@ namespace RED2
         {
             SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
         }
-
 
         /// <summary>
         /// Part of the drag & drop functions 
@@ -545,11 +466,6 @@ namespace RED2
             this.tbFolder.SelectAll();
         }
 
-        private void updateDeletionStats(int count)
-        {
-            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, count);
-        }
-
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -570,85 +486,38 @@ namespace RED2
             SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
         }
 
+        private void btnShowConfig_Click(object sender, EventArgs e)
+        {
+            SystemFunctions.OpenDirectoryWithExplorer(Application.StartupPath);
+        }
+
+        private void btnShowLog_Click(object sender, EventArgs e)
+        {
+            var logWindow = new LogWindow();
+            logWindow.SetLog(this.core.GetLog());
+            logWindow.ShowDialog();
+            logWindow.Dispose();
+        }
+
         #endregion
-
-
 
         #region Folder protection
 
         private void protectFolderFromBeingDeletedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode Node = this.tvFolders.SelectedNode;
-
-            if (Node != null)
-                ProtectNode(Node);
-        }
-
-        private void ProtectNode(TreeNode Node)
-        {
-            DirectoryInfo Folder = (DirectoryInfo)Node.Tag;
-
-            this.core.AddProtectedFolder(Folder.FullName, Node.ImageKey + "|" + Node.ForeColor.ToArgb().ToString());
-
-            Node.ImageKey = "protected_icon";
-            Node.SelectedImageKey = "protected_icon";
-            Node.ForeColor = Color.Blue;
-
-            if (!this.tree.IsRootNode(Node.Parent))
-                ProtectNode(Node.Parent);
-
+            this.tree.ProtectSelected();
         }
 
         private void unprotectFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode Node = this.tvFolders.SelectedNode;
-
-            if (Node != null)
-                UnProtectNode(Node);
-        }
-
-        private void UnProtectNode(TreeNode Node)
-        {
-            DirectoryInfo selectedFolder = (DirectoryInfo)Node.Tag;
-
-            if (this.core.ProtectedContainsKey(selectedFolder.FullName))
-            {
-                string[] BackupValues = this.core.GetProtectedNode(selectedFolder.FullName);
-
-                string ImageKey = BackupValues[0];
-                Color NodeColor = Color.FromArgb(Int32.Parse(BackupValues[1]));
-
-                Node.ImageKey = ImageKey;
-                Node.SelectedImageKey = ImageKey;
-                Node.ForeColor = NodeColor;
-
-                this.core.RemoveProtected(selectedFolder.FullName);
-
-                foreach (TreeNode SubNode in Node.Nodes)
-                    this.UnProtectNode(SubNode);
-            }
+            this.tree.UnprotectSelected();
         }
 
         #endregion
 
-        #region Various Helpers
+        #region Various functions
 
-        private String[] Helpers_FormatAndSplit(string _pattern)
-        {
-            _pattern = _pattern.Replace("\r\n", "\n");
-            _pattern = _pattern.Replace("\r", "\n");
-            return _pattern.Split('\n');
-        }
-
-        public static string Helpers_FixText(string _str)
-        {
-            return _str.Replace(@"\r\n", "\r\n").Replace(@"\n", "\n");
-        }
-
-        #endregion
-
-        #region Weblinks
-
+ 
         private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://www.jonasjohn.de/");
@@ -663,19 +532,5 @@ namespace RED2
         }
 
         #endregion
-
-        private void btnShowConfig_Click(object sender, EventArgs e)
-        {
-            SystemFunctions.OpenDirectoryWithExplorer(Application.StartupPath);
-        }
-
-        private void btnShowLog_Click(object sender, EventArgs e)
-        {
-            var logWindow = new LogWindow();
-            logWindow.SetLog(this.core.GetLog());
-            logWindow.ShowDialog();
-            logWindow.Dispose();
-        }
     }
-
 }

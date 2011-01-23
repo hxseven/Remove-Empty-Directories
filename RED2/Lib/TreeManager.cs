@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace RED2
 {
@@ -14,14 +12,23 @@ namespace RED2
     public class TreeManager
     {
         private TreeView treeView = null;
-        private Dictionary<String, TreeNode> directoryToTreeNodeMapping = null;
-
         private TreeNode RootNode = null;
+
+        private Dictionary<String, TreeNode> directoryToTreeNodeMapping = null;
+        private Dictionary<string, object> backupValues = new Dictionary<string, object>();
+
+        public event EventHandler<ProtectionStatusChangedEventArgs> OnProtectionStatusChanged;
 
         public TreeManager(TreeView dirTree)
         {
             this.treeView = dirTree;
+            this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
             this.Init();
+        }
+
+        private void tvFolders_MouseClick(object sender, MouseEventArgs e)
+        {
+            this.treeView.SelectedNode = this.treeView.GetNodeAt(e.X, e.Y);
         }
 
         public void Init()
@@ -171,5 +178,59 @@ namespace RED2
             }
             return "";
         }
+
+        #region Folder protection
+
+
+        internal void ProtectSelected()
+        {
+            if (treeView.SelectedNode != null)
+                this.ProtectNode(treeView.SelectedNode);
+        }
+
+        internal void UnprotectSelected()
+        {
+            unprotectNode(treeView.SelectedNode);
+        }
+
+        private void unprotectNode(TreeNode node)
+        {
+            if (node != null)
+            {
+                var dir = ((DirectoryInfo)node.Tag);
+
+                if (OnProtectionStatusChanged != null)
+                    OnProtectionStatusChanged(this, new ProtectionStatusChangedEventArgs(dir.FullName, false));
+
+                string[] backupValues = ((string)this.backupValues[dir.FullName]).Split('|');
+
+                node.ImageKey = backupValues[0];
+                node.SelectedImageKey = backupValues[0];
+                node.ForeColor = Color.FromArgb(Int32.Parse(backupValues[1]));
+
+                foreach (TreeNode subNode in node.Nodes)
+                    this.unprotectNode(subNode);
+            }
+        }
+
+        public void ProtectNode(TreeNode Node)
+        {
+            DirectoryInfo Folder = (DirectoryInfo)Node.Tag;
+
+            if (OnProtectionStatusChanged != null)
+                OnProtectionStatusChanged(this, new ProtectionStatusChangedEventArgs(Folder.FullName, true));
+
+            backupValues.Add(Folder.FullName, Node.ImageKey + "|" + Node.ForeColor.ToArgb().ToString());
+
+            Node.ImageKey = "protected_icon";
+            Node.SelectedImageKey = "protected_icon";
+            Node.ForeColor = Color.Blue;
+
+            // Recusive protect directories
+            if (!this.IsRootNode(Node.Parent))
+                ProtectNode(Node.Parent);
+        }
+
+        #endregion
     }
 }

@@ -79,6 +79,15 @@ namespace RED2.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 0 ähnelt.
+        /// </summary>
+        internal static string default_delete_mode {
+            get {
+                return ResourceManager.GetString("default_delete_mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
         /// </summary>
         internal static string dont_scan_hidden_folders {
@@ -280,6 +289,15 @@ namespace RED2.Properties {
         internal static string please_select {
             get {
                 return ResourceManager.GetString("please_select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deletion was aborted. ähnelt.
+        /// </summary>
+        internal static string process_aborted {
+            get {
+                return ResourceManager.GetString("process_aborted", resourceCulture);
             }
         }
         
