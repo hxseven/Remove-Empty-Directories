@@ -218,7 +218,6 @@ namespace RED2
                     // If only one file is good, then stop.
                     if (!matches_a_pattern)
                         ContainsFiles = true;
-
                 }
             }
 

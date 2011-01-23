@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace RED2
 {
@@ -14,6 +15,8 @@ namespace RED2
         private REDCore core = null;
         private TreeManager tree = null;
         private ConfigurationManger config = null;
+
+        private RuntimeData data = null;
 
         #region Generic stuff
 
@@ -35,7 +38,9 @@ namespace RED2
             this.config = new ConfigurationManger(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
             this.config.OnSettingsSaved += new EventHandler(config_OnSettingsSaved);
 
-            this.core = new REDCore();
+            this.data = new RuntimeData();
+
+            this.core = new REDCore(this, this.data);
 
             // Attach events
             this.core.OnWorkflowStepChanged += new EventHandler<REDCoreWorkflowStepChangedEventArgs>(core_OnWorkflowStepChanged);
@@ -49,8 +54,34 @@ namespace RED2
             this.core.OnFinishedScanForEmptyDirs += new EventHandler<REDCoreFinishedScanForEmptyDirsEventArgs>(core_OnFoundFinishedScanForEmptyDirs);
             this.core.OnDeleteProcessChanged += new EventHandler<REDCoreDeleteProcessUpdateEventArgs>(core_OnDeleteProcessChanged);
             this.core.OnDeleteProcessFinished += new EventHandler<REDCoreDeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
+            this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
             this.core.init();
+        }
+
+        void core_OnDeleteError(object sender, DeletionErrorEventArgs e)
+        {
+            var errorDialog = new DeletionError();
+
+            errorDialog.SetPath(e.Path);
+            errorDialog.SetErrorMessage(e.ErrorMessage);
+
+            var dialogResult = errorDialog.ShowDialog();
+
+            errorDialog.Dispose();
+
+            if (dialogResult == DialogResult.Abort)
+            {
+                this.core.AbortDeletion();
+            }
+            else
+            {
+                // Hack: retry means -> ignore all errors
+                if (dialogResult == DialogResult.Retry)
+                    this.data.IgnoreAllErrors = true;
+
+                this.core.ContinueDeletion();
+            }
         }
 
         void config_OnSettingsSaved(object sender, EventArgs e)
@@ -82,6 +113,7 @@ namespace RED2
 
             this.config.AddControl("max_depth", this.nuMaxDepth, RED2.Properties.Resources.max_depth);
             this.config.AddControl("pause_between", this.nuPause, RED2.Properties.Resources.pause_between);
+            this.config.AddControl("ignore_errors", this.cbIgnoreErrors, RED2.Properties.Resources.default_ignore_errors);
 
             // Special fields
             this.config.AddControl("delete_stats", this.lblRedStats, "0");
@@ -249,7 +281,7 @@ namespace RED2
         /// <param name="e"></param>
         private void btnScan_Click(object sender, EventArgs e)
         {
-            this.tree.Init();
+            this.tree.Clear();
 
             this.btnShowLog.Enabled = false;
 
@@ -264,8 +296,9 @@ namespace RED2
 
             this.config.Save();
 
-            this.core.StartFolder = selectedDirectory;
-            this.core.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.data.StartFolder = selectedDirectory;
+            this.data.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
 
             this.core.CalculateDirectoryCount();
         }
@@ -277,14 +310,14 @@ namespace RED2
             // Set max value:
             this.pbProgressStatus.Maximum = e.MaxFolderCount + 1;
 
-            this.tree.CreateRootNode(this.core.StartFolder, DirectoryIcons.home);
+            this.tree.CreateRootNode(this.data.StartFolder, DirectoryIcons.home);
 
-            this.core.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.core.IgnoreFolders = this.tbIgnoreFolders.Text;
-            this.core.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
-            this.core.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
-            this.core.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
-            this.core.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.data.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.data.IgnoreFolders = this.tbIgnoreFolders.Text;
+            this.data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
+            this.data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
+            this.data.MaxDepth = (int)this.nuMaxDepth.Value;
 
             this.core.SearchingForEmptyDirectories();
         }
@@ -302,7 +335,7 @@ namespace RED2
             if (e.EmptyFolderCount != 0)
                 this.btnDelete.Enabled = true;
 
-            this.pbProgressStatus.Maximum = e.EmptyFolderCount;
+            this.pbProgressStatus.Maximum = e.EmptyFolderCount + 1;
             this.pbProgressStatus.Minimum = 0;
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
             this.pbProgressStatus.Step = 5;
@@ -365,10 +398,7 @@ namespace RED2
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.btnScan.Enabled = false;
-            this.btnCancel.Enabled = false;
-
+        {           
             this.core.CancelCurrentProcess();
         }
 
@@ -379,12 +409,13 @@ namespace RED2
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            this.core.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.core.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
-            this.core.PauseTime = (double)this.nuPause.Value;
-            this.core.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
+            this.data.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.data.PauseTime = (double)this.nuPause.Value;
+            this.data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
+            this.data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
 
-            this.core.StartDelete();
+            this.core.DoDelete();
         }
 
         void core_OnFoundEmptyDir(object sender, REDCoreFoundDirEventArgs e)
@@ -532,5 +563,8 @@ namespace RED2
         }
 
         #endregion
+
+
+   
     }
 }

@@ -12,7 +12,7 @@ namespace RED2
     public class TreeManager
     {
         private TreeView treeView = null;
-        private TreeNode RootNode = null;
+        private TreeNode rootNode = null;
 
         private Dictionary<String, TreeNode> directoryToTreeNodeMapping = null;
         private Dictionary<string, object> backupValues = new Dictionary<string, object>();
@@ -23,7 +23,7 @@ namespace RED2
         {
             this.treeView = dirTree;
             this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
-            this.Init();
+            this.Clear();
         }
 
         private void tvFolders_MouseClick(object sender, MouseEventArgs e)
@@ -31,9 +31,11 @@ namespace RED2
             this.treeView.SelectedNode = this.treeView.GetNodeAt(e.X, e.Y);
         }
 
-        public void Init()
+        public void Clear()
         {
-            directoryToTreeNodeMapping = new Dictionary<string, TreeNode>();
+            this.rootNode = null;
+            this.directoryToTreeNodeMapping = new Dictionary<string, TreeNode>();
+            this.backupValues = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -44,20 +46,20 @@ namespace RED2
         /// <returns></returns>
         internal void CreateRootNode(DirectoryInfo StartFolder, DirectoryIcons imageKey)
         {
-            RootNode = new TreeNode(StartFolder.Name);
-            RootNode.Tag = StartFolder;
-            RootNode.ImageKey = imageKey.ToString();
-            RootNode.SelectedImageKey = imageKey.ToString();
+            rootNode = new TreeNode(StartFolder.Name);
+            rootNode.Tag = StartFolder;
+            rootNode.ImageKey = imageKey.ToString();
+            rootNode.SelectedImageKey = imageKey.ToString();
 
             directoryToTreeNodeMapping = new Dictionary<String, TreeNode>();
-            directoryToTreeNodeMapping.Add(StartFolder.FullName, RootNode);
+            directoryToTreeNodeMapping.Add(StartFolder.FullName, rootNode);
 
-            this.treeView.Nodes.Add(RootNode);
+            this.treeView.Nodes.Add(rootNode);
         }
 
         internal void EnsureRootNodeIsVisible()
         {
-            this.RootNode.EnsureVisible();
+            this.rootNode.EnsureVisible();
         }
 
         internal bool ContainsDirectory(string FolderFullName)
@@ -113,7 +115,7 @@ namespace RED2
                 return n;
             }
 
-            bool parentIsRoot = (Folder.Parent.FullName.Trim('\\') == ((DirectoryInfo)this.RootNode.Tag).FullName.Trim('\\'));
+            bool parentIsRoot = (Folder.Parent.FullName.Trim('\\') == ((DirectoryInfo)this.rootNode.Tag).FullName.Trim('\\'));
 
             return this.AddNewDirectory(Folder, _isEmpty, parentIsRoot);
         }
@@ -146,7 +148,7 @@ namespace RED2
                 newTreeNode.Text += " (" + fileCount.ToString() + " files)";
 
             if (parentIsRoot)
-                this.RootNode.Nodes.Add(newTreeNode);
+                this.rootNode.Nodes.Add(newTreeNode);
             else
             {
                 TreeNode ParentNode = this.findTreeNodeByFolder(directory.Parent);
@@ -162,7 +164,7 @@ namespace RED2
 
         internal bool IsRootNode(TreeNode treeNode)
         {
-            return (treeNode == this.RootNode);
+            return (treeNode == this.rootNode);
         }
 
         /// <summary>

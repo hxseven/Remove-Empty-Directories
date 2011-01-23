@@ -95,4 +95,16 @@ namespace RED2
             this.Protected = Protected;
         }
     }
+
+    public class DeletionErrorEventArgs : EventArgs
+    {
+        public string Path { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public DeletionErrorEventArgs(string Path, string ErrorMessage)
+        {
+            this.Path = Path;
+            this.ErrorMessage = ErrorMessage;
+        }
+    }
 }

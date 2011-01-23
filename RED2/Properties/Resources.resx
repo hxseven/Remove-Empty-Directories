@@ -194,7 +194,7 @@
     <value>Please select the folder that you want to be cleaned</value>
   </data>
   <data name="process_cancelled" xml:space="preserve">
-    <value>Process cancelled!</value>
+    <value>Deletion process was cancelled!</value>
   </data>
   <data name="red_deleted" xml:space="preserve">
     <value>RED deleted {0} directories for you :)</value>
@@ -224,6 +224,9 @@
     <value>0</value>
   </data>
   <data name="process_aborted" xml:space="preserve">
-    <value>Deletion was aborted.</value>
+    <value>Deletion process was aborted.</value>
+  </data>
+  <data name="default_ignore_errors" xml:space="preserve">
+    <value>False</value>
   </data>
 </root>

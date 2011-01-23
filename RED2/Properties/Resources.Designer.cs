@@ -90,6 +90,15 @@ namespace RED2.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
         /// </summary>
+        internal static string default_ignore_errors {
+            get {
+                return ResourceManager.GetString("default_ignore_errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
+        /// </summary>
         internal static string dont_scan_hidden_folders {
             get {
                 return ResourceManager.GetString("dont_scan_hidden_folders", resourceCulture);
@@ -293,7 +302,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deletion was aborted. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deletion process was aborted. ähnelt.
         /// </summary>
         internal static string process_aborted {
             get {
@@ -302,7 +311,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Process cancelled! ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deletion process was cancelled! ähnelt.
         /// </summary>
         internal static string process_cancelled {
             get {
