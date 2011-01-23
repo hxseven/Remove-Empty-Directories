@@ -25,14 +25,14 @@ namespace RED2
         public double PauseTime { get; set; }
         public int MaxDepth { get; set; }
 
-        public StringBuilder log = new StringBuilder();
-        public Dictionary<String, bool> protectedFolderList = new Dictionary<string, bool>();
+        public StringBuilder LogMessages = new StringBuilder();
+        public Dictionary<String, bool> ProtectedFolderList = new Dictionary<string, bool>();
         public List<DirectoryInfo> EmptyFolderList { get; set; }
 
         public RuntimeData()
         {
-            this.log = new StringBuilder();
-            this.protectedFolderList = new Dictionary<string, bool>();
+            this.LogMessages = new StringBuilder();
+            this.ProtectedFolderList = new Dictionary<string, bool>();
             this.EmptyFolderList = new List<DirectoryInfo>();
         }
     }

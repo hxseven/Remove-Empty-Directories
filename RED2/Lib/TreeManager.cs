@@ -23,7 +23,7 @@ namespace RED2
         {
             this.treeView = dirTree;
             this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
-            this.Clear();
+            this.ClearTree();
         }
 
         private void tvFolders_MouseClick(object sender, MouseEventArgs e)
@@ -31,7 +31,7 @@ namespace RED2
             this.treeView.SelectedNode = this.treeView.GetNodeAt(e.X, e.Y);
         }
 
-        public void Clear()
+        public void ClearTree()
         {
             this.rootNode = null;
             this.directoryToTreeNodeMapping = new Dictionary<string, TreeNode>();

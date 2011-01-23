@@ -44,26 +44,26 @@ namespace RED2
         }
     }
 
-    public class REDCoreFinishedScanForEmptyDirsEventArgs : EventArgs
+    public class FinishedScanForEmptyDirsEventArgs : EventArgs
     {
         public int EmptyFolderCount { get; set; }
         public int FolderCount { get; set; }
 
-        public REDCoreFinishedScanForEmptyDirsEventArgs(int EmptyFolderCount, int FolderCount)
+        public FinishedScanForEmptyDirsEventArgs(int EmptyFolderCount, int FolderCount)
         {
             this.EmptyFolderCount = EmptyFolderCount;
             this.FolderCount = FolderCount;
         }
     }
 
-    public class REDCoreDeleteProcessUpdateEventArgs : EventArgs
+    public class DeleteProcessUpdateEventArgs : EventArgs
     {
         public int ProgressStatus { get; set; }
         public DirectoryInfo Folder { get; set; }
         public DirectoryStatusTypes Status { get; set; }
         public int FolderCount { get; set; }
 
-        public REDCoreDeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, DirectoryStatusTypes Status, int FolderCount)
+        public DeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, DirectoryStatusTypes Status, int FolderCount)
         {
             this.ProgressStatus = ProgressStatus;
             this.Folder = Folder;

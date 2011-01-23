@@ -8,9 +8,8 @@ namespace RED2
     /// <summary>
     /// Scans for empty directories
     /// </summary>
-	public class FindEmptyDirectoryWorker : BackgroundWorker
-	{
-        #region Class variables
+    public class FindEmptyDirectoryWorker : BackgroundWorker
+    {
 
         private int folderCount = 0;
         public int FolderCount
@@ -18,268 +17,222 @@ namespace RED2
             get { return folderCount; }
         }
 
-        public List<DirectoryInfo> emptyDirectories = null;
+        public RuntimeData Data { get; set; }
 
-        private string[] ignoreFiles = null;
-        private string[] ignoreFolders = null;
+        private string[] ignoreFolderList = null;
+        private string[] ignoreFileList = null;
 
-        private bool ignore0kbFiles = false;
-        public bool Ignore0kbFiles
+        public FindEmptyDirectoryWorker()
         {
-            get { return ignore0kbFiles; }
-            set { ignore0kbFiles = value; }
+            WorkerReportsProgress = true;
+            WorkerSupportsCancellation = true;
         }
 
-        private bool ignoreHiddenFolders = false;
-        public bool IgnoreHiddenFolders
+        protected override void OnDoWork(DoWorkEventArgs e)
         {
-            get { return ignoreHiddenFolders; }
-            set { ignoreHiddenFolders = value; }
+            //Here we receive the necessary data 
+            DirectoryInfo startFolder = (DirectoryInfo)e.Argument;
+
+            // Clean dir list
+            this.Data.EmptyFolderList = new List<DirectoryInfo>();
+
+            var _file_pattern = this.Data.IgnoreFolders.Replace("\r\n", "\n").Replace("\r", "\n").Trim();
+
+            if (_file_pattern != "")
+                this.ignoreFolderList = _file_pattern.Split('\n');
+
+
+            _file_pattern = _file_pattern.Replace("\r\n", "\n").Replace("\r", "\n");
+            this.ignoreFileList = _file_pattern.Split('\n');
+
+
+            //Here we tell the manager that we start the job..
+            this.ReportProgress(0, "Starting scan process...");
+
+            bool isEmpty = this.checkIfDirectoryEmpty(startFolder, 1);
+
+            if (isEmpty)
+                this.Data.EmptyFolderList.Add(startFolder);
+
+            if (CancellationPending)
+            {
+                e.Cancel = true;
+                e.Result = 0;
+                return;
+            }
+
+            ReportProgress(this.folderCount, "");
+
+            //Here we pass the final result of the Job
+            e.Result = 1;
         }
 
-        private bool ignoreSystemFolders = true;
-        public bool IgnoreSystemFolders
+        private bool checkIfDirectoryEmpty(DirectoryInfo startDir, int depth)
         {
-            get { return ignoreSystemFolders; }
-            set { ignoreSystemFolders = value; }
-        }
+            if (this.Data.MaxDepth != -1 && depth > this.Data.MaxDepth) return false;
 
-        private int maxDepth = -1;
-        public int MaxDepth
-        {
-            get { return maxDepth; }
-            set { maxDepth = value; }
-        }
+            // Cancel process if the user hits stop
+            if (CancellationPending) return false;
 
-        private int emptyFolderCount = 0;
-        public int EmptyFolderCount
-        {
-            get { return emptyFolderCount; }
-        } 
+            // increase folder count
+            this.folderCount++;
 
-        #endregion
-	
-		public FindEmptyDirectoryWorker(){			
-			WorkerReportsProgress = true;
-			WorkerSupportsCancellation = true;
-		}
+            // update status progress bar after 100 steps:
+            if (this.folderCount % 100 == 0)
+                ReportProgress(folderCount, "Scanning folder: " + startDir.Name);
 
-		public bool SetIgnoreFiles(string _file_pattern) {
-			try
-			{
-				_file_pattern = _file_pattern.Replace("\r\n", "\n");
-				_file_pattern = _file_pattern.Replace("\r", "\n");
-				this.ignoreFiles = _file_pattern.Split('\n');
-				return true;
-			}
-			catch {
-				return false;
-			}
-		}
 
-        public bool SetIgnoreFolders(string _file_pattern)
-        {
+            bool containsFiles = false;
+
+            // Get file list
+            FileInfo[] fileList = null;
+
+            // some directories could trigger a exception:
             try
             {
-                _file_pattern = _file_pattern.Replace("\r\n", "\n");
-                _file_pattern = _file_pattern.Replace("\r", "\n");
-                _file_pattern = _file_pattern.Trim();
-
-                if (_file_pattern != "")
-                    this.ignoreFolders = _file_pattern.Split('\n');
-
-                return true;
+                fileList = startDir.GetFiles();
             }
             catch
             {
-                return false;
-            }
-        }
-
-		protected override void OnDoWork(DoWorkEventArgs e)
-		{
-			//Here we receive the necessary data 
-			DirectoryInfo _StartFolder = (DirectoryInfo)e.Argument;
-
-			// Clean dir list
-			this.emptyDirectories = new List<DirectoryInfo>();
-
-			//Here we tell the manager that we start the job..
-			this.ReportProgress(0, "Starting scan process..."); 
-			
-			bool isEmpty = this.ScanFolders(_StartFolder, 1);
-
-			if (isEmpty)
-				this.emptyDirectories.Add(_StartFolder);
-
-			if (CancellationPending)
-			{
-				e.Cancel = true;
-				e.Result = 0;
-				return;
-			}
-
-			ReportProgress(this.folderCount, "Finished!");
-
-			//Here we pass the final result of the Job
-			e.Result = 1;
-		}
-
-	
-		private bool ScanFolders(DirectoryInfo _StartFolder, int _depth)
-		{
-			if (this.maxDepth != -1 && _depth > this.maxDepth)
-				return false;
-	
-			// Cancel process if the user hits stop
-			if (CancellationPending)
-				return false;
-
-			// increase folder count
-			this.folderCount++;
-
-			// update status progress bar after 100 steps:
-			if (this.folderCount % 100 == 0)
-				ReportProgress(folderCount, "Scanning folder: " + _StartFolder.Name);
-
-			// Is the folder really empty?
-			bool ContainsFiles = false;
-
-            // Read files:
-            FileInfo[] Files = null;
-
-            // some folders trigger a exception:
-            try
-            {
-                Files = _StartFolder.GetFiles();
-            }
-            catch {
-                Files = null;
+                fileList = null;
             }
 
-            if (Files == null)
+            if (fileList == null)
             {
                 // CF = true = folder does not get deleted:
-                ContainsFiles = true; // secure way
+                containsFiles = true; // secure way
             }
-            else if (Files.Length == 0)
+            else if (fileList.Length == 0)
             {
-                ContainsFiles = false;
+                containsFiles = false;
             }
             else
             {
                 // loop trough files and cancel if containsFiles == true
-                for (int f = 0; (f < Files.Length && !ContainsFiles); f++)
+                for (int f = 0; (f < fileList.Length && !containsFiles); f++)
                 {
-                    FileInfo file = Files[f];
-
+                    FileInfo file = null;
                     int filesize = 0;
+
                     try
                     {
+                        file = fileList[f];
                         filesize = (int)file.Length;
                     }
-                    catch {
+                    catch
+                    {
                         // keep folder if there is a strange file that
                         // triggers a exception:
-                        ContainsFiles = true;
-                        continue;
-                    }
-
-                    bool matches_a_pattern = false;
-
-                    for (int p = 0; (p < this.ignoreFiles.Length && !matches_a_pattern); p++)
-                    {
-                        string pattern = this.ignoreFiles[p];
-
-                        if (this.ignore0kbFiles && filesize == 0)
-                            matches_a_pattern = true;
-                        else if (pattern.ToLower() == file.Name.ToLower())
-                            matches_a_pattern = true;
-                        else if (pattern.Contains("*"))
-                        {
-                            pattern = Regex.Escape(pattern);
-                            pattern = pattern.Replace("\\*", ".*");
-
-                            Regex RgxPattern = new Regex("^" + pattern + "$");
-
-                            if (RgxPattern.IsMatch(file.Name))
-                                matches_a_pattern = true;
-                        }
-                        else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
-                        {
-                            Regex RgxPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
-
-                            if (RgxPattern.IsMatch(file.Name))
-                                matches_a_pattern = true;
-                        }
-
+                        containsFiles = true;
+                        break;
                     }
 
                     // If only one file is good, then stop.
-                    if (!matches_a_pattern)
-                        ContainsFiles = true;
+                    if (!matchIgnorePattern(file, filesize))
+                        containsFiles = true;
                 }
             }
 
-			// If the folder does not contain any files -> get subfolders:
-            DirectoryInfo[] SubFolders = null;
+            // If the folder does not contain any files -> get subfolders:
+            DirectoryInfo[] subFolderList = null;
 
             try
             {
-                SubFolders = _StartFolder.GetDirectories();
+                subFolderList = startDir.GetDirectories();
             }
-            catch {
-                // If we can not read the folder 
-                // don't delete it:
+            catch
+            {
+                // If we can not read the folder -> don't delete it:
                 return false;
             }
-			
-			// The folder is empty, break here:
-			if (!ContainsFiles && SubFolders.Length == 0)
-				return true;
 
-			bool AreTheSubFoldersEmpty = true;
+            // The folder is empty, break here:
+            if (!containsFiles && subFolderList.Length == 0)
+                return true;
 
-			foreach (DirectoryInfo Folder in SubFolders)
-			{
-				// Hidden folder?
-				bool ignoreFolder = (this.ignoreHiddenFolders && ((Folder.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden));
-				
-				// System folder:
-				ignoreFolder = (this.ignoreSystemFolders && ((Folder.Attributes & FileAttributes.System) == FileAttributes.System)) ? true : ignoreFolder;
+            bool allSubFolderEmpty = true;
 
-                // Ignore folder if the user wishes that
-                if (this.ignoreFolders != null)
+            foreach (DirectoryInfo curDir in subFolderList)
+            {
+                // Hidden folder?
+                bool ignoreFolder = (this.Data.IgnoreHiddenFolders && ((curDir.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden));
+                ignoreFolder = (ignoreFolder || (this.Data.KeepSystemFolders && ((curDir.Attributes & FileAttributes.System) == FileAttributes.System)));
+                ignoreFolder = (ignoreFolder || checkIfDirectoryIsOnIgnoreList(curDir));
+
+                // Scan sub folder:
+                bool isCurrentSubFolderEmpty = false;
+
+                if (!ignoreFolder)
+                    isCurrentSubFolderEmpty = this.checkIfDirectoryEmpty(curDir, depth + 1);
+
+                // is empty?
+                if (isCurrentSubFolderEmpty && !ignoreFolder)
                 {
-                    foreach (string f in this.ignoreFolders)
-                    {
-                        if (Folder.FullName.ToLower().Contains(f.ToLower()))
-                            ignoreFolder = true;
-                    }
+                    // Folder is empty, report that to the gui:
+                    this.ReportProgress(-1, curDir);
                 }
 
-				// Scan sub folder:
-				bool isSubFolderEmpty = false;
+                // this folder is not empty:
+                if (!isCurrentSubFolderEmpty || ignoreFolder)
+                    allSubFolderEmpty = false;
+            }
 
-				if (!ignoreFolder)
-					isSubFolderEmpty = this.ScanFolders(Folder, _depth+1);
+            // All subdirectories are empty
+            return (allSubFolderEmpty && !containsFiles);
+        }
 
-				// is empty?
-				if (isSubFolderEmpty && !ignoreFolder)
-				{
-					this.emptyFolderCount++;
-                    
-					// Folder is empty, report that to the gui:
-					this.ReportProgress(-1, Folder);
-				}
+        private bool matchIgnorePattern(FileInfo file, int filesize)
+        {
+            bool matches_a_pattern = false;
 
-				// this folder is not empty:
-				if (!isSubFolderEmpty || ignoreFolder)
-					AreTheSubFoldersEmpty = false;
-			}
+            for (int p = 0; (p < this.ignoreFileList.Length && !matches_a_pattern); p++)
+            {
+                string pattern = this.ignoreFileList[p];
 
-			// All subdirectories are empty
-			return (AreTheSubFoldersEmpty && !ContainsFiles);
-		}
+                if (this.Data.Ignore0kbFiles && filesize == 0)
+                {
+                    matches_a_pattern = true;
+                }
+                else if (pattern.ToLower() == file.Name.ToLower())
+                {
+                    matches_a_pattern = true;
+                }
+                else if (pattern.Contains("*"))
+                {
+                    pattern = Regex.Escape(pattern);
+                    pattern = pattern.Replace("\\*", ".*");
+
+                    Regex RgxPattern = new Regex("^" + pattern + "$");
+
+                    if (RgxPattern.IsMatch(file.Name))
+                        matches_a_pattern = true;
+                }
+                else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
+                {
+                    Regex RgxPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
+
+                    if (RgxPattern.IsMatch(file.Name))
+                        matches_a_pattern = true;
+                }
+
+            }
+            return matches_a_pattern;
+        }
+
+        private bool checkIfDirectoryIsOnIgnoreList(DirectoryInfo Folder)
+        {
+            bool ignoreFolder = false;
+
+            // Ignore folder if the user wishes that
+            if (this.ignoreFolderList.Length > 0)
+            {
+                foreach (string f in this.ignoreFolderList)
+                {
+                    if (Folder.FullName.ToLower().Contains(f.ToLower()))
+                        ignoreFolder = true;
+                }
+            }
+            return ignoreFolder;
+        }
     }
 }

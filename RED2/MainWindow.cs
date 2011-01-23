@@ -51,8 +51,8 @@ namespace RED2
             this.core.OnCalcDirWorkerFinished += new EventHandler<REDCoreCalcDirWorkerFinishedEventArgs>(core_OnCalcDirWorkerFinished);
             this.core.OnProgressChanged += new EventHandler<ProgressChangedEventArgs>(core_OnProgressChanged);
             this.core.OnFoundEmptyDir += new EventHandler<REDCoreFoundDirEventArgs>(core_OnFoundEmptyDir);
-            this.core.OnFinishedScanForEmptyDirs += new EventHandler<REDCoreFinishedScanForEmptyDirsEventArgs>(core_OnFoundFinishedScanForEmptyDirs);
-            this.core.OnDeleteProcessChanged += new EventHandler<REDCoreDeleteProcessUpdateEventArgs>(core_OnDeleteProcessChanged);
+            this.core.OnFinishedScanForEmptyDirs += new EventHandler<FinishedScanForEmptyDirsEventArgs>(core_OnFoundFinishedScanForEmptyDirs);
+            this.core.OnDeleteProcessChanged += new EventHandler<DeleteProcessUpdateEventArgs>(core_OnDeleteProcessChanged);
             this.core.OnDeleteProcessFinished += new EventHandler<REDCoreDeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
@@ -281,7 +281,7 @@ namespace RED2
         /// <param name="e"></param>
         private void btnScan_Click(object sender, EventArgs e)
         {
-            this.tree.Clear();
+            this.tree.ClearTree();
 
             this.btnShowLog.Enabled = false;
 
@@ -308,7 +308,7 @@ namespace RED2
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
 
             // Set max value:
-            this.pbProgressStatus.Maximum = e.MaxFolderCount + 1;
+            this.pbProgressStatus.Maximum = e.MaxFolderCount;
 
             this.tree.CreateRootNode(this.data.StartFolder, DirectoryIcons.home);
 
@@ -326,16 +326,16 @@ namespace RED2
 
         #region Step 2: Scan for empty directories
 
-        void core_OnFoundFinishedScanForEmptyDirs(object sender, REDCoreFinishedScanForEmptyDirsEventArgs e)
+        void core_OnFoundFinishedScanForEmptyDirs(object sender, FinishedScanForEmptyDirsEventArgs e)
         {
             // Finished scan
 
             this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount);
 
-            if (e.EmptyFolderCount != 0)
+            if (e.EmptyFolderCount > 0)
                 this.btnDelete.Enabled = true;
 
-            this.pbProgressStatus.Maximum = e.EmptyFolderCount + 1;
+            this.pbProgressStatus.Maximum = e.EmptyFolderCount;
             this.pbProgressStatus.Minimum = 0;
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
             this.pbProgressStatus.Step = 5;
@@ -352,7 +352,7 @@ namespace RED2
 
         #region Step 3: Deletion process
 
-        void core_OnDeleteProcessChanged(object sender, REDCoreDeleteProcessUpdateEventArgs e)
+        void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
         {
             switch (e.Status)
             {

@@ -12,8 +12,7 @@ namespace RED2
     /// </summary>
     public class DeletionWorker : BackgroundWorker
     {
-
-        public RuntimeData data { get; set; }
+        public RuntimeData Data { get; set; }
 
         public int DeletedCount { get; set; }
         public int FailedCount { get; set; }
@@ -47,9 +46,9 @@ namespace RED2
             string errorMessage = "";
             this.ErrorInfo = null;
 
-            int count = this.data.EmptyFolderList.Count;
+            int count = this.Data.EmptyFolderList.Count;
 
-            while (this.ListPos < this.data.EmptyFolderList.Count)
+            while (this.ListPos < this.Data.EmptyFolderList.Count)
             {
                 if (CancellationPending)
                 {
@@ -57,11 +56,11 @@ namespace RED2
                     return;
                 }
 
-                DirectoryInfo folder = this.data.EmptyFolderList[this.ListPos];
+                DirectoryInfo folder = this.Data.EmptyFolderList[this.ListPos];
                 DirectoryStatusTypes status = DirectoryStatusTypes.Ignored;
 
                 // Do not delete protected folders:
-                if (!this.data.protectedFolderList.ContainsKey(folder.FullName))
+                if (!this.Data.ProtectedFolderList.ContainsKey(folder.FullName))
                 {
                     try
                     {
@@ -74,19 +73,19 @@ namespace RED2
                     catch (Exception ex)
                     {
                         errorMessage = ex.Message;
-                        stopNow = (!this.data.IgnoreAllErrors);
+                        stopNow = (!this.Data.IgnoreAllErrors);
 
                         status = DirectoryStatusTypes.Warning;
                         this.FailedCount++;
                     }
 
                     if (!stopNow)
-                        Thread.Sleep(TimeSpan.FromMilliseconds(this.data.PauseTime));
+                        Thread.Sleep(TimeSpan.FromMilliseconds(this.Data.PauseTime));
                 }
                 else
                     status = DirectoryStatusTypes.Protected;
 
-                this.ReportProgress(this.ListPos, new REDCoreDeleteProcessUpdateEventArgs(this.ListPos, folder, status, count));
+                this.ReportProgress(1, new DeleteProcessUpdateEventArgs(this.ListPos, folder, status, count));
 
                 this.ListPos++;
 
@@ -116,14 +115,14 @@ namespace RED2
 
             // Cleanup folder
 
-            String[] ignoreFileList = this.data.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+            String[] ignoreFileList = this.Data.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
 
             FileInfo[] Files = emptyDirectory.GetFiles();
             Regex regexPattern = null;
 
             if (Files != null && Files.Length != 0)
             {
-                this.data.log.AppendLine(String.Format("Cleaning directory: \"{0}\"", emptyDirectory.FullName));
+                this.Data.LogMessages.AppendLine(String.Format("Cleaning directory: \"{0}\"", emptyDirectory.FullName));
 
                 // loop trough files and cancel if containsFiles == true
                 for (int f = 0; f < Files.Length; f++)
@@ -137,7 +136,7 @@ namespace RED2
                     {
                         var pattern = ignoreFileList[p];
 
-                        if (this.data.Ignore0kbFiles && file.Length == 0)
+                        if (this.Data.Ignore0kbFiles && file.Length == 0)
                         {
                             delPattern = "[empty file (0 KB)]";
                             deleteTrashFile = true;
@@ -175,18 +174,18 @@ namespace RED2
                     // If only one file is good, then stop.
                     if (deleteTrashFile)
                     {
-                        this.data.log.AppendLine(String.Format(" -> Deleted file \"{0}\" because it matched the pattern \"{1}\"", file.FullName, delPattern));
+                        this.Data.LogMessages.AppendLine(String.Format(" -> Deleted file \"{0}\" because it matched the pattern \"{1}\"", file.FullName, delPattern));
 
-                        SystemFunctions.SecureDeleteFile(file, this.data.DeleteMode);
+                        SystemFunctions.SecureDeleteFile(file, this.Data.DeleteMode);
                     }
                 }
             }
 
             // End cleanup
 
-            this.data.log.AppendLine(String.Format("Deleted dir \"{0}\"", emptyDirectory.FullName));
+            this.Data.LogMessages.AppendLine(String.Format("Deleted dir \"{0}\"", emptyDirectory.FullName));
 
-            SystemFunctions.SecureDeleteDirectory(emptyDirectory, this.data.DeleteMode);
+            SystemFunctions.SecureDeleteDirectory(emptyDirectory, this.Data.DeleteMode);
         }
 
     }
