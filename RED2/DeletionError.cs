@@ -15,14 +15,14 @@ namespace RED2
 
         }
 
-        internal void SetPath(string p)
+        internal void SetPath(string path)
         {
-            this.tbPath.Text = p;
+            this.tbPath.Text = path;
         }
 
-        internal void SetErrorMessage(string p)
+        internal void SetErrorMessage(string msg)
         {
-            this.tbErrorMessage.Text = p;
+            this.tbErrorMessage.Text = msg;
         }
     }
 }

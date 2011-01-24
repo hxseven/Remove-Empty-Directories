@@ -15,8 +15,8 @@ namespace RED2
         private string Command = "Folder\\shell\\{0}\\command";
 
         public event EventHandler OnSettingsSaved;
-        public int DeletedFolderCount { get; set; }
-
+        public int DeletedFolderCount { get; set; }   
+     
         public ConfigurationManger(string configPath)
         {
             // Settings object:
@@ -40,7 +40,7 @@ namespace RED2
 
                 if (key == "registry_explorer_integration") ((CheckBox)c).Checked = SystemFunctions.IsRegKeyIntegratedIntoWindowsExplorer(MenuName);
                 else if (c is CheckBox) ((CheckBox)c).Checked = this.settings.Read(key, Boolean.Parse(this.defaultValues[key]));
-                else if (c is TextBox) ((TextBox)c).Text = this.settings.Read(key, Helpers_FixText(this.defaultValues[key]));
+                else if (c is TextBox) ((TextBox)c).Text = this.settings.Read(key, SystemFunctions.FixLineBreaks(this.defaultValues[key]));
                 else if (c is NumericUpDown) ((NumericUpDown)c).Value = (int)this.settings.Read(key, Int32.Parse(this.defaultValues[key]));
                 else if (c is ComboBox) ((ComboBox)c).SelectedIndex = (int)this.settings.Read(key, Int32.Parse(this.defaultValues[key]));
                 else if (c is Label) {
@@ -64,15 +64,8 @@ namespace RED2
             }
         }
 
-        public static string Helpers_FixText(string _str)
-        {
-            return _str.Replace(@"\r\n", "\r\n").Replace(@"\n", "\n");
-        }
-
         private void Options_CheckedChanged(object sender, EventArgs e)
         {
-            //var cb = (CheckBox)sender;
-
             this.Save();
         }
 
@@ -94,14 +87,6 @@ namespace RED2
                 else
                     throw new Exception("Unknown control type: " + c.GetType().ToString());
             }
-
-            //if (!this.cbKeepSystemFolders.Checked)
-            //{
-            //    if (MessageBox.Show(this, Helpers_FixText(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
-            //        this.cbKeepSystemFolders.Checked = true;
-            //}
-
-            //this.settings.Write("keep_system_folders", this.cbKeepSystemFolders.Checked);
 
             if (OnSettingsSaved != null)
                 this.OnSettingsSaved(this, new EventArgs());

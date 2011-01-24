@@ -7,7 +7,9 @@ using System.Windows.Forms;
 namespace RED2
 {
     /// <summary>
-    /// Handles all tree related things
+    /// Handles tree related things
+    /// 
+    /// TODO: Handle null references within tree nodes handling
     /// </summary>
     public class TreeManager
     {
@@ -25,11 +27,17 @@ namespace RED2
         {
             this.treeView = dirTree;
             this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
+
             this.ClearTree();
+
             this.rootPath = "";
         }
 
-        // Hack
+        /// <summary>
+        /// Hack to selected the correct node
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tvFolders_MouseClick(object sender, MouseEventArgs e)
         {
             this.treeView.SelectedNode = this.treeView.GetNodeAt(e.X, e.Y);
@@ -41,7 +49,6 @@ namespace RED2
             this.directoryToTreeNodeMapping = new Dictionary<string, TreeNode>();
             this.backupValues = new Dictionary<string, object>();
 
-            // Reset TreeView
             this.treeView.Nodes.Clear();
         }
 
@@ -65,84 +72,71 @@ namespace RED2
             this.rootNode.EnsureVisible();
         }
 
-        internal bool ContainsDirectory(string FolderFullName)
-        {
-            return directoryToTreeNodeMapping.ContainsKey(FolderFullName);
-        }
-
         /// <summary>
         /// Marks a folder with the warning or deleted icon
         /// </summary>
-        /// <param name="folder"></param>
+        /// <param name="path"></param>
         /// <param name="iconKey"></param>
-        internal void UpdateItemIcon(DirectoryInfo folder, DirectoryIcons iconKey)
+        internal void UpdateItemIcon(string path, DirectoryIcons iconKey)
         {
-            var FNode = this.findOrCreateDirectoryNodeByPath(folder);
+            var treeNode = this.findOrCreateDirectoryNodeByPath(path);
 
-            if (FNode == null)
-                return;
-
-            FNode.ImageKey = iconKey.ToString();
-            FNode.SelectedImageKey = iconKey.ToString();
-            FNode.EnsureVisible();
+            treeNode.ImageKey = iconKey.ToString();
+            treeNode.SelectedImageKey = iconKey.ToString();
+            treeNode.EnsureVisible();
         }
 
-        private TreeNode findOrCreateDirectoryNodeByPath(DirectoryInfo Folder)
+        private TreeNode findOrCreateDirectoryNodeByPath(string path)
         {
-            if (Folder == null) return null;
+            if (path == null) return null;
 
-            // Folder exists already:
-            if (directoryToTreeNodeMapping.ContainsKey(Folder.FullName))
-                return directoryToTreeNodeMapping[Folder.FullName];
+            if (directoryToTreeNodeMapping.ContainsKey(path))
+                return directoryToTreeNodeMapping[path];
             else
-                return AddOrUpdateDirectoryNode(Folder, DirectorySearchStatusTypes.NotEmpty, ""); // TODO: OK?
+                return AddOrUpdateDirectoryNode(path, DirectorySearchStatusTypes.NotEmpty, ""); // TODO: OK?
         }
 
-        public TreeNode AddOrUpdateDirectoryNode(DirectoryInfo directory, DirectorySearchStatusTypes statusType, string optionalErrorMsg)
+        public TreeNode AddOrUpdateDirectoryNode(string path, DirectorySearchStatusTypes statusType, string optionalErrorMsg)
         {
-            // exists already:
-            if (this.ContainsDirectory(directory.FullName))
+            if (directoryToTreeNodeMapping.ContainsKey(path))
             {
-                TreeNode n = null;
-
-                if (directoryToTreeNodeMapping.ContainsKey(directory.FullName))
-                    n = directoryToTreeNodeMapping[directory.FullName];
-                //TODO: else
-
-                applyNodeStyle(n, directory, statusType, optionalErrorMsg);
-
+                // Just update the style if the node already exists
+                var n = directoryToTreeNodeMapping[path];
+                applyNodeStyle(n, path, statusType, optionalErrorMsg);
                 return n;
             }
 
-            //
-            // Create new tree node
-            //
-            TreeNode newTreeNode = new TreeNode(directory.Name);
+            var directory = new DirectoryInfo(path);
 
-            applyNodeStyle(newTreeNode, directory, statusType, optionalErrorMsg);
+            // Create new tree node
+            var newTreeNode = new TreeNode(directory.Name);
+
+            applyNodeStyle(newTreeNode, path, statusType, optionalErrorMsg);
 
             newTreeNode.Tag = directory;
 
             if (directory.Parent.FullName.Trim('\\') == this.rootPath)
+            {
                 this.rootNode.Nodes.Add(newTreeNode);
+            }
             else
             {
-                var parentNode = this.findOrCreateDirectoryNodeByPath(directory.Parent);
-
-                if (parentNode != null)
-                    parentNode.Nodes.Add(newTreeNode);
-                //TODO: else?
+                var parentNode = this.findOrCreateDirectoryNodeByPath(directory.Parent.FullName);
+                parentNode.Nodes.Add(newTreeNode);
             }
 
-            directoryToTreeNodeMapping.Add(directory.FullName, newTreeNode);
+            directoryToTreeNodeMapping.Add(path, newTreeNode);
 
             newTreeNode.EnsureVisible();
 
             return newTreeNode;
         }
 
-        private void applyNodeStyle(TreeNode treeNode, DirectoryInfo directory, DirectorySearchStatusTypes statusType, string optionalErrorMsg)
+        private void applyNodeStyle(TreeNode treeNode, string path, DirectorySearchStatusTypes statusType, string optionalErrorMsg)
         {
+            var directory = new DirectoryInfo(path);
+
+            // TODO: use enums for icon names
             treeNode.ForeColor = (statusType == DirectorySearchStatusTypes.Empty) ? Color.Red : Color.Gray;
             var iconKey = "";
 
@@ -263,7 +257,7 @@ namespace RED2
                 var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
 
                 if (OnDeleteRequest != null)
-                    OnDeleteRequest(this, new DeleteRequestFromTreeEventArgs(folder));
+                    OnDeleteRequest(this, new DeleteRequestFromTreeEventArgs(folder.FullName));
             }
         }
 
@@ -278,5 +272,6 @@ namespace RED2
                 this.directoryToTreeNodeMapping.Remove(path);
             }
         }
+    
     }
 }

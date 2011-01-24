@@ -321,13 +321,6 @@ namespace RED2.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap logo {
-            get {
-                object obj = ResourceManager.GetObject("logo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Please select the folder that you want to be cleaned ähnelt.
         /// </summary>

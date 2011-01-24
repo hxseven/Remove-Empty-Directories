@@ -86,6 +86,7 @@
     <Compile Include="Lib\RuntimeData.cs" />
     <Compile Include="Lib\TreeManager.cs" />
     <Compile Include="Lib\Core.cs" />
+    <Compile Include="Lib\UIHelpers.cs" />
     <Compile Include="Lib\XMLSettings.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -136,11 +137,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\logo.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="RED2_TemporaryKey.pfx" />
-    <None Include="Resources\logo2.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="coffee.ico" />

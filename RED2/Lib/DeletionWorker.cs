@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
-using System;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace RED2
@@ -58,15 +56,15 @@ namespace RED2
                 var folder = this.Data.EmptyFolderList[this.ListPos];
                 var status = DirectoryDeletionStatusTypes.Ignored;
 
-                // Do not delete protected folders:
-                if (!this.Data.ProtectedFolderList.ContainsKey(folder.FullName))
+                // Do not delete protected folders: TODO check if // passt
+                if (!this.Data.ProtectedFolderList.ContainsKey(folder))
                 {
                     try
                     {
                         // Try to delete the directory
                         this.secureDelete(folder);
 
-                        this.Data.AddLogMessage(String.Format("Successfully deleted dir \"{0}\"", folder.FullName));
+                        this.Data.AddLogMessage(String.Format("Successfully deleted dir \"{0}\"", folder));
 
                         status = DirectoryDeletionStatusTypes.Deleted;
                         this.DeletedCount++;
@@ -76,7 +74,7 @@ namespace RED2
                         errorMessage = ex.Message;
                         stopNow = (!this.Data.IgnoreAllErrors);
 
-                        this.Data.AddLogMessage(String.Format("Failed to delete dir \"{0}\" - Error message: \"{1}\"", folder.FullName, errorMessage));
+                        this.Data.AddLogMessage(String.Format("Failed to delete dir \"{0}\" - Error message: \"{1}\"", folder, errorMessage));
 
                         status = DirectoryDeletionStatusTypes.Warning;
                         this.FailedCount++;
@@ -98,7 +96,7 @@ namespace RED2
                     if (errorMessage == "") errorMessage = "Unknown error";
 
                     e.Cancel = true;
-                    this.ErrorInfo = new DeletionErrorEventArgs(folder.FullName, errorMessage);
+                    this.ErrorInfo = new DeletionErrorEventArgs(folder, errorMessage);
                     return;
                 }
             }
@@ -106,8 +104,10 @@ namespace RED2
             e.Result = count;
         }
 
-        private void secureDelete(DirectoryInfo emptyDirectory)
+        private void secureDelete(string path)
         {
+            var emptyDirectory = new DirectoryInfo(path);
+
             if (!Directory.Exists(emptyDirectory.FullName))
                 throw new Exception("Could not delete the directory \""+emptyDirectory.FullName+"\" because it does not exist anymore.");
 
@@ -125,7 +125,7 @@ namespace RED2
                     FileInfo file = Files[f];
 
                     string delPattern = "";
-                    bool deleteTrashFile = SystemFunctions.MatchesIgnorePattern(file, (int)file.Length, this.Data.Ignore0kbFiles, ignoreFileList, out delPattern);
+                    bool deleteTrashFile = SystemFunctions.MatchesIgnorePattern(file, (int)file.Length, this.Data.IgnoreEmptyFiles, ignoreFileList, out delPattern);
 
                     // If only one file is good, then stop.
                     if (deleteTrashFile)
@@ -147,9 +147,9 @@ namespace RED2
 
             // End cleanup
 
-            SystemFunctions.SecureDeleteDirectory(emptyDirectory, this.Data.DeleteMode);
+            // This function will ensure that the directory is really empty before it gets deleted
+            SystemFunctions.SecureDeleteDirectory(emptyDirectory.FullName, this.Data.DeleteMode);
 
         }
-
     }
 }

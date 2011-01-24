@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace RED2
 {
@@ -55,23 +50,8 @@ namespace RED2
             searchEmptyFoldersWorker.ProgressChanged += new ProgressChangedEventHandler(FFWorker_ProgressChanged);
             searchEmptyFoldersWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FFWorker_RunWorkerCompleted);
 
-            //TODO
-
-            //if (!searchEmptyFoldersWorker.SetIgnoreFiles(this.data.IgnoreFiles))
-            //{
-            //    showErrorMsg(RED2.Properties.Resources.error_ignore_settings);
-            //    return;
-            //}
-
-            //if (!searchEmptyFoldersWorker.SetIgnoreFolders(this.data.IgnoreFolders))
-            //{
-            //    showErrorMsg(RED2.Properties.Resources.error_ignore_settings);
-            //    return;
-            //}
-
             // Start worker
             searchEmptyFoldersWorker.RunWorkerAsync(this.Data.StartFolder);
-
         }
 
         /// <summary>
@@ -136,7 +116,7 @@ namespace RED2
             else
             {
                 int FolderCount = this.searchEmptyFoldersWorker.FolderCount;
-                
+
                 this.searchEmptyFoldersWorker.Dispose(); this.searchEmptyFoldersWorker = null;
 
                 if (this.OnFinishedScanForEmptyDirs != null)
@@ -238,7 +218,10 @@ namespace RED2
                 this.Data.ProtectedFolderList.Remove(FolderFullName);
         }
 
-        public string GetLog() { return this.Data.LogMessages.ToString(); }
+        public string GetLog()
+        {
+            return this.Data.LogMessages.ToString();
+        }
 
         private void showErrorMsg(string errorMessage)
         {
@@ -258,7 +241,6 @@ namespace RED2
 
         internal void ContinueDeleteProcess()
         {
-            // Continue
             this.CurrentProcessStep = WorkflowSteps.DeleteProcessRunning;
             this.deletionWorker.RunWorkerAsync();
         }

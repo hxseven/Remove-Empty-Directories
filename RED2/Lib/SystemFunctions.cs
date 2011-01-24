@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
-using System.Text.RegularExpressions;
 
 namespace RED2
 {
@@ -23,6 +23,11 @@ namespace RED2
     /// </summary>
     public class SystemFunctions
     {
+        public static string FixLineBreaks(string str)
+        {
+            return str.Replace(@"\r\n", "\r\n").Replace(@"\n", "\n");
+        }
+
         public static bool MatchesIgnorePattern(FileInfo file, int filesize, bool Ignore0kbFiles, string[] ignoreFileList, out string delPattern)
         {
             bool matches_pattern = false;
@@ -71,20 +76,27 @@ namespace RED2
             return matches_pattern;
         }
 
-        public static void SecureDeleteDirectory(DirectoryInfo directory, DeleteModes deleteMode)
+        public static void ManuallyDeleteDirectory(string path, DeleteModes deleteMode)
+        {
+            if (deleteMode == DeleteModes.Simulate) return;
+
+            FileSystem.DeleteDirectory(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+        }
+
+        public static void SecureDeleteDirectory(string path, DeleteModes deleteMode)
         {
             if (deleteMode == DeleteModes.Simulate) return;
 
             // Last security check before deletion
-            if (directory.GetFiles().Length == 0 && directory.GetDirectories().Length == 0)
+            if (Directory.GetFiles(path).Length == 0 && Directory.GetDirectories(path).Length == 0)
             {
-                if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteDirectory(directory.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(directory.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                else if (deleteMode == DeleteModes.Direct) directory.Delete();
+                if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                else if (deleteMode == DeleteModes.Direct) Directory.Delete(path);
                 else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
             }
             else
-                throw new Exception("Failed to delete the directory: \"" + directory.FullName + "\" because it is no longer empty.");
+                throw new Exception("Failed to delete the directory: \"" + path + "\" because it is no longer empty.");
         }
 
         public static void SecureDeleteFile(FileInfo file, DeleteModes deleteMode)

@@ -6,8 +6,6 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using System.Threading;
-using System.Text.RegularExpressions;
 
 namespace RED2
 {
@@ -85,6 +83,7 @@ namespace RED2
 
         void config_OnSettingsSaved(object sender, EventArgs e)
         {
+            // Update deletion stats
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
         }
 
@@ -108,7 +107,7 @@ namespace RED2
             this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.default_ignore_0kb_files);
             this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.default_keep_system_folders);
             this.config.AddControl("clipboard_detection", this.cbClipboardDetection, RED2.Properties.Resources.default_clipboard_detection);
-            
+
             this.config.AddControl("ignore_files", this.tbIgnoreFiles, RED2.Properties.Resources.ignore_files);
             this.config.AddControl("ignore_folders", this.tbIgnoreFolders, RED2.Properties.Resources.ignore_folders);
 
@@ -128,9 +127,12 @@ namespace RED2
             // settings path:
             this.config.LoadOptions();
 
+            this.cbKeepSystemFolders.CheckedChanged += new System.EventHandler(this.cbKeepSystemFolders_CheckedChanged);
+
             #endregion
 
             this.lbStatus.Text = "";
+            this.cmStrip.Enabled = false;
 
             this.pbProgressStatus.Maximum = 100;
             this.pbProgressStatus.Minimum = 0;
@@ -165,17 +167,37 @@ namespace RED2
                 if (this.Data.EmptyFolderList.Contains(e.Directory))
                     this.Data.EmptyFolderList.Remove(e.Directory);
 
-                var path = e.Directory.FullName;
+                var deletePath = e.Directory;
 
-                var deleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
-                if (deleteMode == DeleteModes.RecycleBin) deleteMode = DeleteModes.RecycleBinWithQuestion;
+                // To simplify the code here there is only the RecycleBinWithQuestion or simulate possible here
+                // (all others will be ignored)
+                SystemFunctions.ManuallyDeleteDirectory(e.Directory, ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode);
 
-                SystemFunctions.SecureDeleteDirectory(e.Directory, deleteMode);
+                if (this.Data.ProtectedFolderList.ContainsKey(deletePath))
+                    this.Data.ProtectedFolderList.Remove(deletePath);
 
-                if (this.Data.ProtectedFolderList.ContainsKey(path))
-                    this.Data.ProtectedFolderList.Remove(path);
+                var deleteChildnodes = new List<string>();
 
-                this.tree.RemoveNode(path);
+                foreach (var path in this.Data.EmptyFolderList)
+                {
+                    if (path.StartsWith(deletePath))
+                        deleteChildnodes.Add(deletePath);
+                }
+
+                // Remove child nodes
+                foreach (var subPath in deleteChildnodes)
+                {
+                    this.Data.EmptyFolderList.Remove(subPath);
+                    this.tree.RemoveNode(subPath);
+
+                    if (this.Data.ProtectedFolderList.ContainsKey(subPath))
+                        this.Data.ProtectedFolderList.Remove(subPath);
+                }
+
+                // Remove root node
+                this.tree.RemoveNode(deletePath);
+
+                this.Data.AddLogMessage("Manually deleted: \"" + deletePath + "\" including all subdirectories");
 
             }
             catch (System.OperationCanceledException)
@@ -190,7 +212,9 @@ namespace RED2
                 if (!this.Data.EmptyFolderList.Contains(e.Directory))
                     this.Data.EmptyFolderList.Add(e.Directory);
 
-                MessageBox.Show(this, "The directory was not deleted, because the following error occured:" + Environment.NewLine + ex.Message);
+                this.Data.AddLogMessage("Could not manually delete \"" + e.Directory + "\" because of the following error: " + ex.Message);
+
+                MessageBox.Show(this, "The directory was not deleted, because of the following error:" + Environment.NewLine + ex.Message);
             }
         }
 
@@ -306,7 +330,8 @@ namespace RED2
                     return;
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(this, "The given directory caused a problem:" + Environment.NewLine + ex.Message, "RED error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -320,7 +345,7 @@ namespace RED2
             this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
             this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
             this.Data.IgnoreDirectoriesList = this.tbIgnoreFolders.Text;
-            this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
             this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
             this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
             this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
@@ -339,7 +364,8 @@ namespace RED2
             this.core.SearchingForEmptyDirectories();
         }
 
-        private void setStatusAndLogMessage(string msg) {
+        private void setStatusAndLogMessage(string msg)
+        {
             this.lbStatus.Text = msg;
             this.Data.AddLogMessage(msg);
         }
@@ -364,6 +390,7 @@ namespace RED2
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
+            this.cmStrip.Enabled = true;
 
             this.tree.EnsureRootNodeIsVisible();
 
@@ -380,15 +407,15 @@ namespace RED2
             {
                 case DirectoryDeletionStatusTypes.Deleted:
                     this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
-                    this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.deleted);
+                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.deleted);
                     break;
 
                 case DirectoryDeletionStatusTypes.Protected:
-                    this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.protected_icon);
+                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.protected_icon);
                     break;
 
                 default:
-                    this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.folder_warning);
+                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.folder_warning);
                     break;
             }
 
@@ -414,21 +441,11 @@ namespace RED2
 
         #region UI Stuff
 
-        /// <summary>
-        /// User hit's cancel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.core.CancelCurrentProcess();
         }
 
-        /// <summary>
-        /// Deletes all empty folders
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             this.Data.LogMessages = new System.Text.StringBuilder();
@@ -436,9 +453,10 @@ namespace RED2
 
             this.btnScan.Enabled = false;
             this.btnCancel.Enabled = true;
+            this.cmStrip.Enabled = false;
 
             this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
             this.Data.PauseTime = (double)this.nuPause.Value;
             this.Data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
             this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
@@ -458,12 +476,10 @@ namespace RED2
 
         private void proToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (this.tvFolders.SelectedNode == null) return;
             this.tcMain.SelectedIndex = 1;
 
-            TreeNode Node = this.tvFolders.SelectedNode;
-            DirectoryInfo Folder = (DirectoryInfo)Node.Tag;
-
-            this.tbIgnoreFolders.Text += "\r\n" + Folder.FullName;
+            this.tbIgnoreFolders.Text += "\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName;
         }
 
         /// <summary>
@@ -514,7 +530,7 @@ namespace RED2
             {
                 var clipValue = Clipboard.GetText(TextDataFormat.Text);
 
-                if (clipValue.Contains(":\\"))
+                if (clipValue.Contains(":\\") && !clipValue.Contains("\n"))
                 {
                     // add ending backslash
                     if (!clipValue.EndsWith("\\")) clipValue += "\\";
@@ -592,17 +608,18 @@ namespace RED2
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Assembly REDAssembly = Assembly.GetExecutingAssembly();
-            AssemblyName AssemblyName = REDAssembly.GetName();
-
-            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", AssemblyName.Version.ToString()));
+            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
         }
 
         #endregion
 
-
-
-
-
+        private void cbKeepSystemFolders_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!this.cbKeepSystemFolders.Checked)
+            {
+                if (MessageBox.Show(this, SystemFunctions.FixLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
+                    this.cbKeepSystemFolders.Checked = true;
+            }
+        }
     }
 }

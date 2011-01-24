@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Text;
 
 namespace RED2
 {
+    /// <summary>
+    /// Container for all runtime related data
+    /// </summary>
     public class RuntimeData
     {
         // Configuration
@@ -19,7 +21,7 @@ namespace RED2
         public string IgnoreFiles { get; set; }
         public string IgnoreDirectoriesList { get; set; }
 
-        public bool Ignore0kbFiles { get; set; }
+        public bool IgnoreEmptyFiles { get; set; }
         public bool IgnoreHiddenFolders { get; set; }
         public bool KeepSystemFolders { get; set; }
         public double PauseTime { get; set; }
@@ -29,13 +31,14 @@ namespace RED2
 
         public StringBuilder LogMessages = new StringBuilder();
         public Dictionary<String, bool> ProtectedFolderList = new Dictionary<string, bool>();
-        public List<DirectoryInfo> EmptyFolderList { get; set; }
+        //public List<DirectoryInfo> EmptyFolderList { get; set; } TODO
+        public List<string> EmptyFolderList { get; set; }
 
         public RuntimeData()
         {
             this.LogMessages = new StringBuilder();
             this.ProtectedFolderList = new Dictionary<string, bool>();
-            this.EmptyFolderList = new List<DirectoryInfo>();
+            this.EmptyFolderList = new List<string>();
         }
 
         public string[] GetIgnoreFileList()
@@ -48,7 +51,7 @@ namespace RED2
             return this.IgnoreDirectoriesList.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
         }
 
-        internal void AddLogMessage(string msg)
+        public void AddLogMessage(string msg)
         {
             this.LogMessages.AppendLine(DateTime.Now.ToString("r") + "\t" + msg);
         }

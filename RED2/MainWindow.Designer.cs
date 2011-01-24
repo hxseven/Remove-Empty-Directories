@@ -78,6 +78,9 @@
             this.tbIgnoreFolders = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.btnShowConfig = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -86,6 +89,7 @@
             this.nuPause = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.tbIgnoreFiles = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -96,10 +100,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.llWebsite = new System.Windows.Forms.LinkLabel();
             this.lbAppTitle = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -108,11 +108,11 @@
             this.gpOptions.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabAbout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).BeginInit();
             this.SuspendLayout();
             // 
             // cbIntegrateIntoWindowsExplorer
@@ -685,6 +685,41 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Advanced";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(482, 67);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(33, 13);
+            this.label13.TabIndex = 22;
+            this.label13.Text = "errors";
+            // 
+            // nuInfiniteLoopDetectionCount
+            // 
+            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(426, 63);
+            this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nuInfiniteLoopDetectionCount.Name = "nuInfiniteLoopDetectionCount";
+            this.nuInfiniteLoopDetectionCount.Size = new System.Drawing.Size(53, 20);
+            this.nuInfiniteLoopDetectionCount.TabIndex = 21;
+            this.nuInfiniteLoopDetectionCount.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(264, 67);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(160, 13);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Infinite-loop detection: Stop after\r\n";
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
@@ -785,6 +820,17 @@
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Ignore these files";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.DarkRed;
+            this.label14.Location = new System.Drawing.Point(8, 48);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(210, 26);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Be careful: A bad pattern could potentially\r\ncause accidental deletion of importa" +
+                "nt files.";
             // 
             // label9
             // 
@@ -904,52 +950,6 @@
             this.lbAppTitle.TabIndex = 0;
             this.lbAppTitle.Text = "Remove Empty Directories - Version ";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(264, 67);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(160, 13);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "Infinite-loop detection: Stop after\r\n";
-            // 
-            // nuInfiniteLoopDetectionCount
-            // 
-            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(426, 63);
-            this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.nuInfiniteLoopDetectionCount.Name = "nuInfiniteLoopDetectionCount";
-            this.nuInfiniteLoopDetectionCount.Size = new System.Drawing.Size(53, 20);
-            this.nuInfiniteLoopDetectionCount.TabIndex = 21;
-            this.nuInfiniteLoopDetectionCount.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(482, 67);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(33, 13);
-            this.label13.TabIndex = 22;
-            this.label13.Text = "errors";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.ForeColor = System.Drawing.Color.DarkRed;
-            this.label14.Location = new System.Drawing.Point(8, 48);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(210, 26);
-            this.label14.TabIndex = 12;
-            this.label14.Text = "Be careful: A bad pattern could potentially\r\ncause accidental deletion of importa" +
-                "nt files.";
-            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -978,13 +978,13 @@
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabAbout.ResumeLayout(false);
             this.tabAbout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).EndInit();
             this.ResumeLayout(false);
 
 		}

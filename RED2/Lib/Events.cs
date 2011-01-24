@@ -23,16 +23,6 @@ namespace RED2
         }
     }
 
-    //public class FoundDirEventArgs : EventArgs
-    //{
-    //    public DirectoryInfo Directory { get; set; }
-
-    //    public FoundDirEventArgs(DirectoryInfo dir)
-    //    {
-    //        this.Directory = dir;
-    //    }
-    //}
-
     public class FinishedScanForEmptyDirsEventArgs : EventArgs
     {
         public int EmptyFolderCount { get; set; }
@@ -48,16 +38,16 @@ namespace RED2
     public class DeleteProcessUpdateEventArgs : EventArgs
     {
         public int ProgressStatus { get; set; }
-        public DirectoryInfo Folder { get; set; }
+        public string Path { get; set; }
         public DirectoryDeletionStatusTypes Status { get; set; }
         public int FolderCount { get; set; }
 
-        public DeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, DirectoryDeletionStatusTypes Status, int FolderCount)
+        public DeleteProcessUpdateEventArgs(int progressStatus, string path, DirectoryDeletionStatusTypes status, int folderCount)
         {
-            this.ProgressStatus = ProgressStatus;
-            this.Folder = Folder;
-            this.Status = Status;
-            this.FolderCount = FolderCount;
+            this.ProgressStatus = progressStatus;
+            this.Path = path;
+            this.Status = status;
+            this.FolderCount = folderCount;
         }
     }
 
@@ -87,9 +77,9 @@ namespace RED2
 
     public class DeleteRequestFromTreeEventArgs : EventArgs
     {
-        public DirectoryInfo Directory { get; set; }
+        public string Directory { get; set; }
 
-        public DeleteRequestFromTreeEventArgs(DirectoryInfo Directory)
+        public DeleteRequestFromTreeEventArgs(string Directory)
         {
             this.Directory = Directory;
         }
@@ -103,6 +93,26 @@ namespace RED2
         public DeletionErrorEventArgs(string Path, string ErrorMessage)
         {
             this.Path = Path;
+            this.ErrorMessage = ErrorMessage;
+        }
+    }
+
+    public class FoundEmptyDirInfoEventArgs : EventArgs
+    {
+        public string Directory { get; set; }
+        public DirectorySearchStatusTypes Type { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public FoundEmptyDirInfoEventArgs(string Directory, DirectorySearchStatusTypes type)
+        {
+            this.Directory = Directory;
+            this.Type = type;
+        }
+
+        public FoundEmptyDirInfoEventArgs(string Directory, DirectorySearchStatusTypes type, string ErrorMessage)
+        {
+            this.Directory = Directory;
+            this.Type = type;
             this.ErrorMessage = ErrorMessage;
         }
     }
