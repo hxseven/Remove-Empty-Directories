@@ -97,6 +97,15 @@ namespace RED2.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
+        /// </summary>
+        internal static string default_ignore_0kb_files {
+            get {
+                return ResourceManager.GetString("default_ignore_0kb_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
         /// </summary>
         internal static string default_ignore_errors {
@@ -115,20 +124,38 @@ namespace RED2.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
+        /// </summary>
+        internal static string default_keep_system_folders {
+            get {
+                return ResourceManager.GetString("default_keep_system_folders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die -1 ähnelt.
+        /// </summary>
+        internal static string default_max_depth {
+            get {
+                return ResourceManager.GetString("default_max_depth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 80 ähnelt.
+        /// </summary>
+        internal static string default_pause_between {
+            get {
+                return ResourceManager.GetString("default_pause_between", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories ({1} directories could not be deleted) ähnelt.
         /// </summary>
         internal static string delete_process_finished {
             get {
                 return ResourceManager.GetString("delete_process_finished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deleting empty directories... ähnelt.
-        /// </summary>
-        internal static string deleting_empty_folders {
-            get {
-                return ResourceManager.GetString("deleting_empty_folders", resourceCulture);
             }
         }
         
@@ -277,15 +304,6 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
-        /// </summary>
-        internal static string ignore_0kb_files {
-            get {
-                return ResourceManager.GetString("ignore_0kb_files", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die /*.tmp$/\r\ndesktop.ini\r\nThumbs.db ähnelt.
         /// </summary>
         internal static string ignore_files {
@@ -303,37 +321,10 @@ namespace RED2.Properties {
             }
         }
         
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
-        /// </summary>
-        internal static string keep_system_folders {
-            get {
-                return ResourceManager.GetString("keep_system_folders", resourceCulture);
-            }
-        }
-        
         internal static System.Drawing.Bitmap logo {
             get {
                 object obj = ResourceManager.GetObject("logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die -1 ähnelt.
-        /// </summary>
-        internal static string max_depth {
-            get {
-                return ResourceManager.GetString("max_depth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 150 ähnelt.
-        /// </summary>
-        internal static string pause_between {
-            get {
-                return ResourceManager.GetString("pause_between", resourceCulture);
             }
         }
         
@@ -406,6 +397,15 @@ namespace RED2.Properties {
         internal static string searching_empty_folders {
             get {
                 return ResourceManager.GetString("searching_empty_folders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Started deletion process... ähnelt.
+        /// </summary>
+        internal static string started_deletion_process {
+            get {
+                return ResourceManager.GetString("started_deletion_process", resourceCulture);
             }
         }
         

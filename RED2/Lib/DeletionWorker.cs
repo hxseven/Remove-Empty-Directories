@@ -35,10 +35,6 @@ namespace RED2
             // Be sure not to manipulate any Windows Forms controls created
             // on the UI thread from this method.
 
-            this.Data.LogMessages = new System.Text.StringBuilder();
-
-            this.Data.AddLogMessage("Started deletion process");
-
             if (CancellationPending)
             {
                 e.Cancel = true;
@@ -138,10 +134,10 @@ namespace RED2
                         {
                             SystemFunctions.SecureDeleteFile(file, this.Data.DeleteMode);
 
-                            this.Data.LogMessages.AppendLine(String.Format("-> Successfully deleted file \"{0}\" because it matched the ignore pattern \"{1}\"", file.FullName, delPattern));
+                            this.Data.AddLogMessage(String.Format("-> Successfully deleted file \"{0}\" because it matched the ignore pattern \"{1}\"", file.FullName, delPattern));
                         }
                         catch (Exception ex) {
-                            this.Data.LogMessages.AppendLine(String.Format("Failed to delete file \"{0}\" - Error message: \"{1}\"", file.FullName, ex.Message));
+                            this.Data.AddLogMessage(String.Format("Failed to delete file \"{0}\" - Error message: \"{1}\"", file.FullName, ex.Message));
 
                             throw new Exception("Could not delete a empty (trash) file - error message: " + ex.Message);
                         }

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Remove Empty Directories")]
-[assembly: AssemblyDescription("RED searches and deletes empty folders recursively below a given start folder.")]
+[assembly: AssemblyDescription("RED searches and deletes empty directories recursively below a given start folder.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jonas John (www.jonasjohn.de)")]
 [assembly: AssemblyProduct("Remove Empty Directories")]
-[assembly: AssemblyCopyright("Copyright (c) 2006-2007")]
+[assembly: AssemblyCopyright("Copyright (c) 2006-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Buildnummer
 //      Revision
 //
-[assembly: AssemblyVersion("2.1.0.0")]
-[assembly: AssemblyFileVersion("2.1.0.0")]
+[assembly: AssemblyVersion("2.2.0.0")]
+[assembly: AssemblyFileVersion("2.2.0.0")]

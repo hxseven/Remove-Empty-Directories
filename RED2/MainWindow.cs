@@ -105,16 +105,16 @@ namespace RED2
             this.config.AddControl("folder", this.tbFolder, RED2.Properties.Resources.folder);
 
             this.config.AddControl("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders, RED2.Properties.Resources.dont_scan_hidden_folders);
-            this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.ignore_0kb_files);
-            this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.keep_system_folders);
-            this.config.AddControl("clipboard_detection", this.cbClipboardDetection, RED2.Properties.Resources.keep_system_folders);
+            this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.default_ignore_0kb_files);
+            this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.default_keep_system_folders);
+            this.config.AddControl("clipboard_detection", this.cbClipboardDetection, RED2.Properties.Resources.default_clipboard_detection);
             
             this.config.AddControl("ignore_files", this.tbIgnoreFiles, RED2.Properties.Resources.ignore_files);
             this.config.AddControl("ignore_folders", this.tbIgnoreFolders, RED2.Properties.Resources.ignore_folders);
 
-            this.config.AddControl("max_depth", this.nuMaxDepth, RED2.Properties.Resources.max_depth);
+            this.config.AddControl("max_depth", this.nuMaxDepth, RED2.Properties.Resources.default_max_depth);
             this.config.AddControl("infinite_loop_detection_count", this.nuInfiniteLoopDetectionCount, RED2.Properties.Resources.default_infinite_loop_detection_count);
-            this.config.AddControl("pause_between", this.nuPause, RED2.Properties.Resources.pause_between);
+            this.config.AddControl("pause_between", this.nuPause, RED2.Properties.Resources.default_pause_between);
             this.config.AddControl("ignore_errors", this.cbIgnoreErrors, RED2.Properties.Resources.default_ignore_errors);
 
             // Special fields
@@ -256,9 +256,9 @@ namespace RED2
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
             if (this.core.CurrentProcessStep == WorkflowSteps.DeleteProcessRunning)
-                this.lbStatus.Text = RED2.Properties.Resources.deletion_aborted; // TODO OK?
+                setStatusAndLogMessage(RED2.Properties.Resources.deletion_aborted); // TODO OK?
             else
-                this.lbStatus.Text = RED2.Properties.Resources.process_cancelled;
+                setStatusAndLogMessage(RED2.Properties.Resources.process_cancelled);
 
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
@@ -271,9 +271,9 @@ namespace RED2
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
             if (this.core.CurrentProcessStep == WorkflowSteps.DeleteProcessRunning)
-                this.lbStatus.Text = RED2.Properties.Resources.deletion_aborted;
+                setStatusAndLogMessage(RED2.Properties.Resources.deletion_aborted);
             else
-                this.lbStatus.Text = RED2.Properties.Resources.process_aborted;
+                setStatusAndLogMessage(RED2.Properties.Resources.process_aborted);
 
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
@@ -294,16 +294,24 @@ namespace RED2
         {
             this.tree.ClearTree();
 
-            this.btnShowLog.Enabled = false;
-
             // Check given folder:
-            DirectoryInfo selectedDirectory = new DirectoryInfo(this.tbFolder.Text);
-
-            if (!selectedDirectory.Exists)
+            DirectoryInfo selectedDirectory = null;
+            try
             {
-                MessageBox.Show(RED2.Properties.Resources.error_dir_does_not_exist);
+                selectedDirectory = new DirectoryInfo(this.tbFolder.Text);
+
+                if (!selectedDirectory.Exists)
+                {
+                    MessageBox.Show(RED2.Properties.Resources.error_dir_does_not_exist);
+                    return;
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show(this, "The given directory caused a problem:" + Environment.NewLine + ex.Message, "RED error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            this.btnShowLog.Enabled = false;
 
             this.config.Save();
 
@@ -324,9 +332,16 @@ namespace RED2
             this.tree.AddRootNode(this.Data.StartFolder, DirectoryIcons.home);
 
             this.btnCancel.Enabled = true;
-            this.lbStatus.Text = RED2.Properties.Resources.searching_empty_folders;
+
+            this.Data.LogMessages = new System.Text.StringBuilder();
+            setStatusAndLogMessage(RED2.Properties.Resources.searching_empty_folders);
 
             this.core.SearchingForEmptyDirectories();
+        }
+
+        private void setStatusAndLogMessage(string msg) {
+            this.lbStatus.Text = msg;
+            this.Data.AddLogMessage(msg);
         }
 
         #endregion
@@ -337,8 +352,7 @@ namespace RED2
         {
             // Finished scan
 
-            this.Data.AddLogMessage(String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount));
-            this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount);
+            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount));
 
             this.btnDelete.Enabled = (e.EmptyFolderCount > 0);
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
@@ -390,7 +404,7 @@ namespace RED2
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
 
-            this.lbStatus.Text = String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount);
+            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount));
 
             this.config.DeletedFolderCount += e.DeletedFolderCount;
             this.config.Save();
@@ -417,10 +431,11 @@ namespace RED2
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            this.lbStatus.Text = RED2.Properties.Resources.deleting_empty_folders;
+            this.Data.LogMessages = new System.Text.StringBuilder();
+            setStatusAndLogMessage(RED2.Properties.Resources.started_deletion_process);
+
             this.btnScan.Enabled = false;
             this.btnCancel.Enabled = true;
-
 
             this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
             this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;

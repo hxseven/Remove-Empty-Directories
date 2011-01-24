@@ -99,6 +99,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -610,10 +611,10 @@
             this.cbIgnore0kbFiles.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbIgnore0kbFiles.Location = new System.Drawing.Point(16, 87);
             this.cbIgnore0kbFiles.Name = "cbIgnore0kbFiles";
-            this.cbIgnore0kbFiles.Size = new System.Drawing.Size(272, 17);
+            this.cbIgnore0kbFiles.Size = new System.Drawing.Size(259, 17);
             this.cbIgnore0kbFiles.TabIndex = 3;
             this.cbIgnore0kbFiles.Tag = "ignore_0kb_files";
-            this.cbIgnore0kbFiles.Text = "Directories with files that are all 0 KB count as empty";
+            this.cbIgnore0kbFiles.Text = "Directories with files that are 0 KB count as empty";
             this.cbIgnore0kbFiles.UseVisualStyleBackColor = true;
             // 
             // groupBox4
@@ -646,22 +647,22 @@
             this.tbIgnoreFolders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbIgnoreFolders.Location = new System.Drawing.Point(16, 47);
+            this.tbIgnoreFolders.Location = new System.Drawing.Point(13, 38);
             this.tbIgnoreFolders.Multiline = true;
             this.tbIgnoreFolders.Name = "tbIgnoreFolders";
             this.tbIgnoreFolders.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFolders.Size = new System.Drawing.Size(230, 149);
+            this.tbIgnoreFolders.Size = new System.Drawing.Size(230, 158);
             this.tbIgnoreFolders.TabIndex = 6;
             this.tbIgnoreFolders.WordWrap = false;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(13, 31);
+            this.label10.Location = new System.Drawing.Point(13, 20);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(103, 13);
+            this.label10.Size = new System.Drawing.Size(146, 13);
             this.label10.TabIndex = 13;
-            this.label10.Text = "Ignore these folders:";
+            this.label10.Text = "Ignore these directory names:";
             // 
             // groupBox3
             // 
@@ -774,6 +775,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.tbIgnoreFiles);
             this.groupBox2.Controls.Add(this.label2);
@@ -789,7 +791,7 @@
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label9.AutoSize = true;
             this.label9.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label9.Location = new System.Drawing.Point(6, 199);
+            this.label9.Location = new System.Drawing.Point(8, 199);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(106, 13);
             this.label9.TabIndex = 11;
@@ -800,22 +802,23 @@
             this.tbIgnoreFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbIgnoreFiles.Location = new System.Drawing.Point(11, 47);
+            this.tbIgnoreFiles.Location = new System.Drawing.Point(8, 79);
             this.tbIgnoreFiles.Multiline = true;
             this.tbIgnoreFiles.Name = "tbIgnoreFiles";
             this.tbIgnoreFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFiles.Size = new System.Drawing.Size(239, 149);
+            this.tbIgnoreFiles.Size = new System.Drawing.Size(239, 117);
             this.tbIgnoreFiles.TabIndex = 5;
             this.tbIgnoreFiles.WordWrap = false;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 18);
+            this.label2.Location = new System.Drawing.Point(8, 18);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(204, 26);
+            this.label2.Size = new System.Drawing.Size(221, 26);
             this.label2.TabIndex = 10;
-            this.label2.Text = "Mark folders as empty if they only contain \r\nfiles that matches these patterns:";
+            this.label2.Text = "Mark directories as empty if they only contain \r\nfiles that match the following p" +
+                "atterns:";
             // 
             // tabAbout
             // 
@@ -858,7 +861,6 @@
             this.tbCredits.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbCredits.Size = new System.Drawing.Size(530, 418);
             this.tbCredits.TabIndex = 25;
-            this.tbCredits.Text = resources.GetString("tbCredits.Text");
             // 
             // lblRedStats
             // 
@@ -936,6 +938,17 @@
             this.label13.Size = new System.Drawing.Size(33, 13);
             this.label13.TabIndex = 22;
             this.label13.Text = "errors";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.DarkRed;
+            this.label14.Location = new System.Drawing.Point(8, 48);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(210, 26);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Be careful: A bad pattern could potentially\r\ncause accidental deletion of importa" +
+                "nt files.";
             // 
             // MainWindow
             // 
@@ -1047,6 +1060,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.NumericUpDown nuInfiniteLoopDetectionCount;
+        private System.Windows.Forms.Label label14;
 	}
 }
 

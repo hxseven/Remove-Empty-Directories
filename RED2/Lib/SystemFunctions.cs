@@ -35,7 +35,7 @@ namespace RED2
 
                 if (Ignore0kbFiles && filesize == 0)
                 {
-                    delPattern = "[empty file (0 KB)]";
+                    delPattern = "[Empty file]";
                     matches_pattern = true;
                 }
                 else if (pattern.ToLower() == file.Name.ToLower())
@@ -71,17 +71,17 @@ namespace RED2
             return matches_pattern;
         }
 
-        public static Random r = new Random();
-
         public static void SecureDeleteDirectory(DirectoryInfo directory, DeleteModes deleteMode)
         {
-            // last security check (for files):
+            if (deleteMode == DeleteModes.Simulate) return;
+
+            // Last security check before deletion
             if (directory.GetFiles().Length == 0 && directory.GetDirectories().Length == 0)
             {
                 if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteDirectory(directory.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                 else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(directory.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                 else if (deleteMode == DeleteModes.Direct) directory.Delete();
-                else if (deleteMode != DeleteModes.Simulate) throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
+                else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
             }
             else
                 throw new Exception("Failed to delete the directory: \"" + directory.FullName + "\" because it is no longer empty.");
@@ -89,14 +89,16 @@ namespace RED2
 
         public static void SecureDeleteFile(FileInfo file, DeleteModes deleteMode)
         {
+            if (deleteMode == DeleteModes.Simulate) return;
+
             if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteFile(file.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
             else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(file.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
             else if (deleteMode == DeleteModes.Direct)
             {
-                if (SystemFunctions.r.NextDouble() > 0.5) throw new Exception("Test error");
+                //if (SystemFunctions.random.NextDouble() > 0.5) throw new Exception("Test error");
                 file.Delete();
             }
-            else if (deleteMode != DeleteModes.Simulate) throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
+            else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
         }
 
         public static string ChooseDirectoryDialog(string path)

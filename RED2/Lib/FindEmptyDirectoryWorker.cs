@@ -42,7 +42,6 @@ namespace RED2
 
             // Clean dir list
             this.Data.EmptyFolderList = new List<DirectoryInfo>();
-            this.Data.LogMessages = new System.Text.StringBuilder();
 
             this.ignoreFileList = this.Data.GetIgnoreFileList();
             this.ignoreFolderList = this.Data.GetIgnoreDirectories();

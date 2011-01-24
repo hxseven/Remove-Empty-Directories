@@ -168,7 +168,7 @@
   <data name="icon_warning" xml:space="preserve">
     <value>Failed</value>
   </data>
-  <data name="ignore_0kb_files" xml:space="preserve">
+  <data name="default_ignore_0kb_files" xml:space="preserve">
     <value>True</value>
   </data>
   <data name="ignore_files" xml:space="preserve">
@@ -177,18 +177,18 @@
   <data name="ignore_folders" xml:space="preserve">
     <value>System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN</value>
   </data>
-  <data name="keep_system_folders" xml:space="preserve">
+  <data name="default_keep_system_folders" xml:space="preserve">
     <value>True</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo2.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="max_depth" xml:space="preserve">
+  <data name="default_max_depth" xml:space="preserve">
     <value>-1</value>
   </data>
-  <data name="pause_between" xml:space="preserve">
-    <value>150</value>
+  <data name="default_pause_between" xml:space="preserve">
+    <value>80</value>
   </data>
   <data name="please_select" xml:space="preserve">
     <value>Please select the folder that you want to be cleaned</value>
@@ -205,8 +205,8 @@
   <data name="removing_empty_folders" xml:space="preserve">
     <value>Deleting empty directories ({0}/{1})...</value>
   </data>
-  <data name="deleting_empty_folders" xml:space="preserve">
-    <value>Deleting empty directories...</value>
+  <data name="started_deletion_process" xml:space="preserve">
+    <value>Started deletion process...</value>
   </data>
   <data name="scanning_folders" xml:space="preserve">
     <value>Scanning directories...</value>
