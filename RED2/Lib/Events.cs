@@ -23,15 +23,15 @@ namespace RED2
         }
     }
 
-    public class FoundDirEventArgs : EventArgs
-    {
-        public DirectoryInfo Directory { get; set; }
+    //public class FoundDirEventArgs : EventArgs
+    //{
+    //    public DirectoryInfo Directory { get; set; }
 
-        public FoundDirEventArgs(DirectoryInfo dir)
-        {
-            this.Directory = dir;
-        }
-    }
+    //    public FoundDirEventArgs(DirectoryInfo dir)
+    //    {
+    //        this.Directory = dir;
+    //    }
+    //}
 
     public class FinishedScanForEmptyDirsEventArgs : EventArgs
     {
@@ -49,10 +49,10 @@ namespace RED2
     {
         public int ProgressStatus { get; set; }
         public DirectoryInfo Folder { get; set; }
-        public DirectoryStatusTypes Status { get; set; }
+        public DirectoryDeletionStatusTypes Status { get; set; }
         public int FolderCount { get; set; }
 
-        public DeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, DirectoryStatusTypes Status, int FolderCount)
+        public DeleteProcessUpdateEventArgs(int ProgressStatus, DirectoryInfo Folder, DirectoryDeletionStatusTypes Status, int FolderCount)
         {
             this.ProgressStatus = ProgressStatus;
             this.Folder = Folder;

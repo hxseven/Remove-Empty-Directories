@@ -79,6 +79,15 @@ namespace RED2.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
+        /// </summary>
+        internal static string default_clipboard_detection {
+            get {
+                return ResourceManager.GetString("default_clipboard_detection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die 0 ähnelt.
         /// </summary>
         internal static string default_delete_mode {
@@ -93,6 +102,15 @@ namespace RED2.Properties {
         internal static string default_ignore_errors {
             get {
                 return ResourceManager.GetString("default_ignore_errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 10 ähnelt.
+        /// </summary>
+        internal static string default_infinite_loop_detection_count {
+            get {
+                return ResourceManager.GetString("default_infinite_loop_detection_count", resourceCulture);
             }
         }
         

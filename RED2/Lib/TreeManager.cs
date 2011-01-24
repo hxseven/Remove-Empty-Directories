@@ -13,6 +13,7 @@ namespace RED2
     {
         private TreeView treeView = null;
         private TreeNode rootNode = null;
+        private string rootPath = "";
 
         private Dictionary<String, TreeNode> directoryToTreeNodeMapping = null;
         private Dictionary<string, object> backupValues = new Dictionary<string, object>();
@@ -25,6 +26,7 @@ namespace RED2
             this.treeView = dirTree;
             this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
             this.ClearTree();
+            this.rootPath = "";
         }
 
         // Hack
@@ -43,21 +45,17 @@ namespace RED2
             this.treeView.Nodes.Clear();
         }
 
-        /// <summary>
-        /// Create root node
-        /// </summary>
-        /// <param name="StartFolder"></param>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        internal void CreateRootNode(DirectoryInfo StartFolder, DirectoryIcons imageKey)
+        internal void AddRootNode(DirectoryInfo directory, DirectoryIcons imageKey)
         {
-            rootNode = new TreeNode(StartFolder.Name);
-            rootNode.Tag = StartFolder;
+            this.rootPath = directory.FullName.Trim('\\');
+
+            rootNode = new TreeNode(directory.Name);
+            rootNode.Tag = directory;
             rootNode.ImageKey = imageKey.ToString();
             rootNode.SelectedImageKey = imageKey.ToString();
 
             directoryToTreeNodeMapping = new Dictionary<String, TreeNode>();
-            directoryToTreeNodeMapping.Add(StartFolder.FullName, rootNode);
+            directoryToTreeNodeMapping.Add(directory.FullName, rootNode);
 
             this.treeView.Nodes.Add(rootNode);
         }
@@ -72,11 +70,6 @@ namespace RED2
             return directoryToTreeNodeMapping.ContainsKey(FolderFullName);
         }
 
-        internal TreeNode GetDirectory(string FolderFullName)
-        {
-            return directoryToTreeNodeMapping[FolderFullName];
-        }
-
         /// <summary>
         /// Marks a folder with the warning or deleted icon
         /// </summary>
@@ -84,80 +77,61 @@ namespace RED2
         /// <param name="iconKey"></param>
         internal void UpdateItemIcon(DirectoryInfo folder, DirectoryIcons iconKey)
         {
-            TreeNode FNode = this.findTreeNodeByFolder(folder);
+            var FNode = this.findOrCreateDirectoryNodeByPath(folder);
+
+            if (FNode == null)
+                return;
+
             FNode.ImageKey = iconKey.ToString();
             FNode.SelectedImageKey = iconKey.ToString();
             FNode.EnsureVisible();
         }
 
-        /// <summary>
-        /// Returns a TreeNode Object for a given Folder
-        /// </summary>
-        /// <param name="Folder"></param>
-        /// <returns></returns>
-        private TreeNode findTreeNodeByFolder(DirectoryInfo Folder)
+        private TreeNode findOrCreateDirectoryNodeByPath(DirectoryInfo Folder)
         {
+            if (Folder == null) return null;
+
             // Folder exists already:
             if (directoryToTreeNodeMapping.ContainsKey(Folder.FullName))
                 return directoryToTreeNodeMapping[Folder.FullName];
             else
-                return AddEmptyFolderToTreeView(Folder, false);
+                return AddOrUpdateDirectoryNode(Folder, DirectorySearchStatusTypes.NotEmpty, ""); // TODO: OK?
         }
 
-        /// <summary>
-        /// Adds a folder to the treeview
-        /// </summary>
-        /// <param name="Folder"></param>
-        /// <param name="_isEmpty"></param>
-        /// <returns></returns>
-        public TreeNode AddEmptyFolderToTreeView(DirectoryInfo Folder, bool _isEmpty)
+        public TreeNode AddOrUpdateDirectoryNode(DirectoryInfo directory, DirectorySearchStatusTypes statusType, string optionalErrorMsg)
         {
             // exists already:
-            if (this.ContainsDirectory(Folder.FullName))
+            if (this.ContainsDirectory(directory.FullName))
             {
-                TreeNode n = this.GetDirectory(Folder.FullName);
-                n.ForeColor = Color.Red;
+                TreeNode n = null;
+
+                if (directoryToTreeNodeMapping.ContainsKey(directory.FullName))
+                    n = directoryToTreeNodeMapping[directory.FullName];
+                //TODO: else
+
+                applyNodeStyle(n, directory, statusType, optionalErrorMsg);
+
                 return n;
             }
 
-            bool parentIsRoot = (Folder.Parent.FullName.Trim('\\') == ((DirectoryInfo)this.rootNode.Tag).FullName.Trim('\\'));
-
-            return this.AddNewDirectory(Folder, _isEmpty, parentIsRoot);
-        }
-
-        internal TreeNode AddNewDirectory(DirectoryInfo directory, bool isEmpty, bool parentIsRoot)
-        {
+            //
+            // Create new tree node
+            //
             TreeNode newTreeNode = new TreeNode(directory.Name);
-            newTreeNode.ForeColor = (isEmpty) ? Color.Red : Color.Gray;
 
-            var fileCount = directory.GetFiles().Length;
-
-            bool containsTrash = (fileCount > 0 && isEmpty);
-
-            newTreeNode.ImageKey = containsTrash ? "folder_trash_files" : "folder";
-
-            if ((directory.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-                newTreeNode.ImageKey = containsTrash ? "folder_hidden_trash_files" : "folder_hidden";
-
-            if ((directory.Attributes & FileAttributes.Encrypted) == FileAttributes.Encrypted)
-                newTreeNode.ImageKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
-
-            if ((directory.Attributes & FileAttributes.System) == FileAttributes.System)
-                newTreeNode.ImageKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
-
-            newTreeNode.SelectedImageKey = newTreeNode.ImageKey;
+            applyNodeStyle(newTreeNode, directory, statusType, optionalErrorMsg);
 
             newTreeNode.Tag = directory;
 
-            if (containsTrash)
-                newTreeNode.Text += " (" + fileCount.ToString() + " empty files)";
-
-            if (parentIsRoot)
+            if (directory.Parent.FullName.Trim('\\') == this.rootPath)
                 this.rootNode.Nodes.Add(newTreeNode);
             else
             {
-                TreeNode ParentNode = this.findTreeNodeByFolder(directory.Parent);
-                ParentNode.Nodes.Add(newTreeNode);
+                var parentNode = this.findOrCreateDirectoryNodeByPath(directory.Parent);
+
+                if (parentNode != null)
+                    parentNode.Nodes.Add(newTreeNode);
+                //TODO: else?
             }
 
             directoryToTreeNodeMapping.Add(directory.FullName, newTreeNode);
@@ -167,7 +141,43 @@ namespace RED2
             return newTreeNode;
         }
 
+        private void applyNodeStyle(TreeNode treeNode, DirectoryInfo directory, DirectorySearchStatusTypes statusType, string optionalErrorMsg)
+        {
+            treeNode.ForeColor = (statusType == DirectorySearchStatusTypes.Empty) ? Color.Red : Color.Gray;
+            var iconKey = "";
 
+            if (statusType == DirectorySearchStatusTypes.Empty)
+            {
+                var fileCount = directory.GetFiles().Length;
+                bool containsTrash = (fileCount > 0);
+
+                iconKey = containsTrash ? "folder_trash_files" : "folder";
+
+                if ((directory.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden) iconKey = containsTrash ? "folder_hidden_trash_files" : "folder_hidden";
+                if ((directory.Attributes & FileAttributes.Encrypted) == FileAttributes.Encrypted) iconKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
+                if ((directory.Attributes & FileAttributes.System) == FileAttributes.System) iconKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
+
+                if (containsTrash)
+                    treeNode.Text += " (contains " + fileCount.ToString() + " empty files)";
+            }
+            else if (statusType == DirectorySearchStatusTypes.Error)
+            {
+                iconKey = "folder_warning";
+
+                if (optionalErrorMsg != "")
+                {
+                    optionalErrorMsg = optionalErrorMsg.Replace("\r", "").Replace("\n", "");
+                    if (optionalErrorMsg.Length > 55) optionalErrorMsg = optionalErrorMsg.Substring(0, 55) + "...";
+                    treeNode.Text += " (" + optionalErrorMsg + ")";
+                }
+            }
+
+            if (treeNode != this.rootNode)
+            {
+                treeNode.ImageKey = iconKey;
+                treeNode.SelectedImageKey = iconKey;
+            }
+        }
 
         /// <summary>
         /// Returns the selected folder path
@@ -177,7 +187,7 @@ namespace RED2
         {
             if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
             {
-                DirectoryInfo folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
+                var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
                 return folder.FullName;
             }
 
@@ -185,7 +195,6 @@ namespace RED2
         }
 
         #region Folder protection
-
 
         internal void ProtectSelected()
         {
@@ -266,7 +275,6 @@ namespace RED2
             if (this.directoryToTreeNodeMapping.ContainsKey(path))
             {
                 this.directoryToTreeNodeMapping[path].Remove();
-
                 this.directoryToTreeNodeMapping.Remove(path);
             }
         }

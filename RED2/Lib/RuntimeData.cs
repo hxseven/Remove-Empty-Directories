@@ -17,13 +17,15 @@ namespace RED2
         public DeleteModes DeleteMode { get; set; }
 
         public string IgnoreFiles { get; set; }
-        public string IgnoreFolders { get; set; }
+        public string IgnoreDirectoriesList { get; set; }
 
         public bool Ignore0kbFiles { get; set; }
         public bool IgnoreHiddenFolders { get; set; }
         public bool KeepSystemFolders { get; set; }
         public double PauseTime { get; set; }
+
         public int MaxDepth { get; set; }
+        public int InfiniteLoopDetectionCount { get; set; }
 
         public StringBuilder LogMessages = new StringBuilder();
         public Dictionary<String, bool> ProtectedFolderList = new Dictionary<string, bool>();
@@ -34,6 +36,21 @@ namespace RED2
             this.LogMessages = new StringBuilder();
             this.ProtectedFolderList = new Dictionary<string, bool>();
             this.EmptyFolderList = new List<DirectoryInfo>();
+        }
+
+        public string[] GetIgnoreFileList()
+        {
+            return this.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+        }
+
+        public string[] GetIgnoreDirectories()
+        {
+            return this.IgnoreDirectoriesList.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+        }
+
+        internal void AddLogMessage(string msg)
+        {
+            this.LogMessages.AppendLine(DateTime.Now.ToString("r") + "\t" + msg);
         }
     }
 }

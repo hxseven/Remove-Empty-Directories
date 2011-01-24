@@ -20,7 +20,6 @@ namespace RED2
         public int ListPos { get; set; }
 
         public DeletionErrorEventArgs ErrorInfo { get; set; }
-        public bool DeletionError { get; set; }
 
         public DeletionWorker()
         {
@@ -35,6 +34,10 @@ namespace RED2
             // This method will run on a thread other than the UI thread.
             // Be sure not to manipulate any Windows Forms controls created
             // on the UI thread from this method.
+
+            this.Data.LogMessages = new System.Text.StringBuilder();
+
+            this.Data.AddLogMessage("Started deletion process");
 
             if (CancellationPending)
             {
@@ -56,8 +59,8 @@ namespace RED2
                     return;
                 }
 
-                DirectoryInfo folder = this.Data.EmptyFolderList[this.ListPos];
-                DirectoryStatusTypes status = DirectoryStatusTypes.Ignored;
+                var folder = this.Data.EmptyFolderList[this.ListPos];
+                var status = DirectoryDeletionStatusTypes.Ignored;
 
                 // Do not delete protected folders:
                 if (!this.Data.ProtectedFolderList.ContainsKey(folder.FullName))
@@ -67,7 +70,9 @@ namespace RED2
                         // Try to delete the directory
                         this.secureDelete(folder);
 
-                        status = DirectoryStatusTypes.Deleted;
+                        this.Data.AddLogMessage(String.Format("Successfully deleted dir \"{0}\"", folder.FullName));
+
+                        status = DirectoryDeletionStatusTypes.Deleted;
                         this.DeletedCount++;
                     }
                     catch (Exception ex)
@@ -75,7 +80,9 @@ namespace RED2
                         errorMessage = ex.Message;
                         stopNow = (!this.Data.IgnoreAllErrors);
 
-                        status = DirectoryStatusTypes.Warning;
+                        this.Data.AddLogMessage(String.Format("Failed to delete dir \"{0}\" - Error message: \"{1}\"", folder.FullName, errorMessage));
+
+                        status = DirectoryDeletionStatusTypes.Warning;
                         this.FailedCount++;
                     }
 
@@ -83,7 +90,7 @@ namespace RED2
                         Thread.Sleep(TimeSpan.FromMilliseconds(this.Data.PauseTime));
                 }
                 else
-                    status = DirectoryStatusTypes.Protected;
+                    status = DirectoryDeletionStatusTypes.Protected;
 
                 this.ReportProgress(1, new DeleteProcessUpdateEventArgs(this.ListPos, folder, status, count));
 
@@ -103,26 +110,19 @@ namespace RED2
             e.Result = count;
         }
 
-        /// <summary>
-        /// Finally delete a folder (with security checks before)
-        /// </summary>
-        /// <param name="emptyDirectory"></param>
-        /// <returns></returns>
         private void secureDelete(DirectoryInfo emptyDirectory)
         {
             if (!Directory.Exists(emptyDirectory.FullName))
-                throw new Exception("Directory does not exist anymore?");
+                throw new Exception("Could not delete the directory \""+emptyDirectory.FullName+"\" because it does not exist anymore.");
 
             // Cleanup folder
 
-            String[] ignoreFileList = this.Data.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+            String[] ignoreFileList = this.Data.GetIgnoreFileList();
 
             FileInfo[] Files = emptyDirectory.GetFiles();
 
             if (Files != null && Files.Length != 0)
             {
-                this.Data.LogMessages.AppendLine(String.Format("Cleaning directory: \"{0}\"", emptyDirectory.FullName));
-
                 // loop trough files and cancel if containsFiles == true
                 for (int f = 0; f < Files.Length; f++)
                 {
@@ -134,18 +134,25 @@ namespace RED2
                     // If only one file is good, then stop.
                     if (deleteTrashFile)
                     {
-                        this.Data.LogMessages.AppendLine(String.Format(" -> Deleted file \"{0}\" because it matched the pattern \"{1}\"", file.FullName, delPattern));
+                        try
+                        {
+                            SystemFunctions.SecureDeleteFile(file, this.Data.DeleteMode);
 
-                        SystemFunctions.SecureDeleteFile(file, this.Data.DeleteMode);
+                            this.Data.LogMessages.AppendLine(String.Format("-> Successfully deleted file \"{0}\" because it matched the ignore pattern \"{1}\"", file.FullName, delPattern));
+                        }
+                        catch (Exception ex) {
+                            this.Data.LogMessages.AppendLine(String.Format("Failed to delete file \"{0}\" - Error message: \"{1}\"", file.FullName, ex.Message));
+
+                            throw new Exception("Could not delete a empty (trash) file - error message: " + ex.Message);
+                        }
                     }
                 }
             }
 
             // End cleanup
 
-            this.Data.LogMessages.AppendLine(String.Format("Deleted dir \"{0}\"", emptyDirectory.FullName));
-
             SystemFunctions.SecureDeleteDirectory(emptyDirectory, this.Data.DeleteMode);
+
         }
 
     }

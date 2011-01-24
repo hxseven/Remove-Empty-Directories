@@ -4,12 +4,21 @@ namespace RED2
 {
     public enum WorkflowSteps
     {
-        Init,
+        Idle,
         StartSearchingForEmptyDirs,
         DeleteProcessRunning,
     }
 
-    public enum DirectoryStatusTypes
+
+    public enum DirectorySearchStatusTypes
+    {
+        //Unknown,
+        Empty,
+        Error,
+        NotEmpty
+    }
+
+    public enum DirectoryDeletionStatusTypes
     {
         Deleted,
         Warning,
@@ -17,6 +26,7 @@ namespace RED2
         Protected
     }
 
+    // Warning: Entries are case sensitive
     public enum DirectoryIcons
     {
         home,

@@ -56,8 +56,10 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.protectFolderFromBeingDeletedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unprotectFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.proToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnExit = new System.Windows.Forms.Button();
             this.tbFolder = new System.Windows.Forms.TextBox();
             this.btnChooseFolder = new System.Windows.Forms.Button();
@@ -94,8 +96,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.llWebsite = new System.Windows.Forms.LinkLabel();
             this.lbAppTitle = new System.Windows.Forms.Label();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label4 = new System.Windows.Forms.Label();
+            this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -108,6 +111,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabAbout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).BeginInit();
             this.SuspendLayout();
             // 
             // cbIntegrateIntoWindowsExplorer
@@ -431,10 +435,10 @@
             this.unprotectFolderToolStripMenuItem.Text = "&Unprotect";
             this.unprotectFolderToolStripMenuItem.Click += new System.EventHandler(this.unprotectFolderToolStripMenuItem_Click);
             // 
-            // toolStripSeparator2
+            // toolStripSeparator3
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // proToolStripMenuItem
             // 
@@ -442,6 +446,18 @@
             this.proToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.proToolStripMenuItem.Text = "Add to &ignore list";
             this.proToolStripMenuItem.Click += new System.EventHandler(this.proToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.deleteToolStripMenuItem.Text = "&Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // btnExit
             // 
@@ -651,6 +667,9 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.label13);
+            this.groupBox3.Controls.Add(this.nuInfiniteLoopDetectionCount);
+            this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label20);
             this.groupBox3.Controls.Add(this.btnShowConfig);
             this.groupBox3.Controls.Add(this.label3);
@@ -668,19 +687,19 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(266, 65);
+            this.label20.Location = new System.Drawing.Point(264, 41);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(265, 13);
+            this.label20.Size = new System.Drawing.Size(250, 13);
             this.label20.TabIndex = 19;
-            this.label20.Text = "(Gives you time to stop the process, but not necessary)";
+            this.label20.Text = "(Gives you time to stop the process - not necessary)";
             // 
             // btnShowConfig
             // 
             this.btnShowConfig.Location = new System.Drawing.Point(11, 63);
             this.btnShowConfig.Name = "btnShowConfig";
-            this.btnShowConfig.Size = new System.Drawing.Size(203, 23);
+            this.btnShowConfig.Size = new System.Drawing.Size(152, 23);
             this.btnShowConfig.TabIndex = 7;
-            this.btnShowConfig.Text = "Show config file";
+            this.btnShowConfig.Text = "Open config file directory";
             this.btnShowConfig.UseVisualStyleBackColor = true;
             this.btnShowConfig.Click += new System.EventHandler(this.btnShowConfig_Click);
             // 
@@ -689,9 +708,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(10, 20);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(158, 13);
+            this.label3.Size = new System.Drawing.Size(200, 13);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Max depth to scan (-1 = infinite):";
+            this.label3.Text = "Max directory nesting depth (-1 = infinite):";
             // 
             // nuMaxDepth
             // 
@@ -707,7 +726,7 @@
             0,
             -2147483648});
             this.nuMaxDepth.Name = "nuMaxDepth";
-            this.nuMaxDepth.Size = new System.Drawing.Size(201, 20);
+            this.nuMaxDepth.Size = new System.Drawing.Size(150, 20);
             this.nuMaxDepth.TabIndex = 7;
             this.nuMaxDepth.Value = new decimal(new int[] {
             1,
@@ -718,22 +737,22 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(347, 42);
+            this.label8.Location = new System.Drawing.Point(505, 22);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(66, 13);
+            this.label8.Size = new System.Drawing.Size(20, 13);
             this.label8.TabIndex = 18;
-            this.label8.Text = "milli seconds";
+            this.label8.Text = "ms";
             // 
             // nuPause
             // 
-            this.nuPause.Location = new System.Drawing.Point(269, 37);
+            this.nuPause.Location = new System.Drawing.Point(448, 18);
             this.nuPause.Maximum = new decimal(new int[] {
             999999,
             0,
             0,
             0});
             this.nuPause.Name = "nuPause";
-            this.nuPause.Size = new System.Drawing.Size(72, 20);
+            this.nuPause.Size = new System.Drawing.Size(53, 20);
             this.nuPause.TabIndex = 8;
             this.nuPause.Value = new decimal(new int[] {
             100,
@@ -744,7 +763,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(266, 21);
+            this.label7.Location = new System.Drawing.Point(264, 22);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(183, 13);
             this.label7.TabIndex = 17;
@@ -883,17 +902,40 @@
             this.lbAppTitle.TabIndex = 0;
             this.lbAppTitle.Text = "Remove Empty Directories - Version ";
             // 
-            // toolStripSeparator3
+            // label4
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(264, 67);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(160, 13);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Infinite-loop detection: Stop after\r\n";
             // 
-            // deleteToolStripMenuItem
+            // nuInfiniteLoopDetectionCount
             // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.deleteToolStripMenuItem.Text = "&Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(426, 63);
+            this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nuInfiniteLoopDetectionCount.Name = "nuInfiniteLoopDetectionCount";
+            this.nuInfiniteLoopDetectionCount.Size = new System.Drawing.Size(53, 20);
+            this.nuInfiniteLoopDetectionCount.TabIndex = 21;
+            this.nuInfiniteLoopDetectionCount.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(482, 67);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(33, 13);
+            this.label13.TabIndex = 22;
+            this.label13.Text = "errors";
             // 
             // MainWindow
             // 
@@ -929,6 +971,7 @@
             this.groupBox2.PerformLayout();
             this.tabAbout.ResumeLayout(false);
             this.tabAbout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -1001,6 +1044,9 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown nuInfiniteLoopDetectionCount;
 	}
 }
 

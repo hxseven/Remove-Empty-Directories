@@ -44,19 +44,18 @@ namespace RED2
             this.core = new REDCore(this, this.Data);
 
             // Attach events
-            this.core.OnWorkflowStepChanged += new EventHandler<WorkflowStepChangedEventArgs>(core_OnWorkflowStepChanged);
             this.core.OnError += new EventHandler<ErrorEventArgs>(core_OnError);
             this.core.OnCancelled += new EventHandler(core_OnCancelled);
             this.core.OnAborted += new EventHandler(core_OnAborted);
 
             this.core.OnProgressChanged += new EventHandler<ProgressChangedEventArgs>(core_OnProgressChanged);
-            this.core.OnFoundEmptyDir += new EventHandler<FoundDirEventArgs>(core_OnFoundEmptyDir);
+            this.core.OnFoundEmptyDirectory += new EventHandler<FoundEmptyDirInfoEventArgs>(core_OnFoundEmptyDir);
             this.core.OnFinishedScanForEmptyDirs += new EventHandler<FinishedScanForEmptyDirsEventArgs>(core_OnFoundFinishedScanForEmptyDirs);
             this.core.OnDeleteProcessChanged += new EventHandler<DeleteProcessUpdateEventArgs>(core_OnDeleteProcessChanged);
             this.core.OnDeleteProcessFinished += new EventHandler<DeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
-            this.core.init();
+            this.init();
         }
 
         void core_OnDeleteError(object sender, DeletionErrorEventArgs e)
@@ -80,7 +79,7 @@ namespace RED2
                 if (dialogResult == DialogResult.Retry)
                     this.Data.IgnoreAllErrors = true;
 
-                this.core.ContinueDeletion();
+                this.core.ContinueDeleteProcess();
             }
         }
 
@@ -89,7 +88,7 @@ namespace RED2
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
         }
 
-        private void Init()
+        private void init()
         {
             this.tree = new TreeManager(this.tvFolders);
             this.tree.OnProtectionStatusChanged += new EventHandler<ProtectionStatusChangedEventArgs>(tree_OnProtectionStatusChanged);
@@ -108,11 +107,13 @@ namespace RED2
             this.config.AddControl("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders, RED2.Properties.Resources.dont_scan_hidden_folders);
             this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.ignore_0kb_files);
             this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.keep_system_folders);
-
+            this.config.AddControl("clipboard_detection", this.cbClipboardDetection, RED2.Properties.Resources.keep_system_folders);
+            
             this.config.AddControl("ignore_files", this.tbIgnoreFiles, RED2.Properties.Resources.ignore_files);
             this.config.AddControl("ignore_folders", this.tbIgnoreFolders, RED2.Properties.Resources.ignore_folders);
 
             this.config.AddControl("max_depth", this.nuMaxDepth, RED2.Properties.Resources.max_depth);
+            this.config.AddControl("infinite_loop_detection_count", this.nuInfiniteLoopDetectionCount, RED2.Properties.Resources.default_infinite_loop_detection_count);
             this.config.AddControl("pause_between", this.nuPause, RED2.Properties.Resources.pause_between);
             this.config.AddControl("ignore_errors", this.cbIgnoreErrors, RED2.Properties.Resources.default_ignore_errors);
 
@@ -128,6 +129,14 @@ namespace RED2
             this.config.LoadOptions();
 
             #endregion
+
+            this.lbStatus.Text = "";
+
+            this.pbProgressStatus.Maximum = 100;
+            this.pbProgressStatus.Minimum = 0;
+            this.pbProgressStatus.Step = 5;
+
+            this.btnShowLog.Enabled = false;
 
             drawDirectoryIcons();
 
@@ -235,47 +244,11 @@ namespace RED2
             #endregion
         }
 
-        void core_OnWorkflowStepChanged(object sender, WorkflowStepChangedEventArgs e)
-        {
-            switch (e.NewStep)
-            {
-                case WorkflowSteps.Init:
-
-                    this.Init();
-
-                    this.lbStatus.Text = "";
-
-                    this.pbProgressStatus.Maximum = 100;
-                    this.pbProgressStatus.Minimum = 0;
-                    this.pbProgressStatus.Step = 5;
-
-                    this.btnShowLog.Enabled = false;
-
-                    break;
-
-                case WorkflowSteps.StartSearchingForEmptyDirs:
-                    this.lbStatus.Text = RED2.Properties.Resources.searching_empty_folders;
-                    break;
-
-                case WorkflowSteps.DeleteProcessRunning:
-
-                    this.lbStatus.Text = RED2.Properties.Resources.deleting_empty_folders;
-
-                    this.btnScan.Enabled = false;
-                    this.btnCancel.Enabled = true;
-
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         void core_OnError(object sender, ErrorEventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
-            MessageBox.Show(RED2.Properties.Resources.error + "\n\n" + e.Message);
+            MessageBox.Show(this, "Error: " + e.Message, "RED error");
         }
 
         void core_OnCancelled(object sender, EventArgs e)
@@ -338,18 +311,20 @@ namespace RED2
             this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
             this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
             this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.Data.IgnoreFolders = this.tbIgnoreFolders.Text;
+            this.Data.IgnoreDirectoriesList = this.tbIgnoreFolders.Text;
             this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
             this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
             this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
             this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.Data.InfiniteLoopDetectionCount = (int)this.nuInfiniteLoopDetectionCount.Value;
 
             //this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
             this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
 
-            this.tree.CreateRootNode(this.Data.StartFolder, DirectoryIcons.home);
+            this.tree.AddRootNode(this.Data.StartFolder, DirectoryIcons.home);
 
             this.btnCancel.Enabled = true;
+            this.lbStatus.Text = RED2.Properties.Resources.searching_empty_folders;
 
             this.core.SearchingForEmptyDirectories();
         }
@@ -362,6 +337,7 @@ namespace RED2
         {
             // Finished scan
 
+            this.Data.AddLogMessage(String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount));
             this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount);
 
             this.btnDelete.Enabled = (e.EmptyFolderCount > 0);
@@ -373,6 +349,7 @@ namespace RED2
 
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
+            this.btnShowLog.Enabled = true;
 
             this.tree.EnsureRootNodeIsVisible();
 
@@ -387,12 +364,12 @@ namespace RED2
         {
             switch (e.Status)
             {
-                case DirectoryStatusTypes.Deleted:
+                case DirectoryDeletionStatusTypes.Deleted:
                     this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
                     this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.deleted);
                     break;
 
-                case DirectoryStatusTypes.Protected:
+                case DirectoryDeletionStatusTypes.Protected:
                     this.tree.UpdateItemIcon(e.Folder, DirectoryIcons.protected_icon);
                     break;
 
@@ -440,24 +417,28 @@ namespace RED2
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            this.lbStatus.Text = RED2.Properties.Resources.deleting_empty_folders;
+            this.btnScan.Enabled = false;
+            this.btnCancel.Enabled = true;
+
+
             this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
             this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
             this.Data.PauseTime = (double)this.nuPause.Value;
             this.Data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
             this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
 
-            this.core.DoDelete();
+            this.core.StartDeleteProcess();
         }
 
-        void core_OnFoundEmptyDir(object sender, FoundDirEventArgs e)
+        void core_OnFoundEmptyDir(object sender, FoundEmptyDirInfoEventArgs e)
         {
-            this.tree.AddEmptyFolderToTreeView(e.Directory, true);
+            this.tree.AddOrUpdateDirectoryNode(e.Directory, e.Type, e.ErrorMessage);
         }
 
         void core_OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.lbStatus.Text = (string)e.UserState;
-            //this.pbProgressStatus.Value = e.ProgressPercentage;
         }
 
         private void proToolStripMenuItem_Click(object sender, EventArgs e)
@@ -519,7 +500,12 @@ namespace RED2
                 var clipValue = Clipboard.GetText(TextDataFormat.Text);
 
                 if (clipValue.Contains(":\\"))
+                {
+                    // add ending backslash
+                    if (!clipValue.EndsWith("\\")) clipValue += "\\";
+
                     this.tbFolder.Text = clipValue;
+                }
             }
         }
 

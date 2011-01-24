@@ -15,7 +15,7 @@ namespace RED2
     public class REDCore
     {
         private MainWindow redMainWindow = null;
-        public WorkflowSteps CurrentProcessStep = WorkflowSteps.Init;
+        public WorkflowSteps CurrentProcessStep = WorkflowSteps.Idle;
         private RuntimeData Data = null;
 
         // Workers
@@ -23,12 +23,11 @@ namespace RED2
         private DeletionWorker deletionWorker = null;
 
         // Events
-        public event EventHandler<WorkflowStepChangedEventArgs> OnWorkflowStepChanged;
         public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler OnCancelled;
         public event EventHandler OnAborted;
         public event EventHandler<ProgressChangedEventArgs> OnProgressChanged;
-        public event EventHandler<FoundDirEventArgs> OnFoundEmptyDir;
+        public event EventHandler<FoundEmptyDirInfoEventArgs> OnFoundEmptyDirectory;
         public event EventHandler<FinishedScanForEmptyDirsEventArgs> OnFinishedScanForEmptyDirs;
         public event EventHandler<DeleteProcessUpdateEventArgs> OnDeleteProcessChanged;
         public event EventHandler<DeletionErrorEventArgs> OnDeleteError;
@@ -40,25 +39,12 @@ namespace RED2
             this.Data = data;
         }
 
-        public void init()
-        {
-            this.set_step(WorkflowSteps.Init);
-        }
-
-        private void set_step(WorkflowSteps step)
-        {
-            this.CurrentProcessStep = step;
-
-            if (this.OnWorkflowStepChanged != null)
-                this.OnWorkflowStepChanged(this, new WorkflowStepChangedEventArgs(step));
-        }
-
         /// <summary>
         /// Start searching empty folders
         /// </summary>
         public void SearchingForEmptyDirectories()
         {
-            this.set_step(WorkflowSteps.StartSearchingForEmptyDirs);
+            this.CurrentProcessStep = WorkflowSteps.StartSearchingForEmptyDirs;
 
             // Rest folder list
             this.Data.ProtectedFolderList = new Dictionary<string, bool>();
@@ -96,42 +82,62 @@ namespace RED2
         /// <param name="e"></param>
         void FFWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if ((int)e.ProgressPercentage != -1)
+            if (e.UserState is FoundEmptyDirInfoEventArgs)
+            {
+                var info = (FoundEmptyDirInfoEventArgs)e.UserState;
+
+                if (info.Type == DirectorySearchStatusTypes.Empty)
+                    this.Data.EmptyFolderList.Add(info.Directory);
+
+                if (this.OnFoundEmptyDirectory != null)
+                    this.OnFoundEmptyDirectory(this, info);
+            }
+            else if (e.UserState is string)
             {
                 if (this.OnProgressChanged != null)
-                    this.OnProgressChanged(this, e);
+                    this.OnProgressChanged(this, new ProgressChangedEventArgs(0, (string)e.UserState));
             }
             else
             {
-                var directory = (DirectoryInfo)e.UserState;
-
-                this.Data.EmptyFolderList.Add(directory);
-
-                if (this.OnFoundEmptyDir != null)
-                    this.OnFoundEmptyDir(this, new FoundDirEventArgs(directory));
+                // TODO: Handle unknown types
             }
         }
 
         void FFWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            FindEmptyDirectoryWorker FindWorker = sender as FindEmptyDirectoryWorker;
+            this.CurrentProcessStep = WorkflowSteps.Idle;
 
             if (e.Error != null)
             {
-                searchEmptyFoldersWorker.Dispose();
+                this.searchEmptyFoldersWorker.Dispose(); this.searchEmptyFoldersWorker = null;
+
                 this.showErrorMsg(e.Error.Message);
             }
             else if (e.Cancelled)
             {
-                if (this.OnCancelled != null)
-                    this.OnCancelled(this, new EventArgs());
+                if (this.searchEmptyFoldersWorker.ErrorInfo != null)
+                {
+                    // A error occured, process was stopped
+                    this.showErrorMsg(this.searchEmptyFoldersWorker.ErrorInfo.ErrorMessage);
+
+                    this.searchEmptyFoldersWorker.Dispose(); this.searchEmptyFoldersWorker = null;
+
+                    if (this.OnAborted != null)
+                        this.OnAborted(this, new EventArgs());
+                }
+                else
+                {
+                    this.searchEmptyFoldersWorker.Dispose(); this.searchEmptyFoldersWorker = null;
+
+                    if (this.OnCancelled != null)
+                        this.OnCancelled(this, new EventArgs());
+                }
             }
             else
             {
-                int FolderCount = FindWorker.FolderCount;
-
-                searchEmptyFoldersWorker.Dispose();
-                searchEmptyFoldersWorker = null;
+                int FolderCount = this.searchEmptyFoldersWorker.FolderCount;
+                
+                this.searchEmptyFoldersWorker.Dispose(); this.searchEmptyFoldersWorker = null;
 
                 if (this.OnFinishedScanForEmptyDirs != null)
                     this.OnFinishedScanForEmptyDirs(this, new FinishedScanForEmptyDirsEventArgs(this.Data.EmptyFolderList.Count, FolderCount));
@@ -156,9 +162,9 @@ namespace RED2
             }
         }
 
-        public void DoDelete()
+        public void StartDeleteProcess()
         {
-            this.set_step(WorkflowSteps.DeleteProcessRunning);
+            this.CurrentProcessStep = WorkflowSteps.DeleteProcessRunning;
 
             this.deletionWorker = new DeletionWorker();
             this.deletionWorker.Data = this.Data;
@@ -179,6 +185,8 @@ namespace RED2
 
         void deletionWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            this.CurrentProcessStep = WorkflowSteps.Idle;
+
             if (e.Error != null)
             {
                 this.showErrorMsg(e.Error.Message);
@@ -240,15 +248,18 @@ namespace RED2
 
         internal void AbortDeletion()
         {
+            this.CurrentProcessStep = WorkflowSteps.Idle;
+
             this.deletionWorker.Dispose(); this.deletionWorker = null;
 
             if (this.OnAborted != null)
                 this.OnAborted(this, new EventArgs());
         }
 
-        internal void ContinueDeletion()
+        internal void ContinueDeleteProcess()
         {
             // Continue
+            this.CurrentProcessStep = WorkflowSteps.DeleteProcessRunning;
             this.deletionWorker.RunWorkerAsync();
         }
     }

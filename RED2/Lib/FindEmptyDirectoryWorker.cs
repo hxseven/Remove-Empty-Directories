@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
+using System;
+using System.Threading;
 
 namespace RED2
 {
@@ -21,6 +23,10 @@ namespace RED2
         private string[] ignoreFolderList = null;
         private string[] ignoreFileList = null;
 
+        public DeletionErrorEventArgs ErrorInfo { get; set; }
+
+        public int PossibleEndlessLoop { get; set; }
+
         public FindEmptyDirectoryWorker()
         {
             WorkerReportsProgress = true;
@@ -32,157 +38,192 @@ namespace RED2
             //Here we receive the necessary data 
             DirectoryInfo startFolder = (DirectoryInfo)e.Argument;
 
+            this.PossibleEndlessLoop = 0;
+
             // Clean dir list
             this.Data.EmptyFolderList = new List<DirectoryInfo>();
+            this.Data.LogMessages = new System.Text.StringBuilder();
 
-            var _file_pattern = this.Data.IgnoreFolders.Replace("\r\n", "\n").Replace("\r", "\n").Trim();
+            this.ignoreFileList = this.Data.GetIgnoreFileList();
+            this.ignoreFolderList = this.Data.GetIgnoreDirectories();
 
-            if (_file_pattern != "")
-                this.ignoreFolderList = _file_pattern.Split('\n');
+            try
+            {
+                var rootStatusType = this.checkIfDirectoryEmpty(startFolder, 1);
 
+                this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(startFolder, rootStatusType));
 
-            _file_pattern = _file_pattern.Replace("\r\n", "\n").Replace("\r", "\n");
-            this.ignoreFileList = _file_pattern.Split('\n');
-
-
-            //Here we tell the manager that we start the job..
-            this.ReportProgress(0, "Starting scan process...");
-
-            bool isEmpty = this.checkIfDirectoryEmpty(startFolder, 1);
-
-            if (isEmpty)
-                this.Data.EmptyFolderList.Add(startFolder);
+                if (this.PossibleEndlessLoop > this.Data.InfiniteLoopDetectionCount)
+                {
+                    this.Data.AddLogMessage("Detected possible infinite-loop somewhere in the target path \"" + startFolder + "\" (symbolic links can cause this)");
+                    throw new Exception("Possible infinite-loop detected (symbolic links can cause this)");
+                }
+            }
+            catch (Exception ex)
+            {
+                e.Cancel = true;
+                this.Data.AddLogMessage("A error occured during the scan process: " + ex.Message);
+                this.ErrorInfo = new DeletionErrorEventArgs(startFolder.FullName, ex.Message);
+                return;
+            }
 
             if (CancellationPending)
             {
+                this.Data.AddLogMessage("Scan process was cancelled");
                 e.Cancel = true;
                 e.Result = 0;
                 return;
             }
-
-            ReportProgress(this.folderCount, "");
-
+            
             //Here we pass the final result of the Job
             e.Result = 1;
         }
 
-        private bool checkIfDirectoryEmpty(DirectoryInfo startDir, int depth)
+        private DirectorySearchStatusTypes checkIfDirectoryEmpty(DirectoryInfo startDir, int depth)
         {
-            if (this.Data.MaxDepth != -1 && depth > this.Data.MaxDepth) return false;
-
-            // Cancel process if the user hits stop
-            if (CancellationPending) return false;
-
-            // increase folder count
-            this.folderCount++;
-
-            // update status progress bar after 100 steps:
-            if (this.folderCount % 100 == 0)
-                ReportProgress(folderCount, "Checking directory: " + startDir.Name);
-
-
-            bool containsFiles = false;
-
-            // Get file list
-            FileInfo[] fileList = null;
-
-            // some directories could trigger a exception:
-            try
+            if (this.PossibleEndlessLoop > this.Data.InfiniteLoopDetectionCount)
             {
-                fileList = startDir.GetFiles();
+                this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(startDir, DirectorySearchStatusTypes.Error, "Aborted - possible infinite-loop detected"));
+                return DirectorySearchStatusTypes.Error;
             }
-            catch
-            {
-                fileList = null;
-            }
-
-            if (fileList == null)
-            {
-                // CF = true = folder does not get deleted:
-                containsFiles = true; // secure way
-            }
-            else if (fileList.Length == 0)
-            {
-                containsFiles = false;
-            }
-            else
-            {
-                string delPattern = "";
-
-                // loop trough files and cancel if containsFiles == true
-                for (int f = 0; (f < fileList.Length && !containsFiles); f++)
-                {
-                    FileInfo file = null;
-                    int filesize = 0;
-
-                    try
-                    {
-                        file = fileList[f];
-                        filesize = (int)file.Length;
-                    }
-                    catch
-                    {
-                        // keep folder if there is a strange file that
-                        // triggers a exception:
-                        containsFiles = true;
-                        break;
-                    }
-
-                    // If only one file is good, then stop.
-                    if (!SystemFunctions.MatchesIgnorePattern(file, filesize, this.Data.Ignore0kbFiles, this.ignoreFileList, out delPattern))
-                        containsFiles = true;
-                }
-            }
-
-            // If the folder does not contain any files -> get subfolders:
-            DirectoryInfo[] subFolderList = null;
 
             try
             {
-                subFolderList = startDir.GetDirectories();
-            }
-            catch
-            {
-                // If we can not read the folder -> don't delete it:
-                return false;
-            }
+                //Thread.Sleep(500);
 
-            // The folder is empty, break here:
-            if (!containsFiles && subFolderList.Length == 0)
-                return true;
+                if (this.Data.MaxDepth != -1 && depth > this.Data.MaxDepth)
+                    return DirectorySearchStatusTypes.NotEmpty;
 
-            bool allSubFolderEmpty = true;
+                // Cancel process if the user hits stop
+                if (CancellationPending)
+                    return DirectorySearchStatusTypes.NotEmpty;
 
-            foreach (DirectoryInfo curDir in subFolderList)
-            {
-                // Hidden folder?
-                bool ignoreFolder = (this.Data.IgnoreHiddenFolders && ((curDir.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden));
-                ignoreFolder = (ignoreFolder || (this.Data.KeepSystemFolders && ((curDir.Attributes & FileAttributes.System) == FileAttributes.System)));
-                ignoreFolder = (ignoreFolder || checkIfDirectoryIsOnIgnoreList(curDir));
+                // increase folder count
+                this.folderCount++;
 
-                // Scan sub folder:
-                bool isCurrentSubFolderEmpty = false;
-
-                if (!ignoreFolder)
-                    isCurrentSubFolderEmpty = this.checkIfDirectoryEmpty(curDir, depth + 1);
-
-                // is empty?
-                if (isCurrentSubFolderEmpty && !ignoreFolder)
+                // update status progress bar after 100 steps:
+                if (this.folderCount % 100 == 0)
                 {
-                    // Folder is empty, report that to the gui:
-                    this.ReportProgress(-1, curDir);
+                    this.ReportProgress(folderCount, "Checking directory: " + startDir.Name);
                 }
 
-                // this folder is not empty:
-                if (!isCurrentSubFolderEmpty || ignoreFolder)
-                    allSubFolderEmpty = false;
-            }
+                bool containsFiles = false;
 
-            // All subdirectories are empty
-            return (allSubFolderEmpty && !containsFiles);
+                // Get file list
+                FileInfo[] fileList = null;
+
+                // some directories could trigger a exception:
+                try
+                {
+                    fileList = startDir.GetFiles();
+                }
+                catch
+                {
+                    fileList = null;
+                }
+
+                if (fileList == null)
+                {
+                    // CF = true = folder does not get deleted:
+                    containsFiles = true; // secure way
+                    this.Data.AddLogMessage("Failed to access files in \"" + startDir.FullName + "\"");
+                    this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(startDir, DirectorySearchStatusTypes.Error, "Failed to access files"));
+                }
+                else if (fileList.Length == 0)
+                {
+                    containsFiles = false;
+                }
+                else
+                {
+                    string delPattern = "";
+
+                    // loop trough files and cancel if containsFiles == true
+                    for (int f = 0; (f < fileList.Length && !containsFiles); f++)
+                    {
+                        FileInfo file = null;
+                        int filesize = 0;
+
+                        try
+                        {
+                            file = fileList[f];
+                            filesize = (int)file.Length;
+                        }
+                        catch
+                        {
+                            // keep folder if there is a strange file that
+                            // triggers a exception:
+                            containsFiles = true;
+                            break;
+                        }
+
+                        // If only one file is good, then stop.
+                        if (!SystemFunctions.MatchesIgnorePattern(file, filesize, this.Data.Ignore0kbFiles, this.ignoreFileList, out delPattern))
+                            containsFiles = true;
+                    }
+                }
+
+                // If the folder does not contain any files -> get subfolders:
+                DirectoryInfo[] subFolderList = null;
+
+                try
+                {
+                    subFolderList = startDir.GetDirectories();
+                }
+                catch
+                {
+                    // If we can not read the folder -> don't delete it:
+                    this.Data.AddLogMessage("Failed to access subdirectories in \"" + startDir.FullName + "\"");
+                    this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(startDir, DirectorySearchStatusTypes.Error, "Failed to access subdirectories"));
+                    return DirectorySearchStatusTypes.Error;
+                }
+
+                // The folder is empty, break here:
+                if (!containsFiles && subFolderList.Length == 0)
+                {
+                    return DirectorySearchStatusTypes.Empty;
+                }
+
+                bool allSubDirectoriesEmpty = true;
+
+                foreach (var curDir in subFolderList)
+                {
+                    // Hidden folder?
+                    bool ignoreSubDirectory = (this.Data.IgnoreHiddenFolders && ((curDir.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden));
+                    ignoreSubDirectory = (ignoreSubDirectory || (this.Data.KeepSystemFolders && ((curDir.Attributes & FileAttributes.System) == FileAttributes.System)));
+                    ignoreSubDirectory = (ignoreSubDirectory || checkIfDirectoryIsOnIgnoreList(curDir));
+
+                    // Scan sub folder:
+                    var subFolderStatus = DirectorySearchStatusTypes.NotEmpty;
+
+                    if (!ignoreSubDirectory)
+                    {
+                        subFolderStatus = this.checkIfDirectoryEmpty(curDir, depth + 1);
+
+                        // Report status to the GUI
+                        if (subFolderStatus == DirectorySearchStatusTypes.Empty)
+                            this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(curDir, subFolderStatus));
+                    }
+
+                    // this folder is not empty:
+                    if (subFolderStatus != DirectorySearchStatusTypes.Empty || ignoreSubDirectory)
+                        allSubDirectoriesEmpty = false;
+                }
+
+                // All subdirectories are empty
+                return (allSubDirectoriesEmpty && !containsFiles) ? DirectorySearchStatusTypes.Empty : DirectorySearchStatusTypes.NotEmpty;
+
+            }
+            catch (Exception ex)
+            {
+                if (ex is System.IO.PathTooLongException)
+                    this.PossibleEndlessLoop++;
+
+                this.Data.AddLogMessage("A unknown error occured while trying to scan this directory: \"" + startDir.FullName + "\" - Error message: " + ex.Message);
+                this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(startDir, DirectorySearchStatusTypes.Error, ex.Message));
+
+                return DirectorySearchStatusTypes.Error;
+            }
         }
-
-
 
         private bool checkIfDirectoryIsOnIgnoreList(DirectoryInfo Folder)
         {
@@ -200,4 +241,25 @@ namespace RED2
             return ignoreFolder;
         }
     }
+
+    public class FoundEmptyDirInfoEventArgs : EventArgs
+    {
+        public DirectoryInfo Directory { get; set; }
+        public DirectorySearchStatusTypes Type { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public FoundEmptyDirInfoEventArgs(DirectoryInfo Directory, DirectorySearchStatusTypes type)
+        {
+            this.Directory = Directory;
+            this.Type = type;
+        }
+
+        public FoundEmptyDirInfoEventArgs(DirectoryInfo Directory, DirectorySearchStatusTypes type, string ErrorMessage)
+        {
+            this.Directory = Directory;
+            this.Type = type;
+            this.ErrorMessage = ErrorMessage;
+        }
+    }
+
 }

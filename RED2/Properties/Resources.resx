@@ -235,4 +235,10 @@
   <data name="delete_process_finished" xml:space="preserve">
     <value>Deleted {0} empty directories ({1} directories could not be deleted)</value>
   </data>
+  <data name="default_clipboard_detection" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="default_infinite_loop_detection_count" xml:space="preserve">
+    <value>10</value>
+  </data>
 </root>
