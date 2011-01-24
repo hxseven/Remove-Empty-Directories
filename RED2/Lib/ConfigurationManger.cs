@@ -84,7 +84,7 @@ namespace RED2
 
                 if (key == "registry_explorer_integration")
                 {
-                    SystemFunctions.AddOrRemoveRegKey(((CheckBox)c).Checked, MenuName, Command);
+                    SystemFunctions.AddOrRemoveRegKey(!((CheckBox)c).Checked, MenuName, Command);
                 }
                 else if (c is CheckBox) this.settings.Write(key, ((CheckBox)c).Checked);
                 else if (c is TextBox) this.settings.Write(key, ((TextBox)c).Text);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
 
 namespace RED2
 {
@@ -22,6 +23,54 @@ namespace RED2
     /// </summary>
     public class SystemFunctions
     {
+        public static bool MatchesIgnorePattern(FileInfo file, int filesize, bool Ignore0kbFiles, string[] ignoreFileList, out string delPattern)
+        {
+            bool matches_pattern = false;
+            Regex regexPattern = null;
+            delPattern = "";
+
+            for (int pos = 0; (pos < ignoreFileList.Length && !matches_pattern); pos++)
+            {
+                string pattern = ignoreFileList[pos];
+
+                if (Ignore0kbFiles && filesize == 0)
+                {
+                    delPattern = "[empty file (0 KB)]";
+                    matches_pattern = true;
+                }
+                else if (pattern.ToLower() == file.Name.ToLower())
+                {
+                    delPattern = pattern;
+                    matches_pattern = true;
+                }
+                else if (pattern.Contains("*"))
+                {
+                    pattern = Regex.Escape(pattern);
+                    pattern = pattern.Replace("\\*", ".*");
+
+                    regexPattern = new Regex("^" + pattern + "$");
+
+                    if (regexPattern.IsMatch(file.Name))
+                    {
+                        delPattern = pattern;
+                        matches_pattern = true;
+                    }
+                }
+                else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
+                {
+                    regexPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
+
+                    if (regexPattern.IsMatch(file.Name))
+                    {
+                        delPattern = pattern;
+                        matches_pattern = true;
+                    }
+                }
+            }
+
+            return matches_pattern;
+        }
+
         public static void SecureDeleteDirectory(DirectoryInfo Folder, DeleteModes deleteMode)
         {
             // last security check (for files):
@@ -98,10 +147,12 @@ namespace RED2
                 try
                 {
                     regmenu = Registry.ClassesRoot.CreateSubKey(MenuName);
+
                     if (regmenu != null)
                         regmenu.SetValue("", RED2.Properties.Resources.registry_name);
 
                     regcmd = Registry.ClassesRoot.CreateSubKey(Command);
+
                     if (regcmd != null)
                         regcmd.SetValue("", Application.ExecutablePath + " \"%1\"");
                 }

@@ -18,6 +18,7 @@ namespace RED2
         private Dictionary<string, object> backupValues = new Dictionary<string, object>();
 
         public event EventHandler<ProtectionStatusChangedEventArgs> OnProtectionStatusChanged;
+        public event EventHandler<DeleteRequestFromTreeEventArgs> OnDeleteRequest;
 
         public TreeManager(TreeView dirTree)
         {
@@ -26,6 +27,7 @@ namespace RED2
             this.ClearTree();
         }
 
+        // Hack
         private void tvFolders_MouseClick(object sender, MouseEventArgs e)
         {
             this.treeView.SelectedNode = this.treeView.GetNodeAt(e.X, e.Y);
@@ -36,6 +38,9 @@ namespace RED2
             this.rootNode = null;
             this.directoryToTreeNodeMapping = new Dictionary<string, TreeNode>();
             this.backupValues = new Dictionary<string, object>();
+
+            // Reset TreeView
+            this.treeView.Nodes.Clear();
         }
 
         /// <summary>
@@ -145,7 +150,7 @@ namespace RED2
             newTreeNode.Tag = directory;
 
             if (containsTrash)
-                newTreeNode.Text += " (" + fileCount.ToString() + " files)";
+                newTreeNode.Text += " (" + fileCount.ToString() + " empty files)";
 
             if (parentIsRoot)
                 this.rootNode.Nodes.Add(newTreeNode);
@@ -162,10 +167,7 @@ namespace RED2
             return newTreeNode;
         }
 
-        internal bool IsRootNode(TreeNode treeNode)
-        {
-            return (treeNode == this.rootNode);
-        }
+
 
         /// <summary>
         /// Returns the selected folder path
@@ -178,6 +180,7 @@ namespace RED2
                 DirectoryInfo folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
                 return folder.FullName;
             }
+
             return "";
         }
 
@@ -199,40 +202,73 @@ namespace RED2
         {
             if (node != null)
             {
-                var dir = ((DirectoryInfo)node.Tag);
+                var directory = ((DirectoryInfo)node.Tag);
+
+                if (!this.backupValues.ContainsKey(directory.FullName))
+                    return;
+
+                string[] propList = ((string)this.backupValues[directory.FullName]).Split('|');
+
+                this.backupValues.Remove(directory.FullName);
+
+                node.ImageKey = propList[0];
+                node.SelectedImageKey = propList[0];
+                node.ForeColor = Color.FromArgb(Int32.Parse(propList[1]));
 
                 if (OnProtectionStatusChanged != null)
-                    OnProtectionStatusChanged(this, new ProtectionStatusChangedEventArgs(dir.FullName, false));
+                    OnProtectionStatusChanged(this, new ProtectionStatusChangedEventArgs(directory.FullName, false));
 
-                string[] backupValues = ((string)this.backupValues[dir.FullName]).Split('|');
-
-                node.ImageKey = backupValues[0];
-                node.SelectedImageKey = backupValues[0];
-                node.ForeColor = Color.FromArgb(Int32.Parse(backupValues[1]));
-
+                // Unprotect all subnodes
                 foreach (TreeNode subNode in node.Nodes)
                     this.unprotectNode(subNode);
             }
         }
 
-        public void ProtectNode(TreeNode Node)
+        public void ProtectNode(TreeNode node)
         {
-            DirectoryInfo Folder = (DirectoryInfo)Node.Tag;
+            DirectoryInfo directory = (DirectoryInfo)node.Tag;
+
+            if (backupValues.ContainsKey(directory.FullName))
+                return;
 
             if (OnProtectionStatusChanged != null)
-                OnProtectionStatusChanged(this, new ProtectionStatusChangedEventArgs(Folder.FullName, true));
+                OnProtectionStatusChanged(this, new ProtectionStatusChangedEventArgs(directory.FullName, true));
 
-            backupValues.Add(Folder.FullName, Node.ImageKey + "|" + Node.ForeColor.ToArgb().ToString());
+            backupValues.Add(directory.FullName, node.ImageKey + "|" + node.ForeColor.ToArgb().ToString());
 
-            Node.ImageKey = "protected_icon";
-            Node.SelectedImageKey = "protected_icon";
-            Node.ForeColor = Color.Blue;
+            node.ImageKey = "protected_icon";
+            node.SelectedImageKey = "protected_icon";
+            node.ForeColor = Color.Blue;
 
             // Recusive protect directories
-            if (!this.IsRootNode(Node.Parent))
-                ProtectNode(Node.Parent);
+            if (node.Parent != this.rootNode)
+                ProtectNode(node.Parent);
         }
 
         #endregion
+
+        internal void DeleteSelectedDirectory()
+        {
+            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
+            {
+                var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
+
+                if (OnDeleteRequest != null)
+                    OnDeleteRequest(this, new DeleteRequestFromTreeEventArgs(folder));
+            }
+        }
+
+        internal void RemoveNode(string path)
+        {
+            if (this.backupValues.ContainsKey(path))
+                this.backupValues.Remove(path);
+
+            if (this.directoryToTreeNodeMapping.ContainsKey(path))
+            {
+                this.directoryToTreeNodeMapping[path].Remove();
+
+                this.directoryToTreeNodeMapping.Remove(path);
+            }
+        }
     }
 }

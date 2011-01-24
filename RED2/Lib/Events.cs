@@ -3,42 +3,31 @@ using System.IO;
 
 namespace RED2
 {
-    public class REDCoreWorkflowStepChangedEventArgs : EventArgs
+    public class WorkflowStepChangedEventArgs : EventArgs
     {
         public WorkflowSteps NewStep { get; set; }
 
-        public REDCoreWorkflowStepChangedEventArgs(WorkflowSteps NewStep)
+        public WorkflowStepChangedEventArgs(WorkflowSteps NewStep)
         {
             this.NewStep = NewStep;
         }
     }
 
-    public class REDCoreErrorEventArgs : EventArgs
+    public class ErrorEventArgs : EventArgs
     {
-
         public string Message { get; set; }
 
-        public REDCoreErrorEventArgs(string msg)
+        public ErrorEventArgs(string msg)
         {
             this.Message = msg;
         }
     }
 
-    public class REDCoreCalcDirWorkerFinishedEventArgs : EventArgs
-    {
-        public int MaxFolderCount { get; set; }
-
-        public REDCoreCalcDirWorkerFinishedEventArgs(int MaxFolderCount)
-        {
-            this.MaxFolderCount = MaxFolderCount;
-        }
-    }
-
-    public class REDCoreFoundDirEventArgs : EventArgs
+    public class FoundDirEventArgs : EventArgs
     {
         public DirectoryInfo Directory { get; set; }
 
-        public REDCoreFoundDirEventArgs(DirectoryInfo dir)
+        public FoundDirEventArgs(DirectoryInfo dir)
         {
             this.Directory = dir;
         }
@@ -72,12 +61,12 @@ namespace RED2
         }
     }
 
-    public class REDCoreDeleteProcessFinishedEventArgs : EventArgs
+    public class DeleteProcessFinishedEventArgs : EventArgs
     {
         public int DeletedFolderCount { get; set; } 
         public int FailedFolderCount { get; set; }
 
-        public REDCoreDeleteProcessFinishedEventArgs(int DeletedFolderCount, int FailedFolderCount)
+        public DeleteProcessFinishedEventArgs(int DeletedFolderCount, int FailedFolderCount)
         {
             this.DeletedFolderCount = DeletedFolderCount;
             this.FailedFolderCount = FailedFolderCount;
@@ -93,6 +82,16 @@ namespace RED2
         {
             this.Path = Path;
             this.Protected = Protected;
+        }
+    }
+
+    public class DeleteRequestFromTreeEventArgs : EventArgs
+    {
+        public DirectoryInfo Directory { get; set; }
+
+        public DeleteRequestFromTreeEventArgs(DirectoryInfo Directory)
+        {
+            this.Directory = Directory;
         }
     }
 

@@ -15,31 +15,29 @@ namespace RED2
     public class REDCore
     {
         private MainWindow redMainWindow = null;
-        private WorkflowSteps currentProcessStep = WorkflowSteps.Init;
-        private RuntimeData data = null;
+        public WorkflowSteps CurrentProcessStep = WorkflowSteps.Init;
+        private RuntimeData Data = null;
 
         // Workers
-        private CalculateDirectoryCountWorker calcDirCountWorker = null;
         private FindEmptyDirectoryWorker searchEmptyFoldersWorker = null;
         private DeletionWorker deletionWorker = null;
 
         // Events
-        public event EventHandler<REDCoreWorkflowStepChangedEventArgs> OnWorkflowStepChanged;
-        public event EventHandler<REDCoreErrorEventArgs> OnError;
-        public event EventHandler<REDCoreCalcDirWorkerFinishedEventArgs> OnCalcDirWorkerFinished;
+        public event EventHandler<WorkflowStepChangedEventArgs> OnWorkflowStepChanged;
+        public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler OnCancelled;
         public event EventHandler OnAborted;
         public event EventHandler<ProgressChangedEventArgs> OnProgressChanged;
-        public event EventHandler<REDCoreFoundDirEventArgs> OnFoundEmptyDir;
+        public event EventHandler<FoundDirEventArgs> OnFoundEmptyDir;
         public event EventHandler<FinishedScanForEmptyDirsEventArgs> OnFinishedScanForEmptyDirs;
         public event EventHandler<DeleteProcessUpdateEventArgs> OnDeleteProcessChanged;
         public event EventHandler<DeletionErrorEventArgs> OnDeleteError;
-        public event EventHandler<REDCoreDeleteProcessFinishedEventArgs> OnDeleteProcessFinished;
+        public event EventHandler<DeleteProcessFinishedEventArgs> OnDeleteProcessFinished;
 
         public REDCore(MainWindow mainWindow, RuntimeData data)
         {
             this.redMainWindow = mainWindow;
-            this.data = data;
+            this.Data = data;
         }
 
         public void init()
@@ -47,53 +45,12 @@ namespace RED2
             this.set_step(WorkflowSteps.Init);
         }
 
-        public void CalculateDirectoryCount()
-        {
-            this.set_step(WorkflowSteps.StartingCalcDirCount);
-            this.data.EmptyFolderList = new List<DirectoryInfo>();
-
-            // Create new blank worker
-            this.calcDirCountWorker = new CalculateDirectoryCountWorker();
-            this.calcDirCountWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FSWorker_RunWorkerCompleted);
-            this.calcDirCountWorker.MaxDepth = this.data.MaxDepth;
-            this.calcDirCountWorker.RunWorkerAsync(this.data.StartFolder);
-        }
-
         private void set_step(WorkflowSteps step)
         {
-            this.currentProcessStep = step;
+            this.CurrentProcessStep = step;
 
             if (this.OnWorkflowStepChanged != null)
-                this.OnWorkflowStepChanged(this, new REDCoreWorkflowStepChangedEventArgs(step));
-        }
-
-        /// <summary>
-        /// Scan process finished
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FSWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            CalculateDirectoryCountWorker LWorker = sender as CalculateDirectoryCountWorker;
-
-            calcDirCountWorker.Dispose();
-            calcDirCountWorker = null;
-
-            // First, handle the case where an exception was thrown.
-            if (e.Error != null)
-            {
-                showErrorMsg(e.Error.Message);
-            }
-            else if (e.Cancelled)
-            {
-                if (this.OnCancelled != null)
-                    this.OnCancelled(this, new EventArgs());
-            }
-            else
-            {
-                if (this.OnCalcDirWorkerFinished != null)
-                    this.OnCalcDirWorkerFinished(this, new REDCoreCalcDirWorkerFinishedEventArgs((int)e.Result));
-            }
+                this.OnWorkflowStepChanged(this, new WorkflowStepChangedEventArgs(step));
         }
 
         /// <summary>
@@ -103,8 +60,11 @@ namespace RED2
         {
             this.set_step(WorkflowSteps.StartSearchingForEmptyDirs);
 
+            // Rest folder list
+            this.Data.ProtectedFolderList = new Dictionary<string, bool>();
+
             searchEmptyFoldersWorker = new FindEmptyDirectoryWorker();
-            searchEmptyFoldersWorker.Data = this.data;
+            searchEmptyFoldersWorker.Data = this.Data;
 
             searchEmptyFoldersWorker.ProgressChanged += new ProgressChangedEventHandler(FFWorker_ProgressChanged);
             searchEmptyFoldersWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FFWorker_RunWorkerCompleted);
@@ -124,7 +84,7 @@ namespace RED2
             //}
 
             // Start worker
-            searchEmptyFoldersWorker.RunWorkerAsync(this.data.StartFolder);
+            searchEmptyFoldersWorker.RunWorkerAsync(this.Data.StartFolder);
 
         }
 
@@ -145,10 +105,10 @@ namespace RED2
             {
                 var directory = (DirectoryInfo)e.UserState;
 
-                this.data.EmptyFolderList.Add(directory);
+                this.Data.EmptyFolderList.Add(directory);
 
                 if (this.OnFoundEmptyDir != null)
-                    this.OnFoundEmptyDir(this, new REDCoreFoundDirEventArgs(directory));
+                    this.OnFoundEmptyDir(this, new FoundDirEventArgs(directory));
             }
         }
 
@@ -174,27 +134,20 @@ namespace RED2
                 searchEmptyFoldersWorker = null;
 
                 if (this.OnFinishedScanForEmptyDirs != null)
-                    this.OnFinishedScanForEmptyDirs(this, new FinishedScanForEmptyDirsEventArgs(this.data.EmptyFolderList.Count, FolderCount));
+                    this.OnFinishedScanForEmptyDirs(this, new FinishedScanForEmptyDirsEventArgs(this.Data.EmptyFolderList.Count, FolderCount));
             }
         }
 
         internal void CancelCurrentProcess()
         {
-            if (this.currentProcessStep == WorkflowSteps.StartingCalcDirCount)
-            {
-                if (this.calcDirCountWorker == null) return;
-
-                if ((this.calcDirCountWorker.IsBusy == true) || (calcDirCountWorker.CancellationPending == false))
-                    calcDirCountWorker.CancelAsync();
-            }
-            else if (this.currentProcessStep == WorkflowSteps.StartSearchingForEmptyDirs)
+            if (this.CurrentProcessStep == WorkflowSteps.StartSearchingForEmptyDirs)
             {
                 if (this.searchEmptyFoldersWorker == null) return;
 
                 if ((this.searchEmptyFoldersWorker.IsBusy == true) || (searchEmptyFoldersWorker.CancellationPending == false))
                     searchEmptyFoldersWorker.CancelAsync();
             }
-            else if (this.currentProcessStep == WorkflowSteps.DeleteProcessRunning)
+            else if (this.CurrentProcessStep == WorkflowSteps.DeleteProcessRunning)
             {
                 if (this.deletionWorker == null) return;
 
@@ -208,7 +161,7 @@ namespace RED2
             this.set_step(WorkflowSteps.DeleteProcessRunning);
 
             this.deletionWorker = new DeletionWorker();
-            this.deletionWorker.Data = this.data;
+            this.deletionWorker.Data = this.Data;
 
             this.deletionWorker.ProgressChanged += new ProgressChangedEventHandler(deletionWorker_ProgressChanged);
             this.deletionWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(deletionWorker_RunWorkerCompleted);
@@ -261,28 +214,28 @@ namespace RED2
                 this.deletionWorker.Dispose(); this.deletionWorker = null;
 
                 if (this.OnDeleteProcessFinished != null)
-                    this.OnDeleteProcessFinished(this, new REDCoreDeleteProcessFinishedEventArgs(deletedCount, failedCount));
+                    this.OnDeleteProcessFinished(this, new DeleteProcessFinishedEventArgs(deletedCount, failedCount));
             }
         }
 
         internal void AddProtectedFolder(string path)
         {
-            if (!this.data.ProtectedFolderList.ContainsKey(path))
-                this.data.ProtectedFolderList.Add(path, true);
+            if (!this.Data.ProtectedFolderList.ContainsKey(path))
+                this.Data.ProtectedFolderList.Add(path, true);
         }
 
         internal void RemoveProtected(string FolderFullName)
         {
-            if (this.data.ProtectedFolderList.ContainsKey(FolderFullName))
-                this.data.ProtectedFolderList.Remove(FolderFullName);
+            if (this.Data.ProtectedFolderList.ContainsKey(FolderFullName))
+                this.Data.ProtectedFolderList.Remove(FolderFullName);
         }
 
-        public string GetLog() { return this.data.LogMessages.ToString(); }
+        public string GetLog() { return this.Data.LogMessages.ToString(); }
 
         private void showErrorMsg(string errorMessage)
         {
             if (this.OnError != null)
-                this.OnError(this, new REDCoreErrorEventArgs(errorMessage));
+                this.OnError(this, new ErrorEventArgs(errorMessage));
         }
 
         internal void AbortDeletion()

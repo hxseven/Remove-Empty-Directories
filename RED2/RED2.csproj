@@ -90,9 +90,6 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Lib\CalculateDirectoryCountWorker.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Lib\FindEmptyDirectoryWorker.cs">
       <SubType>Component</SubType>
     </Compile>

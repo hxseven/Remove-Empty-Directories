@@ -64,6 +64,7 @@
             this.lblPickAFolder = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.gpOptions = new System.Windows.Forms.GroupBox();
+            this.cbIgnoreErrors = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
             this.cbDeleteMode = new System.Windows.Forms.ComboBox();
             this.cbClipboardDetection = new System.Windows.Forms.CheckBox();
@@ -93,7 +94,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.llWebsite = new System.Windows.Forms.LinkLabel();
             this.lbAppTitle = new System.Windows.Forms.Label();
-            this.cbIgnoreErrors = new System.Windows.Forms.CheckBox();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -394,49 +396,51 @@
             this.toolStripSeparator1,
             this.protectFolderFromBeingDeletedToolStripMenuItem,
             this.unprotectFolderToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.proToolStripMenuItem,
             this.toolStripSeparator2,
-            this.proToolStripMenuItem});
+            this.deleteToolStripMenuItem});
             this.cmStrip.Name = "cmStrip";
             this.cmStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmStrip.ShowImageMargin = false;
-            this.cmStrip.Size = new System.Drawing.Size(200, 104);
+            this.cmStrip.Size = new System.Drawing.Size(141, 154);
             // 
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.openFolderToolStripMenuItem.Text = "&Open";
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openFolderToolStripMenuItem.Text = "&Open in Explorer";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // protectFolderFromBeingDeletedToolStripMenuItem
             // 
             this.protectFolderFromBeingDeletedToolStripMenuItem.Name = "protectFolderFromBeingDeletedToolStripMenuItem";
-            this.protectFolderFromBeingDeletedToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.protectFolderFromBeingDeletedToolStripMenuItem.Text = "Protect from deletion (once)";
+            this.protectFolderFromBeingDeletedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.protectFolderFromBeingDeletedToolStripMenuItem.Text = "&Protect once";
             this.protectFolderFromBeingDeletedToolStripMenuItem.Click += new System.EventHandler(this.protectFolderFromBeingDeletedToolStripMenuItem_Click);
             // 
             // unprotectFolderToolStripMenuItem
             // 
             this.unprotectFolderToolStripMenuItem.Name = "unprotectFolderToolStripMenuItem";
-            this.unprotectFolderToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.unprotectFolderToolStripMenuItem.Text = "Unprotect";
+            this.unprotectFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unprotectFolderToolStripMenuItem.Text = "&Unprotect";
             this.unprotectFolderToolStripMenuItem.Click += new System.EventHandler(this.unprotectFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // proToolStripMenuItem
             // 
             this.proToolStripMenuItem.Name = "proToolStripMenuItem";
-            this.proToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.proToolStripMenuItem.Text = "Add to ignore list";
+            this.proToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.proToolStripMenuItem.Text = "Add to &ignore list";
             this.proToolStripMenuItem.Click += new System.EventHandler(this.proToolStripMenuItem_Click);
             // 
             // btnExit
@@ -519,6 +523,17 @@
             this.gpOptions.TabStop = false;
             this.gpOptions.Text = "General options";
             // 
+            // cbIgnoreErrors
+            // 
+            this.cbIgnoreErrors.AutoSize = true;
+            this.cbIgnoreErrors.Location = new System.Drawing.Point(322, 113);
+            this.cbIgnoreErrors.Name = "cbIgnoreErrors";
+            this.cbIgnoreErrors.Size = new System.Drawing.Size(157, 17);
+            this.cbIgnoreErrors.TabIndex = 15;
+            this.cbIgnoreErrors.Tag = "ignore_errors";
+            this.cbIgnoreErrors.Text = "Ignore errors during deletion\r\n";
+            this.cbIgnoreErrors.UseVisualStyleBackColor = true;
+            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -540,8 +555,6 @@
             // cbClipboardDetection
             // 
             this.cbClipboardDetection.AutoSize = true;
-            this.cbClipboardDetection.Checked = true;
-            this.cbClipboardDetection.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbClipboardDetection.Location = new System.Drawing.Point(322, 87);
             this.cbClipboardDetection.Name = "cbClipboardDetection";
             this.cbClipboardDetection.Size = new System.Drawing.Size(162, 17);
@@ -608,9 +621,9 @@
             this.label11.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.label11.Location = new System.Drawing.Point(13, 199);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(154, 13);
+            this.label11.Size = new System.Drawing.Size(106, 13);
             this.label11.TabIndex = 12;
-            this.label11.Text = "(Put each pattern in a new line)";
+            this.label11.Text = "(One pattern per line)";
             // 
             // tbIgnoreFolders
             // 
@@ -628,7 +641,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(13, 23);
+            this.label10.Location = new System.Drawing.Point(13, 31);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(103, 13);
             this.label10.TabIndex = 13;
@@ -657,9 +670,9 @@
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(266, 65);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(145, 13);
+            this.label20.Size = new System.Drawing.Size(265, 13);
             this.label20.TabIndex = 19;
-            this.label20.Text = "(Might freeze GUI if too small)";
+            this.label20.Text = "(Gives you time to stop the process, but not necessary)";
             // 
             // btnShowConfig
             // 
@@ -676,9 +689,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(10, 20);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(120, 13);
+            this.label3.Size = new System.Drawing.Size(158, 13);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Max depth (-1 = infinite):";
+            this.label3.Text = "Max depth to scan (-1 = infinite):";
             // 
             // nuMaxDepth
             // 
@@ -723,7 +736,7 @@
             this.nuPause.Size = new System.Drawing.Size(72, 20);
             this.nuPause.TabIndex = 8;
             this.nuPause.Value = new decimal(new int[] {
-            150,
+            100,
             0,
             0,
             0});
@@ -759,9 +772,9 @@
             this.label9.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.label9.Location = new System.Drawing.Point(6, 199);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(154, 13);
+            this.label9.Size = new System.Drawing.Size(106, 13);
             this.label9.TabIndex = 11;
-            this.label9.Text = "(Put each pattern in a new line)";
+            this.label9.Text = "(One pattern per line)";
             // 
             // tbIgnoreFiles
             // 
@@ -870,18 +883,17 @@
             this.lbAppTitle.TabIndex = 0;
             this.lbAppTitle.Text = "Remove Empty Directories - Version ";
             // 
-            // cbIgnoreErrors
+            // toolStripSeparator3
             // 
-            this.cbIgnoreErrors.AutoSize = true;
-            this.cbIgnoreErrors.Checked = true;
-            this.cbIgnoreErrors.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbIgnoreErrors.Location = new System.Drawing.Point(322, 113);
-            this.cbIgnoreErrors.Name = "cbIgnoreErrors";
-            this.cbIgnoreErrors.Size = new System.Drawing.Size(157, 17);
-            this.cbIgnoreErrors.TabIndex = 15;
-            this.cbIgnoreErrors.Tag = "ignore_errors";
-            this.cbIgnoreErrors.Text = "Ignore errors during deletion\r\n";
-            this.cbIgnoreErrors.UseVisualStyleBackColor = true;
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.deleteToolStripMenuItem.Text = "&Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -983,10 +995,12 @@
         private System.Windows.Forms.Button btnShowLog;
         private System.Windows.Forms.ComboBox cbDeleteMode;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox tbCredits;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.CheckBox cbIgnoreErrors;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 	}
 }
 

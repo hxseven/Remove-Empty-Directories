@@ -6,7 +6,6 @@ namespace RED2
     {
         Init,
         StartSearchingForEmptyDirs,
-        StartingCalcDirCount,
         DeleteProcessRunning,
     }
 

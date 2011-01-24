@@ -97,6 +97,33 @@ namespace RED2.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories ({1} directories could not be deleted) ähnelt.
+        /// </summary>
+        internal static string delete_process_finished {
+            get {
+                return ResourceManager.GetString("delete_process_finished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleting empty directories... ähnelt.
+        /// </summary>
+        internal static string deleting_empty_folders {
+            get {
+                return ResourceManager.GetString("deleting_empty_folders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete process was aborted. ähnelt.
+        /// </summary>
+        internal static string deletion_aborted {
+            get {
+                return ResourceManager.GetString("deletion_aborted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
         /// </summary>
         internal static string dont_scan_hidden_folders {
@@ -302,7 +329,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deletion process was aborted. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Process was aborted. ähnelt.
         /// </summary>
         internal static string process_aborted {
             get {
@@ -311,7 +338,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deletion process was cancelled! ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Process was cancelled! ähnelt.
         /// </summary>
         internal static string process_cancelled {
             get {
@@ -338,15 +365,6 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Removing empty folders... ähnelt.
-        /// </summary>
-        internal static string rem_empty_folders {
-            get {
-                return ResourceManager.GetString("rem_empty_folders", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleting empty directories ({0}/{1})... ähnelt.
         /// </summary>
         internal static string removing_empty_folders {
@@ -365,7 +383,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Searching empty folders... ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Searching empty directories... ähnelt.
         /// </summary>
         internal static string searching_empty_folders {
             get {
@@ -383,7 +401,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Warning, do you really want to delete empty system folders?\nThis may harm your operating system. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warning, do you really want to delete empty system directories?\nThis may harm your operating system. ähnelt.
         /// </summary>
         internal static string warning_really_delete {
             get {

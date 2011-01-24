@@ -118,7 +118,6 @@ namespace RED2
             String[] ignoreFileList = this.Data.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
 
             FileInfo[] Files = emptyDirectory.GetFiles();
-            Regex regexPattern = null;
 
             if (Files != null && Files.Length != 0)
             {
@@ -129,47 +128,8 @@ namespace RED2
                 {
                     FileInfo file = Files[f];
 
-                    bool deleteTrashFile = false;
                     string delPattern = "";
-
-                    for (int p = 0; (p < ignoreFileList.Length && !deleteTrashFile); p++)
-                    {
-                        var pattern = ignoreFileList[p];
-
-                        if (this.Data.Ignore0kbFiles && file.Length == 0)
-                        {
-                            delPattern = "[empty file (0 KB)]";
-                            deleteTrashFile = true;
-                        }
-                        else if (pattern.ToLower() == file.Name.ToLower())
-                        {
-                            delPattern = pattern;
-                            deleteTrashFile = true;
-                        }
-                        else if (pattern.Contains("*"))
-                        {
-                            pattern = Regex.Escape(pattern);
-                            pattern = pattern.Replace("\\*", ".*");
-
-                            regexPattern = new Regex("^" + pattern + "$");
-
-                            if (regexPattern.IsMatch(file.Name))
-                            {
-                                delPattern = pattern;
-                                deleteTrashFile = true;
-                            }
-                        }
-                        else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
-                        {
-                            regexPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
-
-                            if (regexPattern.IsMatch(file.Name))
-                            {
-                                delPattern = pattern;
-                                deleteTrashFile = true;
-                            }
-                        }
-                    }
+                    bool deleteTrashFile = SystemFunctions.MatchesIgnorePattern(file, (int)file.Length, this.Data.Ignore0kbFiles, ignoreFileList, out delPattern);
 
                     // If only one file is good, then stop.
                     if (deleteTrashFile)

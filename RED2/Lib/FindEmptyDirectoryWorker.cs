@@ -10,7 +10,6 @@ namespace RED2
     /// </summary>
     public class FindEmptyDirectoryWorker : BackgroundWorker
     {
-
         private int folderCount = 0;
         public int FolderCount
         {
@@ -79,7 +78,7 @@ namespace RED2
 
             // update status progress bar after 100 steps:
             if (this.folderCount % 100 == 0)
-                ReportProgress(folderCount, "Scanning folder: " + startDir.Name);
+                ReportProgress(folderCount, "Checking directory: " + startDir.Name);
 
 
             bool containsFiles = false;
@@ -108,6 +107,8 @@ namespace RED2
             }
             else
             {
+                string delPattern = "";
+
                 // loop trough files and cancel if containsFiles == true
                 for (int f = 0; (f < fileList.Length && !containsFiles); f++)
                 {
@@ -128,7 +129,7 @@ namespace RED2
                     }
 
                     // If only one file is good, then stop.
-                    if (!matchIgnorePattern(file, filesize))
+                    if (!SystemFunctions.MatchesIgnorePattern(file, filesize, this.Data.Ignore0kbFiles, this.ignoreFileList, out delPattern))
                         containsFiles = true;
                 }
             }
@@ -181,43 +182,7 @@ namespace RED2
             return (allSubFolderEmpty && !containsFiles);
         }
 
-        private bool matchIgnorePattern(FileInfo file, int filesize)
-        {
-            bool matches_a_pattern = false;
 
-            for (int p = 0; (p < this.ignoreFileList.Length && !matches_a_pattern); p++)
-            {
-                string pattern = this.ignoreFileList[p];
-
-                if (this.Data.Ignore0kbFiles && filesize == 0)
-                {
-                    matches_a_pattern = true;
-                }
-                else if (pattern.ToLower() == file.Name.ToLower())
-                {
-                    matches_a_pattern = true;
-                }
-                else if (pattern.Contains("*"))
-                {
-                    pattern = Regex.Escape(pattern);
-                    pattern = pattern.Replace("\\*", ".*");
-
-                    Regex RgxPattern = new Regex("^" + pattern + "$");
-
-                    if (RgxPattern.IsMatch(file.Name))
-                        matches_a_pattern = true;
-                }
-                else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
-                {
-                    Regex RgxPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
-
-                    if (RgxPattern.IsMatch(file.Name))
-                        matches_a_pattern = true;
-                }
-
-            }
-            return matches_a_pattern;
-        }
 
         private bool checkIfDirectoryIsOnIgnoreList(DirectoryInfo Folder)
         {

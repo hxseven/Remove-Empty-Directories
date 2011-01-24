@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace RED2
 {
@@ -16,7 +17,7 @@ namespace RED2
         private TreeManager tree = null;
         private ConfigurationManger config = null;
 
-        private RuntimeData data = null;
+        private RuntimeData Data = null;
 
         #region Generic stuff
 
@@ -38,22 +39,21 @@ namespace RED2
             this.config = new ConfigurationManger(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
             this.config.OnSettingsSaved += new EventHandler(config_OnSettingsSaved);
 
-            this.data = new RuntimeData();
+            this.Data = new RuntimeData();
 
-            this.core = new REDCore(this, this.data);
+            this.core = new REDCore(this, this.Data);
 
             // Attach events
-            this.core.OnWorkflowStepChanged += new EventHandler<REDCoreWorkflowStepChangedEventArgs>(core_OnWorkflowStepChanged);
-            this.core.OnError += new EventHandler<REDCoreErrorEventArgs>(core_OnError);
+            this.core.OnWorkflowStepChanged += new EventHandler<WorkflowStepChangedEventArgs>(core_OnWorkflowStepChanged);
+            this.core.OnError += new EventHandler<ErrorEventArgs>(core_OnError);
             this.core.OnCancelled += new EventHandler(core_OnCancelled);
             this.core.OnAborted += new EventHandler(core_OnAborted);
 
-            this.core.OnCalcDirWorkerFinished += new EventHandler<REDCoreCalcDirWorkerFinishedEventArgs>(core_OnCalcDirWorkerFinished);
             this.core.OnProgressChanged += new EventHandler<ProgressChangedEventArgs>(core_OnProgressChanged);
-            this.core.OnFoundEmptyDir += new EventHandler<REDCoreFoundDirEventArgs>(core_OnFoundEmptyDir);
+            this.core.OnFoundEmptyDir += new EventHandler<FoundDirEventArgs>(core_OnFoundEmptyDir);
             this.core.OnFinishedScanForEmptyDirs += new EventHandler<FinishedScanForEmptyDirsEventArgs>(core_OnFoundFinishedScanForEmptyDirs);
             this.core.OnDeleteProcessChanged += new EventHandler<DeleteProcessUpdateEventArgs>(core_OnDeleteProcessChanged);
-            this.core.OnDeleteProcessFinished += new EventHandler<REDCoreDeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
+            this.core.OnDeleteProcessFinished += new EventHandler<DeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
             this.core.init();
@@ -78,7 +78,7 @@ namespace RED2
             {
                 // Hack: retry means -> ignore all errors
                 if (dialogResult == DialogResult.Retry)
-                    this.data.IgnoreAllErrors = true;
+                    this.Data.IgnoreAllErrors = true;
 
                 this.core.ContinueDeletion();
             }
@@ -93,6 +93,7 @@ namespace RED2
         {
             this.tree = new TreeManager(this.tvFolders);
             this.tree.OnProtectionStatusChanged += new EventHandler<ProtectionStatusChangedEventArgs>(tree_OnProtectionStatusChanged);
+            this.tree.OnDeleteRequest += new EventHandler<DeleteRequestFromTreeEventArgs>(tree_OnDeleteRequest);
 
             Assembly REDAssembly = Assembly.GetExecutingAssembly();
             AssemblyName AssemblyName = REDAssembly.GetName();
@@ -135,9 +136,53 @@ namespace RED2
             string[] args = Environment.GetCommandLineArgs();
 
             if (args.Length > 1)
-                this.tbFolder.Text = args[1].ToString();
+            {
+                args[0] = "";
+                var path = String.Join("", args).Replace("\"", "").Trim();
+
+                // add ending backslash
+                if (!path.EndsWith("\\")) path += "\\";
+
+                this.tbFolder.Text = path;
+            }
 
             #endregion
+        }
+
+        void tree_OnDeleteRequest(object sender, DeleteRequestFromTreeEventArgs e)
+        {
+            try
+            {
+                if (this.Data.EmptyFolderList.Contains(e.Directory))
+                    this.Data.EmptyFolderList.Remove(e.Directory);
+
+                var path = e.Directory.FullName;
+
+                var deleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
+                if (deleteMode == DeleteModes.RecycleBin) deleteMode = DeleteModes.RecycleBinWithQuestion;
+
+                SystemFunctions.SecureDeleteDirectory(e.Directory, deleteMode);
+
+                if (this.Data.ProtectedFolderList.ContainsKey(path))
+                    this.Data.ProtectedFolderList.Remove(path);
+
+                this.tree.RemoveNode(path);
+
+            }
+            catch (System.OperationCanceledException)
+            {
+                // The user canceled the deletion 
+
+                if (!this.Data.EmptyFolderList.Contains(e.Directory))
+                    this.Data.EmptyFolderList.Add(e.Directory);
+            }
+            catch (Exception ex)
+            {
+                if (!this.Data.EmptyFolderList.Contains(e.Directory))
+                    this.Data.EmptyFolderList.Add(e.Directory);
+
+                MessageBox.Show(this, "The directory was not deleted, because the following error occured:" + Environment.NewLine + ex.Message);
+            }
         }
 
         void tree_OnProtectionStatusChanged(object sender, ProtectionStatusChangedEventArgs e)
@@ -147,7 +192,7 @@ namespace RED2
             else
                 this.core.RemoveProtected(e.Path);
         }
-        
+
         private void drawDirectoryIcons()
         {
             #region Set and display folder status icons
@@ -190,7 +235,7 @@ namespace RED2
             #endregion
         }
 
-        void core_OnWorkflowStepChanged(object sender, REDCoreWorkflowStepChangedEventArgs e)
+        void core_OnWorkflowStepChanged(object sender, WorkflowStepChangedEventArgs e)
         {
             switch (e.NewStep)
             {
@@ -208,30 +253,13 @@ namespace RED2
 
                     break;
 
-                case WorkflowSteps.StartingCalcDirCount:
-
-                    // Update button states
-                    this.btnCancel.Enabled = true;
-                    this.btnScan.Enabled = false;
-                    this.btnDelete.Enabled = false;
-
-                    // Reset TreeView
-                    this.tvFolders.Nodes.Clear();
-
-                    // Activate progressbar
-                    this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
-
-                    this.lbStatus.Text = RED2.Properties.Resources.scanning_folders;
-
-                    break;
-
                 case WorkflowSteps.StartSearchingForEmptyDirs:
                     this.lbStatus.Text = RED2.Properties.Resources.searching_empty_folders;
                     break;
 
                 case WorkflowSteps.DeleteProcessRunning:
 
-                    this.lbStatus.Text = RED2.Properties.Resources.rem_empty_folders;
+                    this.lbStatus.Text = RED2.Properties.Resources.deleting_empty_folders;
 
                     this.btnScan.Enabled = false;
                     this.btnCancel.Enabled = true;
@@ -243,7 +271,7 @@ namespace RED2
             }
         }
 
-        void core_OnError(object sender, REDCoreErrorEventArgs e)
+        void core_OnError(object sender, ErrorEventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
@@ -253,7 +281,12 @@ namespace RED2
         void core_OnCancelled(object sender, EventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
-            this.lbStatus.Text = RED2.Properties.Resources.process_cancelled;
+
+            if (this.core.CurrentProcessStep == WorkflowSteps.DeleteProcessRunning)
+                this.lbStatus.Text = RED2.Properties.Resources.deletion_aborted; // TODO OK?
+            else
+                this.lbStatus.Text = RED2.Properties.Resources.process_cancelled;
+
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
             this.btnDelete.Enabled = false;
@@ -263,7 +296,12 @@ namespace RED2
         void core_OnAborted(object sender, EventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
-            this.lbStatus.Text = RED2.Properties.Resources.process_aborted;
+
+            if (this.core.CurrentProcessStep == WorkflowSteps.DeleteProcessRunning)
+                this.lbStatus.Text = RED2.Properties.Resources.deletion_aborted;
+            else
+                this.lbStatus.Text = RED2.Properties.Resources.process_aborted;
+
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
             this.btnDelete.Enabled = false;
@@ -296,28 +334,22 @@ namespace RED2
 
             this.config.Save();
 
-            this.data.StartFolder = selectedDirectory;
-            this.data.MaxDepth = (int)this.nuMaxDepth.Value;
-            this.data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
+            this.Data.StartFolder = selectedDirectory;
+            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
+            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.Data.IgnoreFolders = this.tbIgnoreFolders.Text;
+            this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
+            this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
+            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
 
-            this.core.CalculateDirectoryCount();
-        }
+            //this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
+            this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
 
-        void core_OnCalcDirWorkerFinished(object sender, REDCoreCalcDirWorkerFinishedEventArgs e)
-        {
-            this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
+            this.tree.CreateRootNode(this.Data.StartFolder, DirectoryIcons.home);
 
-            // Set max value:
-            this.pbProgressStatus.Maximum = e.MaxFolderCount;
-
-            this.tree.CreateRootNode(this.data.StartFolder, DirectoryIcons.home);
-
-            this.data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.data.IgnoreFolders = this.tbIgnoreFolders.Text;
-            this.data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
-            this.data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
-            this.data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
-            this.data.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.btnCancel.Enabled = true;
 
             this.core.SearchingForEmptyDirectories();
         }
@@ -332,9 +364,8 @@ namespace RED2
 
             this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount);
 
-            if (e.EmptyFolderCount > 0)
-                this.btnDelete.Enabled = true;
-
+            this.btnDelete.Enabled = (e.EmptyFolderCount > 0);
+            this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
             this.pbProgressStatus.Maximum = e.EmptyFolderCount;
             this.pbProgressStatus.Minimum = 0;
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
@@ -373,7 +404,7 @@ namespace RED2
             this.pbProgressStatus.Value = e.ProgressStatus;
         }
 
-        void core_OnDeleteProcessFinished(object sender, REDCoreDeleteProcessFinishedEventArgs e)
+        void core_OnDeleteProcessFinished(object sender, DeleteProcessFinishedEventArgs e)
         {
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
 
@@ -382,7 +413,7 @@ namespace RED2
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
 
-            this.lbStatus.Text = String.Format(RED2.Properties.Resources.found_x_empty_folders, e.DeletedFolderCount, e.FailedFolderCount);
+            this.lbStatus.Text = String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount);
 
             this.config.DeletedFolderCount += e.DeletedFolderCount;
             this.config.Save();
@@ -398,7 +429,7 @@ namespace RED2
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
-        {           
+        {
             this.core.CancelCurrentProcess();
         }
 
@@ -409,16 +440,16 @@ namespace RED2
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            this.data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
-            this.data.PauseTime = (double)this.nuPause.Value;
-            this.data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
-            this.data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
+            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.Data.Ignore0kbFiles = this.cbIgnore0kbFiles.Checked;
+            this.Data.PauseTime = (double)this.nuPause.Value;
+            this.Data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
+            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
 
             this.core.DoDelete();
         }
 
-        void core_OnFoundEmptyDir(object sender, REDCoreFoundDirEventArgs e)
+        void core_OnFoundEmptyDir(object sender, FoundDirEventArgs e)
         {
             this.tree.AddEmptyFolderToTreeView(e.Directory, true);
         }
@@ -426,7 +457,7 @@ namespace RED2
         void core_OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.lbStatus.Text = (string)e.UserState;
-            this.pbProgressStatus.Value = e.ProgressPercentage;
+            //this.pbProgressStatus.Value = e.ProgressPercentage;
         }
 
         private void proToolStripMenuItem_Click(object sender, EventArgs e)
@@ -544,11 +575,15 @@ namespace RED2
             this.tree.UnprotectSelected();
         }
 
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.tree.DeleteSelectedDirectory();
+        }
+
         #endregion
 
         #region Various functions
 
- 
         private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://www.jonasjohn.de/");
@@ -565,6 +600,8 @@ namespace RED2
         #endregion
 
 
-   
+
+
+
     }
 }
