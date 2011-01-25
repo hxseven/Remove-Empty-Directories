@@ -172,7 +172,7 @@
     <value>True</value>
   </data>
   <data name="ignore_files" xml:space="preserve">
-    <value>/*.tmp$/\r\ndesktop.ini\r\nThumbs.db</value>
+    <value>*.tmp\r\ndesktop.ini\r\nThumbs.db</value>
   </data>
   <data name="ignore_folders" xml:space="preserve">
     <value>System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN</value>

@@ -78,6 +78,7 @@
             this.tbIgnoreFolders = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnResetConfig = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
@@ -408,56 +409,56 @@
             this.cmStrip.Name = "cmStrip";
             this.cmStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmStrip.ShowImageMargin = false;
-            this.cmStrip.Size = new System.Drawing.Size(141, 154);
+            this.cmStrip.Size = new System.Drawing.Size(214, 132);
             // 
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.openFolderToolStripMenuItem.Text = "&Open in Explorer";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(210, 6);
             // 
             // protectFolderFromBeingDeletedToolStripMenuItem
             // 
             this.protectFolderFromBeingDeletedToolStripMenuItem.Name = "protectFolderFromBeingDeletedToolStripMenuItem";
-            this.protectFolderFromBeingDeletedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.protectFolderFromBeingDeletedToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.protectFolderFromBeingDeletedToolStripMenuItem.Text = "&Protect once";
             this.protectFolderFromBeingDeletedToolStripMenuItem.Click += new System.EventHandler(this.protectFolderFromBeingDeletedToolStripMenuItem_Click);
             // 
             // unprotectFolderToolStripMenuItem
             // 
             this.unprotectFolderToolStripMenuItem.Name = "unprotectFolderToolStripMenuItem";
-            this.unprotectFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unprotectFolderToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.unprotectFolderToolStripMenuItem.Text = "&Unprotect";
             this.unprotectFolderToolStripMenuItem.Click += new System.EventHandler(this.unprotectFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(210, 6);
             // 
             // proToolStripMenuItem
             // 
             this.proToolStripMenuItem.Name = "proToolStripMenuItem";
-            this.proToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.proToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.proToolStripMenuItem.Text = "Add to &ignore list";
             this.proToolStripMenuItem.Click += new System.EventHandler(this.proToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(210, 6);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.deleteToolStripMenuItem.Text = "&Delete";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.deleteToolStripMenuItem.Text = "&Delete incl. all subdirectories (!)";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // btnExit
@@ -638,15 +639,16 @@
             this.label11.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.label11.Location = new System.Drawing.Point(13, 199);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(106, 13);
+            this.label11.Size = new System.Drawing.Size(237, 13);
             this.label11.TabIndex = 12;
-            this.label11.Text = "(One pattern per line)";
+            this.label11.Text = "(One pattern per line - Dir. name or path possible)";
             // 
             // tbIgnoreFolders
             // 
             this.tbIgnoreFolders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbIgnoreFolders.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbIgnoreFolders.Location = new System.Drawing.Point(13, 38);
             this.tbIgnoreFolders.Multiline = true;
             this.tbIgnoreFolders.Name = "tbIgnoreFolders";
@@ -668,6 +670,7 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnResetConfig);
             this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.nuInfiniteLoopDetectionCount);
             this.groupBox3.Controls.Add(this.label4);
@@ -680,15 +683,25 @@
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Location = new System.Drawing.Point(15, 386);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(533, 93);
+            this.groupBox3.Size = new System.Drawing.Size(533, 98);
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Advanced";
             // 
+            // btnResetConfig
+            // 
+            this.btnResetConfig.Location = new System.Drawing.Point(10, 67);
+            this.btnResetConfig.Name = "btnResetConfig";
+            this.btnResetConfig.Size = new System.Drawing.Size(247, 21);
+            this.btnResetConfig.TabIndex = 23;
+            this.btnResetConfig.Text = "Reset to default settings";
+            this.btnResetConfig.UseVisualStyleBackColor = true;
+            this.btnResetConfig.Click += new System.EventHandler(this.btnResetConfig_Click);
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(482, 67);
+            this.label13.Location = new System.Drawing.Point(482, 69);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(33, 13);
             this.label13.TabIndex = 22;
@@ -696,7 +709,7 @@
             // 
             // nuInfiniteLoopDetectionCount
             // 
-            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(426, 63);
+            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(428, 65);
             this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -714,7 +727,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(264, 67);
+            this.label4.Location = new System.Drawing.Point(266, 69);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(160, 13);
             this.label4.TabIndex = 20;
@@ -723,7 +736,7 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(264, 41);
+            this.label20.Location = new System.Drawing.Point(266, 43);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(250, 13);
             this.label20.TabIndex = 19;
@@ -731,9 +744,9 @@
             // 
             // btnShowConfig
             // 
-            this.btnShowConfig.Location = new System.Drawing.Point(11, 63);
+            this.btnShowConfig.Location = new System.Drawing.Point(10, 44);
             this.btnShowConfig.Name = "btnShowConfig";
-            this.btnShowConfig.Size = new System.Drawing.Size(152, 23);
+            this.btnShowConfig.Size = new System.Drawing.Size(247, 21);
             this.btnShowConfig.TabIndex = 7;
             this.btnShowConfig.Text = "Open config file directory";
             this.btnShowConfig.UseVisualStyleBackColor = true;
@@ -742,7 +755,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 20);
+            this.label3.Location = new System.Drawing.Point(10, 23);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(200, 13);
             this.label3.TabIndex = 13;
@@ -750,7 +763,7 @@
             // 
             // nuMaxDepth
             // 
-            this.nuMaxDepth.Location = new System.Drawing.Point(13, 38);
+            this.nuMaxDepth.Location = new System.Drawing.Point(213, 19);
             this.nuMaxDepth.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -762,7 +775,7 @@
             0,
             -2147483648});
             this.nuMaxDepth.Name = "nuMaxDepth";
-            this.nuMaxDepth.Size = new System.Drawing.Size(150, 20);
+            this.nuMaxDepth.Size = new System.Drawing.Size(45, 20);
             this.nuMaxDepth.TabIndex = 7;
             this.nuMaxDepth.Value = new decimal(new int[] {
             1,
@@ -773,7 +786,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(505, 22);
+            this.label8.Location = new System.Drawing.Point(505, 23);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 13);
             this.label8.TabIndex = 18;
@@ -781,7 +794,7 @@
             // 
             // nuPause
             // 
-            this.nuPause.Location = new System.Drawing.Point(448, 18);
+            this.nuPause.Location = new System.Drawing.Point(450, 19);
             this.nuPause.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -799,7 +812,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(264, 22);
+            this.label7.Location = new System.Drawing.Point(266, 23);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(183, 13);
             this.label7.TabIndex = 17;
@@ -839,15 +852,16 @@
             this.label9.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.label9.Location = new System.Drawing.Point(8, 199);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(106, 13);
+            this.label9.Size = new System.Drawing.Size(247, 13);
             this.label9.TabIndex = 11;
-            this.label9.Text = "(One pattern per line)";
+            this.label9.Text = "(One pattern per line - Regex possible -> about tab)";
             // 
             // tbIgnoreFiles
             // 
             this.tbIgnoreFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbIgnoreFiles.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbIgnoreFiles.Location = new System.Drawing.Point(8, 79);
             this.tbIgnoreFiles.Multiline = true;
             this.tbIgnoreFiles.Name = "tbIgnoreFiles";
@@ -861,10 +875,10 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(8, 18);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(221, 26);
+            this.label2.Size = new System.Drawing.Size(222, 26);
             this.label2.TabIndex = 10;
-            this.label2.Text = "Mark directories as empty if they only contain \r\nfiles that match the following p" +
-                "atterns:";
+            this.label2.Text = "Treat directories as empty if they only contain \r\nfiles that match the following " +
+                "patterns:";
             // 
             // tabAbout
             // 
@@ -1061,6 +1075,7 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.NumericUpDown nuInfiniteLoopDetectionCount;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnResetConfig;
 	}
 }
 

@@ -45,25 +45,22 @@ namespace RED2
                 }
                 else if (pattern.ToLower() == file.Name.ToLower())
                 {
+                    // Direct match - ignore case
                     delPattern = pattern;
                     matches_pattern = true;
                 }
-                else if (pattern.Contains("*"))
+                else if (pattern.Contains("*") || (pattern.StartsWith("/") && pattern.EndsWith("/")))
                 {
-                    pattern = Regex.Escape(pattern);
-                    pattern = pattern.Replace("\\*", ".*");
-
-                    regexPattern = new Regex("^" + pattern + "$");
-
-                    if (regexPattern.IsMatch(file.Name))
+                    // Pattern is a regex
+                    if (pattern.StartsWith("/") && pattern.EndsWith("/"))
                     {
-                        delPattern = pattern;
-                        matches_pattern = true;
+                        regexPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
                     }
-                }
-                else if (pattern.StartsWith("/") && pattern.EndsWith("/"))
-                {
-                    regexPattern = new Regex(pattern.Substring(1, pattern.Length - 2));
+                    else
+                    {
+                        pattern = Regex.Escape(pattern).Replace("\\*", ".*");
+                        regexPattern = new Regex("^" + pattern + "$");
+                    }
 
                     if (regexPattern.IsMatch(file.Name))
                     {
@@ -104,7 +101,7 @@ namespace RED2
             if (deleteMode == DeleteModes.Simulate) return;
 
             if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteFile(file.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-            else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(file.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+            else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteFile(file.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
             else if (deleteMode == DeleteModes.Direct)
             {
                 //if (SystemFunctions.random.NextDouble() > 0.5) throw new Exception("Test error");

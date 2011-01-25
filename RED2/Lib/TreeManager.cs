@@ -86,6 +86,7 @@ namespace RED2
             treeNode.EnsureVisible();
         }
 
+        // TODO: Find better code structure for the following two routines
         private TreeNode findOrCreateDirectoryNodeByPath(string path)
         {
             if (path == null) return null;
@@ -93,7 +94,7 @@ namespace RED2
             if (directoryToTreeNodeMapping.ContainsKey(path))
                 return directoryToTreeNodeMapping[path];
             else
-                return AddOrUpdateDirectoryNode(path, DirectorySearchStatusTypes.NotEmpty, ""); // TODO: OK?
+                return AddOrUpdateDirectoryNode(path, DirectorySearchStatusTypes.NotEmpty, "");
         }
 
         public TreeNode AddOrUpdateDirectoryNode(string path, DirectorySearchStatusTypes statusType, string optionalErrorMsg)

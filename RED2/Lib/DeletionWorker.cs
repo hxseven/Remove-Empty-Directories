@@ -56,7 +56,7 @@ namespace RED2
                 var folder = this.Data.EmptyFolderList[this.ListPos];
                 var status = DirectoryDeletionStatusTypes.Ignored;
 
-                // Do not delete protected folders: TODO check if // passt
+                // Do not delete one time protected folders
                 if (!this.Data.ProtectedFolderList.ContainsKey(folder))
                 {
                     try
@@ -108,7 +108,7 @@ namespace RED2
         {
             var emptyDirectory = new DirectoryInfo(path);
 
-            if (!Directory.Exists(emptyDirectory.FullName))
+            if (!emptyDirectory.Exists)
                 throw new Exception("Could not delete the directory \""+emptyDirectory.FullName+"\" because it does not exist anymore.");
 
             // Cleanup folder
@@ -122,7 +122,7 @@ namespace RED2
                 // loop trough files and cancel if containsFiles == true
                 for (int f = 0; f < Files.Length; f++)
                 {
-                    FileInfo file = Files[f];
+                    var file = Files[f];
 
                     string delPattern = "";
                     bool deleteTrashFile = SystemFunctions.MatchesIgnorePattern(file, (int)file.Length, this.Data.IgnoreEmptyFiles, ignoreFileList, out delPattern);

@@ -29,9 +29,8 @@ namespace RED2
         public int MaxDepth { get; set; }
         public int InfiniteLoopDetectionCount { get; set; }
 
-        public StringBuilder LogMessages = new StringBuilder();
-        public Dictionary<String, bool> ProtectedFolderList = new Dictionary<string, bool>();
-        //public List<DirectoryInfo> EmptyFolderList { get; set; } TODO
+        public StringBuilder LogMessages = null;
+        public Dictionary<string, bool> ProtectedFolderList = new Dictionary<string, bool>();
         public List<string> EmptyFolderList { get; set; }
 
         public RuntimeData()
@@ -54,6 +53,12 @@ namespace RED2
         public void AddLogMessage(string msg)
         {
             this.LogMessages.AppendLine(DateTime.Now.ToString("r") + "\t" + msg);
+        }
+
+        internal void AddLogSpacer()
+        {
+            if (this.LogMessages.Length > 0)
+                this.LogMessages.Append(Environment.NewLine);
         }
     }
 }

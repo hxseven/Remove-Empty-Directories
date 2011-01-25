@@ -195,7 +195,7 @@ namespace RED2
             }
             else
             {
-                // Todo: Use separate class here?
+                // TODO: Use separate class here?
                 int deletedCount = this.deletionWorker.DeletedCount;
                 int failedCount = this.deletionWorker.FailedCount;
 

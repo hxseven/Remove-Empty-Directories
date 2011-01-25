@@ -304,7 +304,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die /*.tmp$/\r\ndesktop.ini\r\nThumbs.db ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die *.tmp\r\ndesktop.ini\r\nThumbs.db ähnelt.
         /// </summary>
         internal static string ignore_files {
             get {

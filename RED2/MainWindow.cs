@@ -164,54 +164,27 @@ namespace RED2
         {
             try
             {
-                if (this.Data.EmptyFolderList.Contains(e.Directory))
-                    this.Data.EmptyFolderList.Remove(e.Directory);
-
                 var deletePath = e.Directory;
 
                 // To simplify the code here there is only the RecycleBinWithQuestion or simulate possible here
                 // (all others will be ignored)
-                SystemFunctions.ManuallyDeleteDirectory(e.Directory, ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode);
-
-                if (this.Data.ProtectedFolderList.ContainsKey(deletePath))
-                    this.Data.ProtectedFolderList.Remove(deletePath);
-
-                var deleteChildnodes = new List<string>();
-
-                foreach (var path in this.Data.EmptyFolderList)
-                {
-                    if (path.StartsWith(deletePath))
-                        deleteChildnodes.Add(deletePath);
-                }
-
-                // Remove child nodes
-                foreach (var subPath in deleteChildnodes)
-                {
-                    this.Data.EmptyFolderList.Remove(subPath);
-                    this.tree.RemoveNode(subPath);
-
-                    if (this.Data.ProtectedFolderList.ContainsKey(subPath))
-                        this.Data.ProtectedFolderList.Remove(subPath);
-                }
+                SystemFunctions.ManuallyDeleteDirectory(deletePath, ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode);
 
                 // Remove root node
                 this.tree.RemoveNode(deletePath);
 
                 this.Data.AddLogMessage("Manually deleted: \"" + deletePath + "\" including all subdirectories");
 
+                // Disable the delete button because the user has to re-scan after he manually deleted a directory
+                this.btnDelete.Enabled = false;
+
             }
             catch (System.OperationCanceledException)
             {
                 // The user canceled the deletion 
-
-                if (!this.Data.EmptyFolderList.Contains(e.Directory))
-                    this.Data.EmptyFolderList.Add(e.Directory);
             }
             catch (Exception ex)
             {
-                if (!this.Data.EmptyFolderList.Contains(e.Directory))
-                    this.Data.EmptyFolderList.Add(e.Directory);
-
                 this.Data.AddLogMessage("Could not manually delete \"" + e.Directory + "\" because of the following error: " + ex.Message);
 
                 MessageBox.Show(this, "The directory was not deleted, because of the following error:" + Environment.NewLine + ex.Message);
@@ -280,7 +253,7 @@ namespace RED2
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
             if (this.core.CurrentProcessStep == WorkflowSteps.DeleteProcessRunning)
-                setStatusAndLogMessage(RED2.Properties.Resources.deletion_aborted); // TODO OK?
+                setStatusAndLogMessage(RED2.Properties.Resources.deletion_aborted);
             else
                 setStatusAndLogMessage(RED2.Properties.Resources.process_cancelled);
 
@@ -358,7 +331,7 @@ namespace RED2
 
             this.btnCancel.Enabled = true;
 
-            this.Data.LogMessages = new System.Text.StringBuilder();
+            this.Data.AddLogSpacer();
             setStatusAndLogMessage(RED2.Properties.Resources.searching_empty_folders);
 
             this.core.SearchingForEmptyDirectories();
@@ -448,12 +421,14 @@ namespace RED2
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            this.Data.LogMessages = new System.Text.StringBuilder();
+            this.Data.AddLogSpacer();
             setStatusAndLogMessage(RED2.Properties.Resources.started_deletion_process);
 
             this.btnScan.Enabled = false;
             this.btnCancel.Enabled = true;
             this.cmStrip.Enabled = false;
+            this.btnDelete.Enabled = false;
+            this.btnShowLog.Enabled = false;
 
             this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
             this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
@@ -479,7 +454,9 @@ namespace RED2
             if (this.tvFolders.SelectedNode == null) return;
             this.tcMain.SelectedIndex = 1;
 
-            this.tbIgnoreFolders.Text += "\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName;
+            // TODO: Find a better way...
+            this.btnDelete.Enabled = false;
+            this.tbIgnoreFolders.AppendText("\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName);
         }
 
         /// <summary>
@@ -619,6 +596,16 @@ namespace RED2
             {
                 if (MessageBox.Show(this, SystemFunctions.FixLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
                     this.cbKeepSystemFolders.Checked = true;
+            }
+        }
+
+        private void btnResetConfig_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(this, "Do you really want to reset your current settings to the default values?\nYour settings can't be restored.", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK) {
+                File.Delete(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
+
+                // Todo: Find better way
+                MessageBox.Show("Your current config file has been deleted.\nPlease restart RED now to load the default values.");
             }
         }
     }

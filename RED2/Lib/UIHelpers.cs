@@ -51,7 +51,7 @@ namespace RED2
                 case DeleteModes.Simulate:
                     return "Simulate deletion (Don't delete anything)";
 
-                // TODO: Move files instead of deleting?
+                // TODO: Idea -> Move files instead of deleting?
 
                 default:
                     throw new Exception("Unknown delete mode");
