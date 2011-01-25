@@ -151,7 +151,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories ({1} directories could not be deleted) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories ({1} dir. could not be deleted / runtime: {2:D2}:{3:D2} min) ähnelt.
         /// </summary>
         internal static string delete_process_finished {
             get {
@@ -223,7 +223,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Found {0} empty directories (checked {1} directories) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Found {0} empty directories (checked {1} / runtime: {2:D2}:{3:D2} min) ähnelt.
         /// </summary>
         internal static string found_x_empty_folders {
             get {
@@ -313,7 +313,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN\r\nGAC_MSIL ähnelt.
         /// </summary>
         internal static string ignore_folders {
             get {

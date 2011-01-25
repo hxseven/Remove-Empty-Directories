@@ -2,7 +2,6 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #include "scripts\products.iss"
-
 #include "scripts\products\dotnetfx35.iss"
 
 [Setup]
@@ -27,11 +26,11 @@ LicenseFile=license.txt
 ;InfoAfterFile=after.txt
 OutputBaseFilename=red-v2.2-setup
 SourceDir=.
-OutputDir=.\output\
+OutputDir=output\
 SetupIconFile=red.ico
 Compression=lzma
 SolidCompression=true
-UninstallDisplayIcon={app}\MyProg.exe
+UninstallDisplayIcon={app}\RED2.exe
 
 ;MinVersion=4.1,5.0
 ;PrivilegesRequired=admin
@@ -41,26 +40,25 @@ UninstallDisplayIcon={app}\MyProg.exe
 [Languages]
 ;Name: english; MessagesFile: compiler:Default.isl
 Name: "en"; MessagesFile: "compiler:Default.isl"
-Name: "de"; MessagesFile: "compiler:Languages\German.isl"
+;Name: "de"; MessagesFile: "compiler:Languages\German.isl"
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: C:\Program Files\Inno Setup 5\Examples\MyProg.exe; DestDir: {app}; Flags: ignoreversion
+Source: bin\RED2.exe; DestDir: {app}; Flags: ignoreversion
 Source: license.txt; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: {group}\Remove Empty Directories; Filename: {app}\MyProg.exe
+Name: {group}\Remove Empty Directories; Filename: {app}\RED2.exe
 Name: {group}\{cm:UninstallProgram,Remove Empty Directories}; Filename: {uninstallexe}
-Name: {commondesktop}\Remove Empty Directories; Filename: {app}\MyProg.exe; Tasks: desktopicon
-Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Remove Empty Directories; Filename: {app}\MyProg.exe; Tasks: quicklaunchicon
+Name: {commondesktop}\Remove Empty Directories; Filename: {app}\RED2.exe; Tasks: desktopicon
+Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Remove Empty Directories; Filename: {app}\RED2.exe; Tasks: quicklaunchicon
 
 [Run]
-Filename: {app}\MyProg.exe; Description: {cm:LaunchProgram,Remove Empty Directories}; Flags: nowait postinstall skipifsilent
-
+Filename: {app}\RED2.exe; Description: {cm:LaunchProgram,Remove Empty Directories}; Flags: nowait postinstall skipifsilent
 
 [Code]
 function InitializeSetup(): Boolean;
@@ -71,8 +69,3 @@ begin
 	
 	Result := true;
 end;
-
-
-[Messages]
-; keep ?
-BeveledLabel=Remove Empty Directories 2.2

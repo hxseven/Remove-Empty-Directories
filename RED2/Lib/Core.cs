@@ -218,7 +218,7 @@ namespace RED2
                 this.Data.ProtectedFolderList.Remove(FolderFullName);
         }
 
-        public string GetLog()
+        public string GetLogMessages()
         {
             return this.Data.LogMessages.ToString();
         }

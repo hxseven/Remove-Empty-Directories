@@ -7,7 +7,7 @@
 dotnetfx35_title=.NET Framework 3.5
 
 en.dotnetfx35_size=3 MB - 197 MB
-de.dotnetfx35_size=3 MB - 197 MB
+;de.dotnetfx35_size=3 MB - 197 MB
 
 
 [Code]

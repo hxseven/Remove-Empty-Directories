@@ -53,6 +53,7 @@
             this.tvFolders = new System.Windows.Forms.TreeView();
             this.cmStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scanOnlyThisDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.protectFolderFromBeingDeletedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unprotectFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -399,6 +400,7 @@
             // 
             this.cmStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openFolderToolStripMenuItem,
+            this.scanOnlyThisDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.protectFolderFromBeingDeletedToolStripMenuItem,
             this.unprotectFolderToolStripMenuItem,
@@ -409,7 +411,7 @@
             this.cmStrip.Name = "cmStrip";
             this.cmStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmStrip.ShowImageMargin = false;
-            this.cmStrip.Size = new System.Drawing.Size(214, 132);
+            this.cmStrip.Size = new System.Drawing.Size(214, 176);
             // 
             // openFolderToolStripMenuItem
             // 
@@ -417,6 +419,13 @@
             this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.openFolderToolStripMenuItem.Text = "&Open in Explorer";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
+            // 
+            // scanOnlyThisDirectoryToolStripMenuItem
+            // 
+            this.scanOnlyThisDirectoryToolStripMenuItem.Name = "scanOnlyThisDirectoryToolStripMenuItem";
+            this.scanOnlyThisDirectoryToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.scanOnlyThisDirectoryToolStripMenuItem.Text = "Scan only this directory";
+            this.scanOnlyThisDirectoryToolStripMenuItem.Click += new System.EventHandler(this.scanOnlyThisDirectoryToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -1076,6 +1085,7 @@
         private System.Windows.Forms.NumericUpDown nuInfiniteLoopDetectionCount;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnResetConfig;
+        private System.Windows.Forms.ToolStripMenuItem scanOnlyThisDirectoryToolStripMenuItem;
 	}
 }
 

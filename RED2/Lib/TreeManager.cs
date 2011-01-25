@@ -189,7 +189,30 @@ namespace RED2
             return "";
         }
 
-        #region Folder protection
+        internal void DeleteSelectedDirectory()
+        {
+            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
+            {
+                var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
+
+                if (OnDeleteRequest != null)
+                    OnDeleteRequest(this, new DeleteRequestFromTreeEventArgs(folder.FullName));
+            }
+        }
+
+        internal void RemoveNode(string path)
+        {
+            if (this.backupValues.ContainsKey(path))
+                this.backupValues.Remove(path);
+
+            if (this.directoryToTreeNodeMapping.ContainsKey(path))
+            {
+                this.directoryToTreeNodeMapping[path].Remove();
+                this.directoryToTreeNodeMapping.Remove(path);
+            }
+        }
+
+        #region Directory protection methods
 
         internal void ProtectSelected()
         {
@@ -250,29 +273,5 @@ namespace RED2
         }
 
         #endregion
-
-        internal void DeleteSelectedDirectory()
-        {
-            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
-            {
-                var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
-
-                if (OnDeleteRequest != null)
-                    OnDeleteRequest(this, new DeleteRequestFromTreeEventArgs(folder.FullName));
-            }
-        }
-
-        internal void RemoveNode(string path)
-        {
-            if (this.backupValues.ContainsKey(path))
-                this.backupValues.Remove(path);
-
-            if (this.directoryToTreeNodeMapping.ContainsKey(path))
-            {
-                this.directoryToTreeNodeMapping[path].Remove();
-                this.directoryToTreeNodeMapping.Remove(path);
-            }
-        }
-    
     }
 }

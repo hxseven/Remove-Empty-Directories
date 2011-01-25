@@ -15,9 +15,10 @@ namespace RED2
         private TreeManager tree = null;
         private ConfigurationManger config = null;
 
-        private RuntimeData Data = null;
+        private RuntimeData Data = new RuntimeData();
+        private Stopwatch runtimeWatch = new Stopwatch();
 
-        #region Generic stuff
+        #region Init methods
 
         /// <summary>
         /// Constructor
@@ -37,8 +38,6 @@ namespace RED2
             this.config = new ConfigurationManger(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
             this.config.OnSettingsSaved += new EventHandler(config_OnSettingsSaved);
 
-            this.Data = new RuntimeData();
-
             this.core = new REDCore(this, this.Data);
 
             // Attach events
@@ -54,37 +53,6 @@ namespace RED2
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
             this.init();
-        }
-
-        void core_OnDeleteError(object sender, DeletionErrorEventArgs e)
-        {
-            var errorDialog = new DeletionError();
-
-            errorDialog.SetPath(e.Path);
-            errorDialog.SetErrorMessage(e.ErrorMessage);
-
-            var dialogResult = errorDialog.ShowDialog();
-
-            errorDialog.Dispose();
-
-            if (dialogResult == DialogResult.Abort)
-            {
-                this.core.AbortDeletion();
-            }
-            else
-            {
-                // Hack: retry means -> ignore all errors
-                if (dialogResult == DialogResult.Retry)
-                    this.Data.IgnoreAllErrors = true;
-
-                this.core.ContinueDeleteProcess();
-            }
-        }
-
-        void config_OnSettingsSaved(object sender, EventArgs e)
-        {
-            // Update deletion stats
-            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
         }
 
         private void init()
@@ -160,45 +128,6 @@ namespace RED2
             #endregion
         }
 
-        void tree_OnDeleteRequest(object sender, DeleteRequestFromTreeEventArgs e)
-        {
-            try
-            {
-                var deletePath = e.Directory;
-
-                // To simplify the code here there is only the RecycleBinWithQuestion or simulate possible here
-                // (all others will be ignored)
-                SystemFunctions.ManuallyDeleteDirectory(deletePath, ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode);
-
-                // Remove root node
-                this.tree.RemoveNode(deletePath);
-
-                this.Data.AddLogMessage("Manually deleted: \"" + deletePath + "\" including all subdirectories");
-
-                // Disable the delete button because the user has to re-scan after he manually deleted a directory
-                this.btnDelete.Enabled = false;
-
-            }
-            catch (System.OperationCanceledException)
-            {
-                // The user canceled the deletion 
-            }
-            catch (Exception ex)
-            {
-                this.Data.AddLogMessage("Could not manually delete \"" + e.Directory + "\" because of the following error: " + ex.Message);
-
-                MessageBox.Show(this, "The directory was not deleted, because of the following error:" + Environment.NewLine + ex.Message);
-            }
-        }
-
-        void tree_OnProtectionStatusChanged(object sender, ProtectionStatusChangedEventArgs e)
-        {
-            if (e.Protected)
-                this.core.AddProtectedFolder(e.Path);
-            else
-                this.core.RemoveProtected(e.Path);
-        }
-
         private void drawDirectoryIcons()
         {
             #region Set and display folder status icons
@@ -241,11 +170,207 @@ namespace RED2
             #endregion
         }
 
-        void core_OnError(object sender, ErrorEventArgs e)
-        {
-            this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
+        #endregion
 
-            MessageBox.Show(this, "Error: " + e.Message, "RED error");
+        #region Step 1: Scan for empty directories
+
+        /// <summary>
+        /// Starts the Scan-Progress
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnScan_Click(object sender, EventArgs e)
+        {
+            this.tree.ClearTree();
+
+            // Check given folder:
+            DirectoryInfo selectedDirectory = null;
+            try
+            {
+                selectedDirectory = new DirectoryInfo(this.tbFolder.Text);
+
+                if (!selectedDirectory.Exists)
+                {
+                    MessageBox.Show(this, RED2.Properties.Resources.error_dir_does_not_exist);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "The given directory caused a problem:" + Environment.NewLine + ex.Message, "RED error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            this.btnShowLog.Enabled = false;
+
+            this.config.Save();
+
+            this.Data.StartFolder = selectedDirectory;
+            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
+            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.Data.IgnoreDirectoriesList = this.tbIgnoreFolders.Text;
+            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
+            this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
+            this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
+            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
+            this.Data.InfiniteLoopDetectionCount = (int)this.nuInfiniteLoopDetectionCount.Value;
+
+            //this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
+            this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
+
+            this.tree.AddRootNode(this.Data.StartFolder, DirectoryIcons.home);
+
+            this.btnCancel.Enabled = true;
+            this.cmStrip.Enabled = false;
+
+            this.Data.AddLogSpacer();
+            setStatusAndLogMessage(RED2.Properties.Resources.searching_empty_folders);
+
+            runtimeWatch.Reset();
+            runtimeWatch.Start();
+
+            this.core.SearchingForEmptyDirectories();
+        }
+
+        void core_OnProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.lbStatus.Text = (string)e.UserState;
+        }
+
+        void core_OnFoundEmptyDir(object sender, FoundEmptyDirInfoEventArgs e)
+        {
+            this.tree.AddOrUpdateDirectoryNode(e.Directory, e.Type, e.ErrorMessage);
+        }
+
+        void core_OnFoundFinishedScanForEmptyDirs(object sender, FinishedScanForEmptyDirsEventArgs e)
+        {
+            // Finished scan
+
+            runtimeWatch.Stop();
+
+            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount, runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds));
+
+            this.btnDelete.Enabled = (e.EmptyFolderCount > 0);
+            this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
+            this.pbProgressStatus.Maximum = e.EmptyFolderCount;
+            this.pbProgressStatus.Minimum = 0;
+            this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
+            this.pbProgressStatus.Step = 5;
+
+            this.btnScan.Enabled = true;
+            this.btnCancel.Enabled = false;
+            this.btnShowLog.Enabled = true;
+            this.cmStrip.Enabled = true;
+
+            this.tree.EnsureRootNodeIsVisible();
+
+            this.btnScan.Text = RED2.Properties.Resources.btn_scan_again;
+        }
+
+        #endregion
+
+        #region Step 2: Delete empty directories
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            this.Data.AddLogSpacer();
+            setStatusAndLogMessage(RED2.Properties.Resources.started_deletion_process);
+
+            this.btnScan.Enabled = false;
+            this.btnCancel.Enabled = true;
+            this.cmStrip.Enabled = false;
+            this.btnDelete.Enabled = false;
+            this.btnShowLog.Enabled = false;
+
+            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
+            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
+            this.Data.PauseTime = (double)this.nuPause.Value;
+            this.Data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
+            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
+
+            runtimeWatch.Reset();
+            runtimeWatch.Start();
+
+            this.core.StartDeleteProcess();
+        }
+
+        void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
+        {
+            switch (e.Status)
+            {
+                case DirectoryDeletionStatusTypes.Deleted:
+                    this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
+                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.deleted);
+                    break;
+
+                case DirectoryDeletionStatusTypes.Protected:
+                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.protected_icon);
+                    break;
+
+                default:
+                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.folder_warning);
+                    break;
+            }
+
+            this.pbProgressStatus.Value = e.ProgressStatus;
+        }
+
+        void core_OnDeleteError(object sender, DeletionErrorEventArgs e)
+        {
+            var errorDialog = new DeletionError();
+
+            errorDialog.SetPath(e.Path);
+            errorDialog.SetErrorMessage(e.ErrorMessage);
+
+            var dialogResult = errorDialog.ShowDialog();
+
+            errorDialog.Dispose();
+
+            if (dialogResult == DialogResult.Abort)
+            {
+                this.core.AbortDeletion();
+            }
+            else
+            {
+                // Hack: retry means -> ignore all errors
+                if (dialogResult == DialogResult.Retry)
+                    this.Data.IgnoreAllErrors = true;
+
+                this.core.ContinueDeleteProcess();
+            }
+        }
+
+        void core_OnDeleteProcessFinished(object sender, DeleteProcessFinishedEventArgs e)
+        {
+            runtimeWatch.Stop();
+
+            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount, runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds));
+
+            this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
+
+            this.btnDelete.Enabled = false;
+            this.btnScan.Enabled = true;
+            this.btnCancel.Enabled = false;
+            this.btnShowLog.Enabled = true;
+
+            this.config.DeletedFolderCount += e.DeletedFolderCount;
+            this.config.Save();
+        }
+
+        #endregion
+
+        #region Generic process events
+
+        void config_OnSettingsSaved(object sender, EventArgs e)
+        {
+            // Update deletion stats
+            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.core.CancelCurrentProcess();
         }
 
         void core_OnCancelled(object sender, EventArgs e)
@@ -278,175 +403,54 @@ namespace RED2
             this.btnShowLog.Enabled = true;
         }
 
+        void core_OnError(object sender, ErrorEventArgs e)
+        {
+            this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
+
+            MessageBox.Show(this, "Error: " + e.Message, "RED error message");
+        }
+
         #endregion
 
-        #region Step 1: Scan for empty directories
+        #region Tree related methods
 
         /// <summary>
-        /// Starts the Scan-Progress
+        /// User clicks twice on a folder
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnScan_Click(object sender, EventArgs e)
+        private void tvFolders_DoubleClick(object sender, EventArgs e)
         {
-            this.tree.ClearTree();
-
-            // Check given folder:
-            DirectoryInfo selectedDirectory = null;
-            try
-            {
-                selectedDirectory = new DirectoryInfo(this.tbFolder.Text);
-
-                if (!selectedDirectory.Exists)
-                {
-                    MessageBox.Show(RED2.Properties.Resources.error_dir_does_not_exist);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "The given directory caused a problem:" + Environment.NewLine + ex.Message, "RED error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            this.btnShowLog.Enabled = false;
-
-            this.config.Save();
-
-            this.Data.StartFolder = selectedDirectory;
-            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
-            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
-            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.Data.IgnoreDirectoriesList = this.tbIgnoreFolders.Text;
-            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
-            this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
-            this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
-            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
-            this.Data.InfiniteLoopDetectionCount = (int)this.nuInfiniteLoopDetectionCount.Value;
-
-            //this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
-            this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
-
-            this.tree.AddRootNode(this.Data.StartFolder, DirectoryIcons.home);
-
-            this.btnCancel.Enabled = true;
-
-            this.Data.AddLogSpacer();
-            setStatusAndLogMessage(RED2.Properties.Resources.searching_empty_folders);
-
-            this.core.SearchingForEmptyDirectories();
+            SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
         }
 
-        private void setStatusAndLogMessage(string msg)
+        private void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.lbStatus.Text = msg;
-            this.Data.AddLogMessage(msg);
+            SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
         }
 
-        #endregion
-
-        #region Step 2: Scan for empty directories
-
-        void core_OnFoundFinishedScanForEmptyDirs(object sender, FinishedScanForEmptyDirsEventArgs e)
+        private void scanOnlyThisDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Finished scan
-
-            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount));
-
-            this.btnDelete.Enabled = (e.EmptyFolderCount > 0);
-            this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
-            this.pbProgressStatus.Maximum = e.EmptyFolderCount;
-            this.pbProgressStatus.Minimum = 0;
-            this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
-            this.pbProgressStatus.Step = 5;
-
-            this.btnScan.Enabled = true;
-            this.btnCancel.Enabled = false;
-            this.btnShowLog.Enabled = true;
-            this.cmStrip.Enabled = true;
-
-            this.tree.EnsureRootNodeIsVisible();
-
-            this.btnScan.Text = RED2.Properties.Resources.btn_scan_again;
+            this.tbFolder.Text = this.tree.GetSelectedFolderPath();
+            this.btnScan.PerformClick();
         }
 
-        #endregion
-
-        #region Step 3: Deletion process
-
-        void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
+        private void protectFolderFromBeingDeletedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            switch (e.Status)
-            {
-                case DirectoryDeletionStatusTypes.Deleted:
-                    this.lbStatus.Text = String.Format(RED2.Properties.Resources.removing_empty_folders, (e.ProgressStatus + 1), e.FolderCount);
-                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.deleted);
-                    break;
-
-                case DirectoryDeletionStatusTypes.Protected:
-                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.protected_icon);
-                    break;
-
-                default:
-                    this.tree.UpdateItemIcon(e.Path, DirectoryIcons.folder_warning);
-                    break;
-            }
-
-            this.pbProgressStatus.Value = e.ProgressStatus;
+            this.tree.ProtectSelected();
         }
 
-        void core_OnDeleteProcessFinished(object sender, DeleteProcessFinishedEventArgs e)
+        private void unprotectFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
-
-            this.btnDelete.Enabled = false;
-            this.btnScan.Enabled = true;
-            this.btnCancel.Enabled = false;
-            this.btnShowLog.Enabled = true;
-
-            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount));
-
-            this.config.DeletedFolderCount += e.DeletedFolderCount;
-            this.config.Save();
+            this.tree.UnprotectSelected();
         }
 
-        #endregion
-
-        #region UI Stuff
-
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void tree_OnProtectionStatusChanged(object sender, ProtectionStatusChangedEventArgs e)
         {
-            this.core.CancelCurrentProcess();
-        }
-
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            this.Data.AddLogSpacer();
-            setStatusAndLogMessage(RED2.Properties.Resources.started_deletion_process);
-
-            this.btnScan.Enabled = false;
-            this.btnCancel.Enabled = true;
-            this.cmStrip.Enabled = false;
-            this.btnDelete.Enabled = false;
-            this.btnShowLog.Enabled = false;
-
-            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
-            this.Data.PauseTime = (double)this.nuPause.Value;
-            this.Data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
-            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
-
-            this.core.StartDeleteProcess();
-        }
-
-        void core_OnFoundEmptyDir(object sender, FoundEmptyDirInfoEventArgs e)
-        {
-            this.tree.AddOrUpdateDirectoryNode(e.Directory, e.Type, e.ErrorMessage);
-        }
-
-        void core_OnProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            this.lbStatus.Text = (string)e.UserState;
+            if (e.Protected)
+                this.core.AddProtectedFolder(e.Path);
+            else
+                this.core.RemoveProtected(e.Path);
         }
 
         private void proToolStripMenuItem_Click(object sender, EventArgs e)
@@ -459,14 +463,50 @@ namespace RED2
             this.tbIgnoreFolders.AppendText("\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName);
         }
 
-        /// <summary>
-        /// User clicks twice on a folder
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void tvFolders_DoubleClick(object sender, EventArgs e)
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
+            this.tree.DeleteSelectedDirectory();
+        }
+
+        private void tree_OnDeleteRequest(object sender, DeleteRequestFromTreeEventArgs e)
+        {
+            try
+            {
+                var deletePath = e.Directory;
+
+                // To simplify the code here there is only the RecycleBinWithQuestion or simulate possible here
+                // (all others will be ignored)
+                SystemFunctions.ManuallyDeleteDirectory(deletePath, ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode);
+
+                // Remove root node
+                this.tree.RemoveNode(deletePath);
+
+                this.Data.AddLogMessage("Manually deleted: \"" + deletePath + "\" including all subdirectories");
+
+                // Disable the delete button because the user has to re-scan after he manually deleted a directory
+                this.btnDelete.Enabled = false;
+
+            }
+            catch (System.OperationCanceledException)
+            {
+                // The user canceled the deletion 
+            }
+            catch (Exception ex)
+            {
+                this.Data.AddLogMessage("Could not manually delete \"" + e.Directory + "\" because of the following error: " + ex.Message);
+
+                MessageBox.Show(this, "The directory was not deleted, because of the following error:" + Environment.NewLine + ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region General UI related functions
+
+        private void setStatusAndLogMessage(string msg)
+        {
+            this.lbStatus.Text = msg;
+            this.Data.AddLogMessage(msg);
         }
 
         /// <summary>
@@ -482,7 +522,7 @@ namespace RED2
             if (s.Length == 1)
                 this.tbFolder.Text = s[0];
             else
-                MessageBox.Show(RED2.Properties.Resources.error_only_one_folder);
+                MessageBox.Show(this, RED2.Properties.Resources.error_only_one_folder);
         }
 
         /// <summary>
@@ -537,11 +577,6 @@ namespace RED2
             this.tbFolder.Text = SystemFunctions.ChooseDirectoryDialog(this.tbFolder.Text);
         }
 
-        private void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
-        }
-
         private void btnShowConfig_Click(object sender, EventArgs e)
         {
             SystemFunctions.OpenDirectoryWithExplorer(Application.StartupPath);
@@ -550,45 +585,14 @@ namespace RED2
         private void btnShowLog_Click(object sender, EventArgs e)
         {
             var logWindow = new LogWindow();
-            logWindow.SetLog(this.core.GetLog());
+            logWindow.SetLog(this.core.GetLogMessages());
             logWindow.ShowDialog();
             logWindow.Dispose();
         }
 
         #endregion
 
-        #region Folder protection
-
-        private void protectFolderFromBeingDeletedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.tree.ProtectSelected();
-        }
-
-        private void unprotectFolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.tree.UnprotectSelected();
-        }
-
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.tree.DeleteSelectedDirectory();
-        }
-
-        #endregion
-
-        #region Various functions
-
-        private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("http://www.jonasjohn.de/");
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-        }
-
-        #endregion
+        #region Config and about dialog related
 
         private void cbKeepSystemFolders_CheckedChanged(object sender, EventArgs e)
         {
@@ -601,12 +605,25 @@ namespace RED2
 
         private void btnResetConfig_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, "Do you really want to reset your current settings to the default values?\nYour settings can't be restored.", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK) {
+            if (MessageBox.Show(this, "Do you really want to reset your current settings to the default values?\nYour settings can't be restored.", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
+            {
                 File.Delete(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
 
                 // Todo: Find better way
                 MessageBox.Show("Your current config file has been deleted.\nPlease restart RED now to load the default values.");
             }
         }
+
+        private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("http://www.jonasjohn.de/lab/red/");
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+        }
+
+        #endregion
     }
 }

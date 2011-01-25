@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btn_scan_again" xml:space="preserve">
     <value>Scan again</value>
@@ -142,7 +142,7 @@
     <value>C:\</value>
   </data>
   <data name="found_x_empty_folders" xml:space="preserve">
-    <value>Found {0} empty directories (checked {1} directories)</value>
+    <value>Found {0} empty directories (checked {1} / runtime: {2:D2}:{3:D2} min)</value>
   </data>
   <data name="icon_contains_trash" xml:space="preserve">
     <value>Contains "trash"</value>
@@ -175,7 +175,7 @@
     <value>*.tmp\r\ndesktop.ini\r\nThumbs.db</value>
   </data>
   <data name="ignore_folders" xml:space="preserve">
-    <value>System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN</value>
+    <value>System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN\r\nGAC_MSIL</value>
   </data>
   <data name="default_keep_system_folders" xml:space="preserve">
     <value>True</value>
@@ -229,7 +229,7 @@
     <value>Delete process was aborted.</value>
   </data>
   <data name="delete_process_finished" xml:space="preserve">
-    <value>Deleted {0} empty directories ({1} directories could not be deleted)</value>
+    <value>Deleted {0} empty directories ({1} dir. could not be deleted / runtime: {2:D2}:{3:D2} min)</value>
   </data>
   <data name="default_clipboard_detection" xml:space="preserve">
     <value>False</value>
