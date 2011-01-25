@@ -1,0 +1,4 @@
+*.suo
+RED2/bin/
+RED2/obj/
+installer_iss/output/
