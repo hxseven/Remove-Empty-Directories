@@ -11,7 +11,7 @@
 AppId={{06F25DC8-71E2-44E2-805A-F15E15B51C74}
 AppName=Remove Empty Directories
 AppVersion=2.2
-AppVerName=2.2
+;AppVerName=2.2
 ;AppVerName=Remove Empty Directories 2.2
 AppPublisher=Jonas John
 AppCopyright=Remove Empty Directories © Jonas John 2006-2011
@@ -27,7 +27,7 @@ LicenseFile=license.txt
 OutputBaseFilename=red-v2.2-setup
 SourceDir=.
 OutputDir=output\
-SetupIconFile=red.ico
+;SetupIconFile=red.ico
 Compression=lzma
 SolidCompression=true
 UninstallDisplayIcon={app}\RED2.exe
@@ -39,26 +39,34 @@ UninstallDisplayIcon={app}\RED2.exe
 
 [Languages]
 ;Name: english; MessagesFile: compiler:Default.isl
-Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: en; MessagesFile: compiler:Default.isl
 ;Name: "de"; MessagesFile: "compiler:Languages\German.isl"
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked; OnlyBelowVersion: 0,6.1
+; Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
 Source: bin\RED2.exe; DestDir: {app}; Flags: ignoreversion
 Source: license.txt; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
+[UninstallDelete]
+Name: {app}\red.config; Type: files
+Name: {app}; Type: dirifempty
+
 [Icons]
 Name: {group}\Remove Empty Directories; Filename: {app}\RED2.exe
-Name: {group}\{cm:UninstallProgram,Remove Empty Directories}; Filename: {uninstallexe}
+Name: {group}\{cm:UninstallProgram,Remove Empty Directories}; Filename: {uninstallexe}; Tasks: ; Languages: 
 Name: {commondesktop}\Remove Empty Directories; Filename: {app}\RED2.exe; Tasks: desktopicon
-Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Remove Empty Directories; Filename: {app}\RED2.exe; Tasks: quicklaunchicon
+;Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Remove Empty Directories; Filename: {app}\RED2.exe; Tasks: quicklaunchicon
+
+[Registry]
+; remove explorer context entry if exists
+Root: HKCR; Subkey: Folder\shell\Remove empty dirs; ValueType: string; Flags: uninsdeletekey; Tasks: ; Languages: 
 
 [Run]
-Filename: {app}\RED2.exe; Description: {cm:LaunchProgram,Remove Empty Directories}; Flags: nowait postinstall skipifsilent
+Filename: {app}\RED2.exe; Description: {cm:LaunchProgram,Remove Empty Directories}; Flags: nowait postinstall skipifsilent; Tasks: ; Languages: 
 
 [Code]
 function InitializeSetup(): Boolean;
@@ -66,6 +74,6 @@ begin
 
 	//install .net 3.5 if possible
 	dotnetfx35();
-	
+
 	Result := true;
 end;
