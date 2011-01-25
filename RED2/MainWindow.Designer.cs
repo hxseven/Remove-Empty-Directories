@@ -903,10 +903,10 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(448, 39);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(89, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(94, 13);
             this.linkLabel1.TabIndex = 26;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Check for update";
+            this.linkLabel1.Text = "Check for updates";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // tbCredits
@@ -947,10 +947,10 @@
             this.llWebsite.AutoSize = true;
             this.llWebsite.Location = new System.Drawing.Point(448, 18);
             this.llWebsite.Name = "llWebsite";
-            this.llWebsite.Size = new System.Drawing.Size(98, 13);
+            this.llWebsite.Size = new System.Drawing.Size(85, 13);
             this.llWebsite.TabIndex = 19;
             this.llWebsite.TabStop = true;
-            this.llWebsite.Text = "Author\'s homepage";
+            this.llWebsite.Text = "RED Homepage\r\n";
             this.llWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llWebsite_LinkClicked);
             // 
             // lbAppTitle
