@@ -9,6 +9,8 @@ conscience with regard to my decreasing time to improve RED.
 BTW: Sorry for not updating RED for a long time now, I was really 
 busy with "real life"... 
 
+without feedback Without you, KeePass would be a lot less powerful and useful!
+
 Special thanks to:
 
   * Wolf and the Computer Club Sunland Village (Mesa Arizona) 
@@ -33,13 +35,13 @@ names he scanned contained chinese characters. Therefore I tried to reproduce
 the error with chinese directory names but it did not work out - RED worked 
 as expected. 
 
-My conclusion: I currently assume it was a individual case and hope that it 
-does not happen again. I also refactored and optimited the whole sourcecode 
-of RED 2.2 to improve the stability and the error handling.
+My conclusion: I currently assume it was a individual case or a configuration 
+error and hope that it does not happen again. I also refactored and optimited 
+the whole sourcecode of RED 2.2 to improve the stability and the error handling.
 
 To sum up, if you use RED for the first time have a look at the directories 
 RED found and rethink if they are plausible. And if you want to be really 
-safe double-click a few to see if they are really empty. This especially 
+safe double-click a few folders to see if they are really empty. This especially 
 applies to systems with directory names containing any special characters. 
 Contact me if you notice anything strange.
 
@@ -70,7 +72,12 @@ HINTS & FAQ
 
 
 
-SUPPORT
+FEEDBACK
+
+Feedback is always appreciated and you can provide it by using my
+forum at http://www.jonasjohn.de/forum/. Or use the contact
+form on http://www.jonasjohn.de/contact.htm.
+
 
 If you found a bug, have an idea or any other feedback please click 
 on the "Report a bug" Link that should be visible above. Or manually 
@@ -94,10 +101,10 @@ persons:
   * NuoveXT icons (GPL license)
     http://nuovext.pwsp.net/
   
-  * famfamfam icons (Creative Commons Attribution license)
+  * famfamfam silk icons (Creative Commons Attribution license)
     http://www.famfamfam.com/
   
-  * Coffee icon by victorward (at sxc.hu)
+  * My coffee icon - by victorward (at sxc.hu) photographer
     http://www.sxc.hu/photo/593924
 
 
@@ -108,10 +115,16 @@ TOOLS I USED TO DEVELOP RED
   * Inno Setup (before 2.2 I used NSIS)
   * SourceForge.net (hosting the RED downloads - Thanks!)
   * dict.leo.org & linguee.com for translation help
+- The dict.leo.org team for the great translation service
+
 
 
 
 LICENSE
+
+Like all other applications made by me, RED is free for both commercial
+and personal use. But you can help support our products by donating money:
+http://www.jonasjohn.de/donating.htm
 
 RED is open source and can be freely used, feel free to have a look into 
 the sourcecode behind RED to fix it, fork it, extend it, learn from it, 
@@ -121,6 +134,105 @@ The program is distributed under the terms of the GNU Lesser General
 Public License which you can read over here: 
 
 http://www.gnu.org/copyleft/lgpl.html
+
+
+
+TODO
+
+- implemented language files to support other languages...
+- optimize the sourcecode
+- more testing
+- let the user choose the context-menu entry in the setup
+- better error handling
+- implemented advanced command line parameters [-auto], [-hide], ...
+- test network drives with RED e.g. \\server1\dir1\ or something
+
+"Maybe" - ToDo's:
+- Also search in achives (ZIP, ...)
+- Search FTP Directories?
+
+
+
+VERSION HISTORY
+
+
+The first version of RED was made with PHP by using Winbinder.
+But because I'm currently learning C# I started using Microsoft 
+Visual C# since Version 1.5. 
+ 
+RED was tested with:
+--> Windows XP (Home)
+--> (but should also work with all .NET compatible systems)
+
+Get source code of RED!
+--> http://www.jonasjohn.de/lab/red.htm
+
+First release: Aug 04, 2005 -- Last update: Jan 27, 2011
+
+
+2.2: - 
+
+2.1: - Implemented a "Protect" and "Unprotect" function to let the 
+       user choose folders to keep.
+     - Implemented an update button for a fast update check. 
+
+2.0: - Created the installer (by using NSIS)
+     - Updated this readme file
+
+1.9: - Added better looking icons to the GUI
+     - Corrected and updates some texts     
+
+1.8: - Finished the main parts of the application
+     - Added XML configuration file 
+
+1.7: - Removed some main parts of the new application and started
+       using the "BackgroundWorker" for threading support.
+
+1.6: - Finished first prototype of the C# Version
+
+1.5: - Started the developing of a entire new version of RED by using
+       Microsoft Visual C# (.NET 2.0)
+
+1.4: - Updated the readme file and changed the license from GPL to LGPL.
+     - fixed some small issues...
+
+1.3: - Replaced $string = "" with $string = '' => better performance<
+
+1.2: - Fixed the gauge in the process window 
+     - implemented a second safety check to prevent deleting filled folders
+
+1.1: - renamed the program to RED (Remove empty directories)
+     - made a new icon
+
+1.0: - changes some structure things, renamed functions, renamed variables
+     - corrected code, fixed some issues..
+     - optional logfile implemented
+     - other minor changes...
+     - updated version history -> complete rewrite ;-)
+
+0.9: - Added a readme, the licenses
+     - Translated the readme into english
+     
+0.8: - Cleaned the directories and sorted the files
+     - Renamed some functions and variables, to make it look better
+
+0.7: - I converted the recursive method to a queue system, because i did not
+       now that there was a sleep function in winbinder. 
+     
+0.6: - I found WinBinder (A native Windows binding for PHP) and converted
+       the program to php with a Windows GUI trough WinBinder
+
+0.5: - Used NSIS Install System (http://nsis.sourceforge.net/) to create a
+       GUI for the perl program. 
+
+0.4: - Minor changes
+
+0.3: - Minor changes
+
+0.2: - Added filters to exclude some folders like the recycler
+
+0.1: - I made a simple perl script to delete empty folders - called it
+       "DEF" (Delete Empty Folders)
 
 
 Thanks for using RED :)

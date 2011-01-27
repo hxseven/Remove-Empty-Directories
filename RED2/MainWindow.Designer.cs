@@ -1029,7 +1029,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(182, 14);
             this.label5.TabIndex = 5;
-            this.label5.Text = "Copyright © 2006 - 2011 Jonas John";
+            this.label5.Text = "Copyright © 2005 - 2011 Jonas John";
             // 
             // llWebsite
             // 

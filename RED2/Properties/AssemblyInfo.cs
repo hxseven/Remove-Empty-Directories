@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jonas John (www.jonasjohn.de)")]
 [assembly: AssemblyProduct("Remove Empty Directories")]
-[assembly: AssemblyCopyright("Copyright (c) 2006-2011")]
+[assembly: AssemblyCopyright("Copyright (c) 2005-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
