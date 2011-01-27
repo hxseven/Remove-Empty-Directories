@@ -68,6 +68,8 @@ namespace RED2
 
                 if (info.Type == DirectorySearchStatusTypes.Empty)
                     this.Data.EmptyFolderList.Add(info.Directory);
+                else if (info.Type == DirectorySearchStatusTypes.Error && this.Data.HideScanErrors)
+                    return;
 
                 if (this.OnFoundEmptyDirectory != null)
                     this.OnFoundEmptyDirectory(this, info);

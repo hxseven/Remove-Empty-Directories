@@ -23,6 +23,10 @@ namespace RED2
     /// </summary>
     public class SystemFunctions
     {
+        // Registry keys
+        private const string registryMenuName = "Folder\\shell\\Remove empty dirs";
+        private const string registryCommand = "Folder\\shell\\Remove empty dirs\\command";
+        
         public static string FixLineBreaks(string str)
         {
             return str.Replace(@"\r\n", "\r\n").Replace(@"\n", "\n");
@@ -151,26 +155,26 @@ namespace RED2
         /// Check for the registry key
         /// </summary>
         /// <returns></returns>
-        public static bool IsRegKeyIntegratedIntoWindowsExplorer(string MenuName)
+        public static bool IsRegKeyIntegratedIntoWindowsExplorer()
         {
-            return (Registry.ClassesRoot.OpenSubKey(MenuName) != null);
+            return (Registry.ClassesRoot.OpenSubKey(registryMenuName) != null);
         }
 
-        internal static void AddOrRemoveRegKey(bool remove, string MenuName, string Command)
+        internal static void AddOrRemoveRegKey(bool add)
         {
             RegistryKey regmenu = null;
             RegistryKey regcmd = null;
 
-            if (!remove)
+            if (add)
             {
                 try
                 {
-                    regmenu = Registry.ClassesRoot.CreateSubKey(MenuName);
+                    regmenu = Registry.ClassesRoot.CreateSubKey(registryMenuName);
 
                     if (regmenu != null)
-                        regmenu.SetValue("", RED2.Properties.Resources.registry_name);
+                        regmenu.SetValue("", "Remove empty dirs");
 
-                    regcmd = Registry.ClassesRoot.CreateSubKey(Command);
+                    regcmd = Registry.ClassesRoot.CreateSubKey(registryCommand);
 
                     if (regcmd != null)
                         regcmd.SetValue("", Application.ExecutablePath + " \"%1\"");
@@ -192,22 +196,23 @@ namespace RED2
             {
                 try
                 {
-                    RegistryKey reg = Registry.ClassesRoot.OpenSubKey(Command);
+                    var reg = Registry.ClassesRoot.OpenSubKey(registryCommand);
+
                     if (reg != null)
                     {
                         reg.Close();
-                        Registry.ClassesRoot.DeleteSubKey(Command);
+                        Registry.ClassesRoot.DeleteSubKey(registryCommand);
                     }
-                    reg = Registry.ClassesRoot.OpenSubKey(MenuName);
+                    reg = Registry.ClassesRoot.OpenSubKey(registryMenuName);
                     if (reg != null)
                     {
                         reg.Close();
-                        Registry.ClassesRoot.DeleteSubKey(MenuName);
+                        Registry.ClassesRoot.DeleteSubKey(registryMenuName);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(RED2.Properties.Resources.error + "\n\n" + ex.ToString());
+                    MessageBox.Show(RED2.Properties.Resources.error + "\nCould not change registry settings: " + ex.ToString());
                 }
             }
         }

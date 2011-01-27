@@ -97,6 +97,15 @@ namespace RED2.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
+        /// </summary>
+        internal static string default_hide_scan_errors {
+            get {
+                return ResourceManager.GetString("default_hide_scan_errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
         /// </summary>
         internal static string default_ignore_0kb_files {
@@ -354,15 +363,6 @@ namespace RED2.Properties {
         internal static string red_deleted {
             get {
                 return ResourceManager.GetString("red_deleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove empty dirs ähnelt.
-        /// </summary>
-        internal static string registry_name {
-            get {
-                return ResourceManager.GetString("registry_name", resourceCulture);
             }
         }
         

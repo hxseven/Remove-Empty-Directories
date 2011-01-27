@@ -24,6 +24,7 @@ namespace RED2
         public bool IgnoreEmptyFiles { get; set; }
         public bool IgnoreHiddenFolders { get; set; }
         public bool KeepSystemFolders { get; set; }
+        public bool HideScanErrors { get; set; }
         public double PauseTime { get; set; }
 
         public int MaxDepth { get; set; }

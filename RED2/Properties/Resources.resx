@@ -195,9 +195,6 @@
   <data name="red_deleted" xml:space="preserve">
     <value>RED deleted {0} directories for you :)</value>
   </data>
-  <data name="registry_name" xml:space="preserve">
-    <value>Remove empty dirs</value>
-  </data>
   <data name="removing_empty_folders" xml:space="preserve">
     <value>Deleting empty directories ({0}/{1})...</value>
   </data>
@@ -236,5 +233,8 @@
   </data>
   <data name="default_infinite_loop_detection_count" xml:space="preserve">
     <value>10</value>
+  </data>
+  <data name="default_hide_scan_errors" xml:space="preserve">
+    <value>False</value>
   </data>
 </root>

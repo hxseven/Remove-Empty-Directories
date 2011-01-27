@@ -1,4 +1,5 @@
 *.suo
 RED2/bin/
 RED2/obj/
+RED2/publish/
 installer_iss/output/

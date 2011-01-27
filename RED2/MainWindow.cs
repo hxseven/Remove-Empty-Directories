@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Security.Principal;
 
 namespace RED2
 {
@@ -61,10 +62,7 @@ namespace RED2
             this.tree.OnProtectionStatusChanged += new EventHandler<ProtectionStatusChangedEventArgs>(tree_OnProtectionStatusChanged);
             this.tree.OnDeleteRequest += new EventHandler<DeleteRequestFromTreeEventArgs>(tree_OnDeleteRequest);
 
-            Assembly REDAssembly = Assembly.GetExecutingAssembly();
-            AssemblyName AssemblyName = REDAssembly.GetName();
-
-            this.lbAppTitle.Text += string.Format("{0}", AssemblyName.Version.ToString());
+            this.lbAppTitle.Text += string.Format("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
             #region Read config settings
 
@@ -75,6 +73,7 @@ namespace RED2
             this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.default_ignore_0kb_files);
             this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.default_keep_system_folders);
             this.config.AddControl("clipboard_detection", this.cbClipboardDetection, RED2.Properties.Resources.default_clipboard_detection);
+            this.config.AddControl("hide_scan_errors", this.cbHideScanErrors, RED2.Properties.Resources.default_hide_scan_errors);
 
             this.config.AddControl("ignore_files", this.tbIgnoreFiles, RED2.Properties.Resources.ignore_files);
             this.config.AddControl("ignore_folders", this.tbIgnoreFolders, RED2.Properties.Resources.ignore_folders);
@@ -86,7 +85,6 @@ namespace RED2
 
             // Special fields
             this.config.AddControl("delete_stats", this.lblRedStats, "0");
-            this.config.AddControl("registry_explorer_integration", this.cbIntegrateIntoWindowsExplorer, "");
             this.config.AddControl("delete_mode", this.cbDeleteMode, RED2.Properties.Resources.default_delete_mode);
 
             foreach (var d in DeleteModeItem.GetList())
@@ -96,6 +94,33 @@ namespace RED2
             this.config.LoadOptions();
 
             this.cbKeepSystemFolders.CheckedChanged += new System.EventHandler(this.cbKeepSystemFolders_CheckedChanged);
+
+            #region Check if the user started RED as admin
+
+            var principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+
+            if (principal.IsInRole(WindowsBuiltInRole.Administrator))
+            {
+                var isIntegrated = SystemFunctions.IsRegKeyIntegratedIntoWindowsExplorer();
+
+                this.btnExplorerIntegrate.Enabled = !isIntegrated;
+                this.btnExplorerRemove.Enabled = isIntegrated;
+            }
+            else
+            {
+                this.lblReqAdmin.ForeColor = Color.Red;
+                this.btnExplorerIntegrate.Enabled = false;
+                this.btnExplorerRemove.Enabled = false;
+            }
+
+            #endregion
+
+            var credits = Path.Combine(Application.StartupPath, "credits.txt");
+
+            if (File.Exists(credits))
+                this.tbCredits.AppendText(File.ReadAllText(credits));
+            else
+                this.tbCredits.AppendText("Error: Could not find the credits text file:" + Environment.NewLine + credits);
 
             #endregion
 
@@ -213,6 +238,7 @@ namespace RED2
             this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
             this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
             this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
+            this.Data.HideScanErrors = this.cbHideScanErrors.Checked;
             this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
             this.Data.InfiniteLoopDetectionCount = (int)this.nuInfiniteLoopDetectionCount.Value;
 
@@ -614,6 +640,20 @@ namespace RED2
             }
         }
 
+        private void btnExplorerIntegrate_Click(object sender, EventArgs e)
+        {
+            SystemFunctions.AddOrRemoveRegKey(true);
+            this.btnExplorerRemove.Enabled = true;
+            this.btnExplorerIntegrate.Enabled = false;
+        }
+
+        private void btnExplorerRemove_Click(object sender, EventArgs e)
+        {
+            SystemFunctions.AddOrRemoveRegKey(false);
+            this.btnExplorerRemove.Enabled = false;
+            this.btnExplorerIntegrate.Enabled = true;
+        }
+
         private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://www.jonasjohn.de/lab/red/");
@@ -624,6 +664,85 @@ namespace RED2
             Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
         }
 
+        private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("http://www.jonasjohn.de/lab/red/report_bug.htm");
+
+        }
+
         #endregion
+
+        private void btnCopyDebugInfo_Click(object sender, EventArgs e)
+        {
+            var info = new System.Text.StringBuilder();
+
+            info.AppendLine("System info");
+            info.Append("- RED Version: ");
+            try
+            {
+                info.AppendLine(string.Format("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+            }
+            catch (Exception ex)
+            {
+                info.AppendLine("Failed (" + ex.Message + ")");
+            }
+
+            info.Append("- Operating System: ");
+            try
+            {
+                info.AppendLine(System.Environment.OSVersion.ToString());
+            }
+            catch (Exception ex)
+            {
+                info.AppendLine("Failed (" + ex.Message + ")");
+            }
+
+            info.Append("- Processor architecture: ");
+            try
+            {
+                info.AppendLine(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
+            }
+            catch (Exception ex)
+            {
+                info.AppendLine("Failed (" + ex.Message + ")");
+            }
+
+            info.Append("- Is Administrator: ");
+            try
+            {
+                var principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+                info.AppendLine((principal.IsInRole(WindowsBuiltInRole.Administrator) ? "Yes" : "No"));
+            }
+            catch (Exception ex)
+            {
+                info.AppendLine("Failed (" + ex.Message + ")");
+            }
+
+            info.AppendLine("");
+            info.AppendLine("RED Config settings: ");
+            try
+            {
+                foreach (var key in this.config.GetSettingsList())
+                {
+
+                    var val = this.config.GetValue(key);
+
+                    if (key == "ignore_files" || key == "ignore_folders") val = val.Replace("\r", "").Replace("\n", "\\n");
+
+                    info.AppendLine("- " + key + ": " + val);
+                }
+            }
+            catch (Exception ex)
+            {
+                info.AppendLine("Failed (" + ex.Message + ")");
+            }
+
+            Clipboard.SetText(info.ToString(), TextDataFormat.Text);
+
+            MessageBox.Show("Copied this text to your clipboard:" + Environment.NewLine + Environment.NewLine + info.ToString());
+        }
+
+
+
     }
 }
