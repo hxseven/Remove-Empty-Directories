@@ -25,7 +25,7 @@
 desktop.ini
 Thumbs.db</Value>
     </Setting>
-    <Setting Name="ignore_folders" Type="System.String" Scope="User">
+    <Setting Name="ignore_directories" Type="System.String" Scope="User">
       <Value Profile="(Default)">System Volume Information
 RECYCLER
 Papierkorb

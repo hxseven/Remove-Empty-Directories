@@ -227,6 +227,8 @@ namespace RED2
             {
                 foreach (string currentPath in this.ignoreFolderList)
                 {
+                    if (currentPath == "") continue;
+
                     if (Folder.FullName.ToLower().Contains(currentPath.ToLower()))
                         ignoreFolder = true;
                 }

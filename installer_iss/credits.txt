@@ -81,7 +81,7 @@ If you found a bug, have an idea or any other feedback please click
 on the "Feedback" Link that should be visible above. Or manually 
 open the following URL:
 
-http://www.jonasjohn.de/lab/red/feedback.htm
+http://www.jonasjohn.de/lab/red_feedback.htm
 
 There you will find the latest informations on how to submit your 
 feedback.

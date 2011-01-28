@@ -111,12 +111,12 @@ namespace RED2.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE." +
             "BIN\r\nGAC_MSIL")]
-        public string ignore_folders {
+        public string ignore_directories {
             get {
-                return ((string)(this["ignore_folders"]));
+                return ((string)(this["ignore_directories"]));
             }
             set {
-                this["ignore_folders"] = value;
+                this["ignore_directories"] = value;
             }
         }
         

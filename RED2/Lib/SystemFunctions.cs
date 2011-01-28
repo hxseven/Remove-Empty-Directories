@@ -10,10 +10,10 @@ namespace RED2
 {
     public enum DeleteModes
     {
-        RecycleBin,
-        RecycleBinWithQuestion,
-        Direct,
-        Simulate
+        RecycleBin = 0,
+        RecycleBinWithQuestion = 1,
+        Direct = 2,
+        Simulate = 3
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace RED2
         private const string registryMenuName = "Folder\\shell\\Remove empty dirs";
         private const string registryCommand = "Folder\\shell\\Remove empty dirs\\command";
         
-        public static string FixLineBreaks(string str)
+        public static string ConvertLineBreaks(string str)
         {
             return str.Replace(@"\r\n", "\r\n").Replace(@"\n", "\n");
         }
@@ -41,6 +41,11 @@ namespace RED2
             for (int pos = 0; (pos < ignoreFileList.Length && !matches_pattern); pos++)
             {
                 string pattern = ignoreFileList[pos];
+
+                // TODO: Check patterns for errors
+
+                // Skip empty patterns
+                if (pattern == "") continue;
 
                 if (Ignore0kbFiles && filesize == 0)
                 {

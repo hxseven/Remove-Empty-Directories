@@ -74,7 +74,7 @@ namespace RED2
             this.cbHideScanErrors.DataBindings.Add("Checked", Properties.Settings.Default, "hide_scan_errors");
 
             this.tbIgnoreFiles.DataBindings.Add("Text", Properties.Settings.Default, "ignore_files");
-            this.tbIgnoreFolders.DataBindings.Add("Text", Properties.Settings.Default, "ignore_folders");
+            this.tbIgnoreFolders.DataBindings.Add("Text", Properties.Settings.Default, "ignore_directories");
 
             this.nuMaxDepth.DataBindings.Add("Value", Properties.Settings.Default, "max_depth");
             this.nuInfiniteLoopDetectionCount.DataBindings.Add("Value", Properties.Settings.Default, "infinite_loop_detection_count");
@@ -145,7 +145,7 @@ namespace RED2
                 // add ending backslash
                 if (!path.EndsWith("\\")) path += "\\";
 
-                this.tbFolder.Text = path;
+                Properties.Settings.Default.last_used_directory = path;
             }
 
             #endregion
@@ -211,7 +211,7 @@ namespace RED2
         private void btnScan_Click(object sender, EventArgs e)
         {
             this.tree.ClearTree();
-            MessageBox.Show(Properties.Settings.Default.last_used_directory);
+         
             // Check given folder:
             DirectoryInfo selectedDirectory = null;
             try
@@ -236,18 +236,8 @@ namespace RED2
             // Properties.Settings.Default.Save();
 
             this.Data.StartFolder = selectedDirectory;
-            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
-            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
-            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.Data.IgnoreDirectoriesList = this.tbIgnoreFolders.Text;
-            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
-            this.Data.IgnoreHiddenFolders = this.cbIgnoreHiddenFolders.Checked;
-            this.Data.KeepSystemFolders = this.cbKeepSystemFolders.Checked;
-            this.Data.HideScanErrors = this.cbHideScanErrors.Checked;
-            this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
-            this.Data.InfiniteLoopDetectionCount = (int)this.nuInfiniteLoopDetectionCount.Value;
+            updateDataObject();
 
-            //this.pbProgressStatus.Style = ProgressBarStyle.Blocks; // = Stop
             this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
 
             this.tree.AddRootNode(this.Data.StartFolder, DirectoryIcons.home);
@@ -314,16 +304,27 @@ namespace RED2
             this.btnDelete.Enabled = false;
             this.btnShowLog.Enabled = false;
 
-            this.Data.IgnoreFiles = this.tbIgnoreFiles.Text;
-            this.Data.IgnoreEmptyFiles = this.cbIgnore0kbFiles.Checked;
-            this.Data.PauseTime = (double)this.nuPause.Value;
-            this.Data.DeleteMode = ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode;
-            this.Data.IgnoreAllErrors = this.cbIgnoreErrors.Checked;
+            updateDataObject();
 
             runtimeWatch.Reset();
             runtimeWatch.Start();
 
             this.core.StartDeleteProcess();
+        }
+
+        private void updateDataObject()
+        {
+            this.Data.IgnoreAllErrors = Properties.Settings.Default.ignore_errors;
+            this.Data.IgnoreFiles = Properties.Settings.Default.ignore_files;
+            this.Data.IgnoreDirectoriesList = Properties.Settings.Default.ignore_directories;
+            this.Data.IgnoreEmptyFiles = Properties.Settings.Default.ignore_0kb_files;
+            this.Data.IgnoreHiddenFolders = Properties.Settings.Default.dont_scan_hidden_folders;
+            this.Data.KeepSystemFolders = Properties.Settings.Default.keep_system_folders;
+            this.Data.HideScanErrors = Properties.Settings.Default.hide_scan_errors;
+            this.Data.MaxDepth = (int)Properties.Settings.Default.max_depth;
+            this.Data.InfiniteLoopDetectionCount = (int)Properties.Settings.Default.infinite_loop_detection_count;
+            this.Data.DeleteMode = (DeleteModes)Properties.Settings.Default.delete_mode;
+            this.Data.PauseTime = (int)Properties.Settings.Default.pause_between;
         }
 
         private void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
@@ -456,7 +457,7 @@ namespace RED2
 
         private void scanOnlyThisDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.tbFolder.Text = this.tree.GetSelectedFolderPath();
+            Properties.Settings.Default.last_used_directory = this.tree.GetSelectedFolderPath();
             this.btnScan.PerformClick();
         }
 
@@ -545,7 +546,7 @@ namespace RED2
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             if (s.Length == 1)
-                this.tbFolder.Text = s[0];
+                Properties.Settings.Default.last_used_directory = s[0].Trim();
             else
                 MessageBox.Show(this, RED2.Properties.Resources.error_only_one_folder);
         }
@@ -577,7 +578,7 @@ namespace RED2
                     // add ending backslash
                     if (!clipValue.EndsWith("\\")) clipValue += "\\";
 
-                    this.tbFolder.Text = clipValue;
+                    Properties.Settings.Default.last_used_directory = clipValue;
                 }
             }
         }
@@ -599,7 +600,7 @@ namespace RED2
         /// <param name="e"></param>
         private void btnChooseFolder_Click(object sender, EventArgs e)
         {
-            this.tbFolder.Text = SystemFunctions.ChooseDirectoryDialog(this.tbFolder.Text);
+            Properties.Settings.Default.last_used_directory = SystemFunctions.ChooseDirectoryDialog(Properties.Settings.Default.last_used_directory);
         }
 
         private void btnShowConfig_Click(object sender, EventArgs e)
@@ -623,7 +624,7 @@ namespace RED2
         {
             if (!this.cbKeepSystemFolders.Checked)
             {
-                if (MessageBox.Show(this, SystemFunctions.FixLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
+                if (MessageBox.Show(this, SystemFunctions.ConvertLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
                     this.cbKeepSystemFolders.Checked = true;
             }
         }
@@ -720,7 +721,7 @@ namespace RED2
                 {
                     var value = Properties.Settings.Default.PropertyValues[setting.Name].PropertyValue.ToString();
 
-                    if (setting.Name == "ignore_files" || setting.Name == "ignore_folders")
+                    if (setting.Name == "ignore_files" || setting.Name == "ignore_directories")
                         value = value.Replace("\r", "").Replace("\n", "\\n");
 
                     info.AppendLine("- " + setting.Name + ": " + value);

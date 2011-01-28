@@ -80,7 +80,7 @@ namespace RED2
                         this.FailedCount++;
                     }
 
-                    if (!stopNow)
+                    if (!stopNow && this.Data.PauseTime > 0)
                         Thread.Sleep(TimeSpan.FromMilliseconds(this.Data.PauseTime));
                 }
                 else
