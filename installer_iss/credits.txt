@@ -1,11 +1,9 @@
 ﻿CREDITS
 
-Thanks a lot to all users who donated to the project! I never expected 
-to receive a single donation. But as it turns out, quite a few people 
-seem to use and like RED :-)
+Thanks a lot to all users who donated to the project! I never expected to 
+receive a single donation. But as it turns out, quite a few people seem 
+to use and like RED :-) 
 
-For now, I removed the donation button because I have a guilty
-conscience with regard to my decreasing time to support RED. 
 
 Special thanks go to:
 
@@ -142,6 +140,9 @@ First release: Aug 04, 2005 / Last update: Jan 27, 2011
      - Infinite loop detection
      - Added a few new configuration settings
      - Removed counting method to increase speed
+     - Replaced old custom settings module with the default settings 
+       framework of .NET to be more standard-compliant (This should fix
+       problems some users had when starting RED)
 
 2.1: - Implemented a "Protect" and "Unprotect" function to let the 
        user choose folders to keep.

@@ -11,6 +11,7 @@
 AppId={{06F25DC8-71E2-44E2-805A-F15E15B51C74}
 ;AppId=Remove Empty Directories
 AppName=Remove Empty Directories
+;AppVersion=2.2
 AppVersion=2.2 (Admin Editon)
 AppPublisher=Jonas John
 AppCopyright=Remove Empty Directories © Jonas John 2006-2011
@@ -21,7 +22,8 @@ DefaultDirName={pf}\Remove Empty Directories
 DefaultGroupName=Remove Empty Directories
 AllowNoIcons=true
 LicenseFile=license.txt
-OutputBaseFilename=red-v2.2-setup
+;OutputBaseFilename=red-v2.2-setup
+OutputBaseFilename=red-v2.2-setup-admin
 SourceDir=.
 OutputDir=output\
 ;SetupIconFile=red.ico
@@ -41,6 +43,8 @@ Name: en; MessagesFile: compiler:Default.isl
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 ; Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked; OnlyBelowVersion: 0,6.1
+;Name: common; Description: "&All users"; GroupDescription: "Install For:"; Flags: exclusive unchecked
+;Name: local;  Description: "Just &me"; GroupDescription: "Install For:"; Flags: exclusive
 
 [Files]
 Source: RED2.exe; DestDir: {app}; Flags: ignoreversion
@@ -58,7 +62,8 @@ Name: {app}\RED2.exe.manifest; Type: files
 Name: {app}\uninst.exe; Type: files
 
 [UninstallDelete]
-Name: {app}\red.config; Type: files
+; cleanup - delete config dir
+Name: {localappdata}\Remove_Empty_Directories; Type: filesandordirs; Tasks: ; Languages: 
 ; Delete application directory if empty
 Name: {app}; Type: dirifempty
 
@@ -99,7 +104,7 @@ begin
             ShellExec('runas', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
             //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
         end;
-    end;    
-    
+    end;
+
     Result := true;
 end;

@@ -652,7 +652,7 @@ namespace RED2
 
         private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.jonasjohn.de/lab/red/");
+            Process.Start("http://www.jonasjohn.de/lab/red.htm");
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -662,7 +662,7 @@ namespace RED2
 
         private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.jonasjohn.de/lab/red/feedback.htm");
+            Process.Start("http://www.jonasjohn.de/lab/red_feedback.htm");
 
         }
 
