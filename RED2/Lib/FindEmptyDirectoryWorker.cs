@@ -58,7 +58,7 @@ namespace RED2
             catch (Exception ex)
             {
                 e.Cancel = true;
-                this.Data.AddLogMessage("A error occured during the scan process: " + ex.Message);
+                this.Data.AddLogMessage("An error occurred during the scan process: " + ex.Message);
                 this.ErrorInfo = new DeletionErrorEventArgs(startFolder.FullName, ex.Message);
                 return;
             }
@@ -212,7 +212,7 @@ namespace RED2
                 if (ex is System.IO.PathTooLongException)
                     this.PossibleEndlessLoop++;
 
-                this.Data.AddLogMessage("A unknown error occured while trying to scan this directory: \"" + startDir.FullName + "\" - Error message: " + ex.Message);
+                this.Data.AddLogMessage("An unknown error occurred while trying to scan this directory: \"" + startDir.FullName + "\" - Error message: " + ex.Message);
                 this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(startDir.FullName, DirectorySearchStatusTypes.Error, ex.Message));
 
                 return DirectorySearchStatusTypes.Error;

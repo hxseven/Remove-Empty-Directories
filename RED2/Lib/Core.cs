@@ -99,7 +99,7 @@ namespace RED2
             {
                 if (this.searchEmptyFoldersWorker.ErrorInfo != null)
                 {
-                    // A error occured, process was stopped
+                    // A error occurred, process was stopped
                     this.showErrorMsg(this.searchEmptyFoldersWorker.ErrorInfo.ErrorMessage);
 
                     this.searchEmptyFoldersWorker.Dispose(); this.searchEmptyFoldersWorker = null;
@@ -179,7 +179,7 @@ namespace RED2
             {
                 if (this.deletionWorker.ErrorInfo != null)
                 {
-                    // A error occured, process was stopped
+                    // A error occurred, process was stopped
                     //
                     // -> Ask user to continue
 

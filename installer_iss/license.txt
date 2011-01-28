@@ -1,14 +1,15 @@
-DISCLAIMER
+﻿DISCLAIMER
 
 In short: RED is a tool that DELETES stuff! So be careful with it.
 
-To be honest with you as user of RED I have to tell you that one user of RED (Version 2.1) reported that it deleted folders which were not empty and contained important files. I'm really very sorry for that! I checked all routines of RED several times to ensure nothing goes wrong, but somehow it happened on the system of that user. Unfortunately, I could not really determine what caused that behaviour. In addition to that the user did not wanted to try to locate the error, because he was (understandably) very upset and uninstalled RED instantly. But he told me that the directory names he scanned contained chinese characters. Therefore I tried to reproduce the error with chinese directory names but it did not work out - RED worked as expected. 
+To be honest with you as user of RED I have to tell you that one user of RED (Version 2.1) reported that it deleted folders which were not completely empty and contained files important to him. I'm really very sorry for that! I checked all routines of RED several times to ensure nothing goes wrong, but somehow it happened on the system of that user. Unfortunately, I could not determine what caused that behaviour. In addition to that the user did not wanted to try to locate the error, because he was (understandably) very upset and uninstalled RED instantly. But he told me that the directory names contained chinese characters. So I tried to reproduce the error by testing RED with foreign directory names. But I could not find a bug - RED worked as expected. 
 
-My conclusion: I currently assume it was a individual case and hope that it does not happen again. I also refactored and optimited the whole sourcecode of RED 2.2 to improve the stability and the error handling.
+My conclusion: I currently assume it was a unfortunate exception or some sort of misconfiguration and I hope that it does not happen again. I also refactored and optimized the whole sourcecode of RED 2.2 to improve the stability and the error handling.
 
-To sum up, if you use RED for the first time have a look at the directories RED found and rethink if they are plausible. And if you want to be really safe double-click a few to see if they are really empty. This especially applies to systems with directory names containing any special characters. Contact me if you notice anything strange.
+To sum up, if you use RED for the first time have a look at the directories RED found and rethink if they are plausible. And if you want to be really safe double-click a few folders to see if they are really empty. This especially applies to systems with directory names containing any special characters. Contact me if you notice anything strange.
 
-(By the way: As I orginally developed RED for myself and I'm using it often I took particular care to ensure everything works correctly.)
+(By the way: As I originally developed RED for myself therefore I took particular care to ensure everything works correctly.)
+
 
 
 LICENSE

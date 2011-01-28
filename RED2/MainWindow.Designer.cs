@@ -533,7 +533,7 @@
             this.groupBox1.Controls.Add(this.btnExplorerRemove);
             this.groupBox1.Controls.Add(this.btnExplorerIntegrate);
             this.groupBox1.Controls.Add(this.label16);
-            this.groupBox1.Location = new System.Drawing.Point(14, 339);
+            this.groupBox1.Location = new System.Drawing.Point(14, 338);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(580, 59);
             this.groupBox1.TabIndex = 14;
@@ -546,12 +546,13 @@
             this.lblReqAdmin.ForeColor = System.Drawing.SystemColors.GrayText;
             this.lblReqAdmin.Location = new System.Drawing.Point(8, 37);
             this.lblReqAdmin.Name = "lblReqAdmin";
-            this.lblReqAdmin.Size = new System.Drawing.Size(261, 13);
+            this.lblReqAdmin.Size = new System.Drawing.Size(256, 13);
             this.lblReqAdmin.TabIndex = 26;
-            this.lblReqAdmin.Text = "You need to start RED as Administrator to change this";
+            this.lblReqAdmin.Text = "You need to run RED as Administrator to change this";
             // 
             // btnExplorerRemove
             // 
+            this.btnExplorerRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExplorerRemove.Location = new System.Drawing.Point(436, 20);
             this.btnExplorerRemove.Name = "btnExplorerRemove";
             this.btnExplorerRemove.Size = new System.Drawing.Size(129, 27);
@@ -562,6 +563,7 @@
             // 
             // btnExplorerIntegrate
             // 
+            this.btnExplorerIntegrate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExplorerIntegrate.Location = new System.Drawing.Point(301, 20);
             this.btnExplorerIntegrate.Name = "btnExplorerIntegrate";
             this.btnExplorerIntegrate.Size = new System.Drawing.Size(129, 27);
@@ -593,7 +595,7 @@
             this.gpOptions.Controls.Add(this.cbIgnore0kbFiles);
             this.gpOptions.Location = new System.Drawing.Point(14, 9);
             this.gpOptions.Name = "gpOptions";
-            this.gpOptions.Size = new System.Drawing.Size(580, 87);
+            this.gpOptions.Size = new System.Drawing.Size(580, 95);
             this.gpOptions.TabIndex = 19;
             this.gpOptions.TabStop = false;
             this.gpOptions.Text = "General options";
@@ -602,7 +604,7 @@
             // 
             this.cbHideScanErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbHideScanErrors.AutoSize = true;
-            this.cbHideScanErrors.Location = new System.Drawing.Point(447, 66);
+            this.cbHideScanErrors.Location = new System.Drawing.Point(447, 71);
             this.cbHideScanErrors.Name = "cbHideScanErrors";
             this.cbHideScanErrors.Size = new System.Drawing.Size(103, 17);
             this.cbHideScanErrors.TabIndex = 16;
@@ -614,7 +616,7 @@
             // 
             this.cbIgnoreErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbIgnoreErrors.AutoSize = true;
-            this.cbIgnoreErrors.Location = new System.Drawing.Point(270, 66);
+            this.cbIgnoreErrors.Location = new System.Drawing.Point(270, 71);
             this.cbIgnoreErrors.Name = "cbIgnoreErrors";
             this.cbIgnoreErrors.Size = new System.Drawing.Size(157, 17);
             this.cbIgnoreErrors.TabIndex = 15;
@@ -646,7 +648,7 @@
             // 
             this.cbClipboardDetection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbClipboardDetection.AutoSize = true;
-            this.cbClipboardDetection.Location = new System.Drawing.Point(270, 46);
+            this.cbClipboardDetection.Location = new System.Drawing.Point(270, 48);
             this.cbClipboardDetection.Name = "cbClipboardDetection";
             this.cbClipboardDetection.Size = new System.Drawing.Size(162, 17);
             this.cbClipboardDetection.TabIndex = 5;
@@ -658,7 +660,7 @@
             // 
             this.cbIgnoreHiddenFolders.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbIgnoreHiddenFolders.AutoSize = true;
-            this.cbIgnoreHiddenFolders.Location = new System.Drawing.Point(447, 46);
+            this.cbIgnoreHiddenFolders.Location = new System.Drawing.Point(447, 48);
             this.cbIgnoreHiddenFolders.Name = "cbIgnoreHiddenFolders";
             this.cbIgnoreHiddenFolders.Size = new System.Drawing.Size(125, 17);
             this.cbIgnoreHiddenFolders.TabIndex = 4;
@@ -671,7 +673,7 @@
             this.cbKeepSystemFolders.AutoSize = true;
             this.cbKeepSystemFolders.Checked = true;
             this.cbKeepSystemFolders.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbKeepSystemFolders.Location = new System.Drawing.Point(10, 66);
+            this.cbKeepSystemFolders.Location = new System.Drawing.Point(10, 71);
             this.cbKeepSystemFolders.Name = "cbKeepSystemFolders";
             this.cbKeepSystemFolders.Size = new System.Drawing.Size(209, 17);
             this.cbKeepSystemFolders.TabIndex = 2;
@@ -684,7 +686,7 @@
             this.cbIgnore0kbFiles.AutoSize = true;
             this.cbIgnore0kbFiles.Checked = true;
             this.cbIgnore0kbFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbIgnore0kbFiles.Location = new System.Drawing.Point(10, 46);
+            this.cbIgnore0kbFiles.Location = new System.Drawing.Point(10, 48);
             this.cbIgnore0kbFiles.Name = "cbIgnore0kbFiles";
             this.cbIgnore0kbFiles.Size = new System.Drawing.Size(259, 17);
             this.cbIgnore0kbFiles.TabIndex = 3;
@@ -699,23 +701,23 @@
             this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Controls.Add(this.tbIgnoreFolders);
             this.groupBox4.Controls.Add(this.label10);
-            this.groupBox4.Location = new System.Drawing.Point(312, 102);
+            this.groupBox4.Location = new System.Drawing.Point(312, 112);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(282, 225);
+            this.groupBox4.Size = new System.Drawing.Size(282, 218);
             this.groupBox4.TabIndex = 22;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Skip these folders";
+            this.groupBox4.Text = "Skip these directories";
             // 
             // label11
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label11.AutoSize = true;
             this.label11.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label11.Location = new System.Drawing.Point(8, 206);
+            this.label11.Location = new System.Drawing.Point(8, 199);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(237, 13);
+            this.label11.Size = new System.Drawing.Size(263, 13);
             this.label11.TabIndex = 12;
-            this.label11.Text = "(One pattern per line - Dir. name or path possible)";
+            this.label11.Text = "(One pattern per line - Directory name or path possible)";
             // 
             // tbIgnoreFolders
             // 
@@ -727,7 +729,7 @@
             this.tbIgnoreFolders.Multiline = true;
             this.tbIgnoreFolders.Name = "tbIgnoreFolders";
             this.tbIgnoreFolders.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFolders.Size = new System.Drawing.Size(266, 167);
+            this.tbIgnoreFolders.Size = new System.Drawing.Size(266, 160);
             this.tbIgnoreFolders.TabIndex = 6;
             this.tbIgnoreFolders.WordWrap = false;
             // 
@@ -736,9 +738,9 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(8, 20);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(146, 13);
+            this.label10.Size = new System.Drawing.Size(224, 13);
             this.label10.TabIndex = 13;
-            this.label10.Text = "Ignore these directory names:";
+            this.label10.Text = "Ignore these directory names when searching:";
             // 
             // groupBox2
             // 
@@ -749,9 +751,9 @@
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.tbIgnoreFiles);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(14, 102);
+            this.groupBox2.Location = new System.Drawing.Point(14, 112);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(282, 225);
+            this.groupBox2.Size = new System.Drawing.Size(282, 218);
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Ignore these files";
@@ -772,11 +774,11 @@
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label9.AutoSize = true;
             this.label9.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label9.Location = new System.Drawing.Point(7, 206);
+            this.label9.Location = new System.Drawing.Point(7, 199);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(247, 13);
+            this.label9.Size = new System.Drawing.Size(267, 13);
             this.label9.TabIndex = 11;
-            this.label9.Text = "(One pattern per line - Regex possible -> about tab)";
+            this.label9.Text = "(One pattern per line - Regex possible -> see about tab)";
             // 
             // tbIgnoreFiles
             // 
@@ -788,7 +790,7 @@
             this.tbIgnoreFiles.Multiline = true;
             this.tbIgnoreFiles.Name = "tbIgnoreFiles";
             this.tbIgnoreFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFiles.Size = new System.Drawing.Size(269, 126);
+            this.tbIgnoreFiles.Size = new System.Drawing.Size(269, 119);
             this.tbIgnoreFiles.TabIndex = 5;
             this.tbIgnoreFiles.WordWrap = false;
             // 
@@ -800,7 +802,7 @@
             this.label2.Size = new System.Drawing.Size(222, 26);
             this.label2.TabIndex = 10;
             this.label2.Text = "Treat directories as empty if they only contain \r\nfiles that match the following " +
-                "patterns:";
+                "patterns";
             // 
             // groupBox3
             // 
@@ -826,6 +828,7 @@
             // 
             // btnCopyDebugInfo
             // 
+            this.btnCopyDebugInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCopyDebugInfo.Location = new System.Drawing.Point(463, 47);
             this.btnCopyDebugInfo.Name = "btnCopyDebugInfo";
             this.btnCopyDebugInfo.Size = new System.Drawing.Size(102, 27);
@@ -836,6 +839,7 @@
             // 
             // btnResetConfig
             // 
+            this.btnResetConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnResetConfig.Location = new System.Drawing.Point(301, 47);
             this.btnResetConfig.Name = "btnResetConfig";
             this.btnResetConfig.Size = new System.Drawing.Size(160, 27);
@@ -846,6 +850,7 @@
             // 
             // label13
             // 
+            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(521, 23);
             this.label13.Name = "label13";
@@ -855,6 +860,7 @@
             // 
             // nuInfiniteLoopDetectionCount
             // 
+            this.nuInfiniteLoopDetectionCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(463, 19);
             this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
             999999,
@@ -872,6 +878,7 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(301, 23);
             this.label4.Name = "label4";
@@ -885,9 +892,9 @@
             this.label20.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label20.Location = new System.Drawing.Point(8, 63);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(250, 13);
+            this.label20.Size = new System.Drawing.Size(268, 13);
             this.label20.TabIndex = 19;
-            this.label20.Text = "(Gives you time to stop the process - not necessary)";
+            this.label20.Text = "(Gives you time to stop the process - but not necessary)";
             // 
             // label3
             // 
@@ -900,7 +907,7 @@
             // 
             // nuMaxDepth
             // 
-            this.nuMaxDepth.Location = new System.Drawing.Point(211, 16);
+            this.nuMaxDepth.Location = new System.Drawing.Point(211, 17);
             this.nuMaxDepth.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -931,7 +938,7 @@
             // 
             // nuPause
             // 
-            this.nuPause.Location = new System.Drawing.Point(211, 40);
+            this.nuPause.Location = new System.Drawing.Point(211, 41);
             this.nuPause.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -977,12 +984,12 @@
             // 
             this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(525, 47);
+            this.linkLabel2.Location = new System.Drawing.Point(466, 47);
             this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(69, 13);
+            this.linkLabel2.Size = new System.Drawing.Size(128, 13);
             this.linkLabel2.TabIndex = 27;
             this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Report a bug";
+            this.linkLabel2.Text = "Feedback / Report a bug";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked_1);
             // 
             // linkLabel1
@@ -1025,7 +1032,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(8, 25);
+            this.label5.Location = new System.Drawing.Point(8, 24);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(182, 14);
             this.label5.TabIndex = 5;
@@ -1035,7 +1042,7 @@
             // 
             this.llWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.llWebsite.AutoSize = true;
-            this.llWebsite.Location = new System.Drawing.Point(509, 7);
+            this.llWebsite.Location = new System.Drawing.Point(509, 8);
             this.llWebsite.Name = "llWebsite";
             this.llWebsite.Size = new System.Drawing.Size(85, 13);
             this.llWebsite.TabIndex = 19;
@@ -1048,7 +1055,7 @@
             this.lbAppTitle.AutoSize = true;
             this.lbAppTitle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbAppTitle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lbAppTitle.Location = new System.Drawing.Point(8, 10);
+            this.lbAppTitle.Location = new System.Drawing.Point(8, 8);
             this.lbAppTitle.Name = "lbAppTitle";
             this.lbAppTitle.Size = new System.Drawing.Size(209, 14);
             this.lbAppTitle.TabIndex = 0;

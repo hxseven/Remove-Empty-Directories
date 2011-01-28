@@ -43,13 +43,13 @@ namespace RED2
                     return "Delete to recycle bin (Default)";
 
                 case DeleteModes.RecycleBinWithQuestion:
-                    return "Delete to recycle bin and ask before every deletion (Can be annoying)";
+                    return "Delete to recycle bin and ask before every deletion (can be annoying)";
 
                 case DeleteModes.Direct:
-                    return "Delete directly and don't ask any questions (No turning back)";
+                    return "Delete directly and don't ask any questions (old RED mode)";
 
                 case DeleteModes.Simulate:
-                    return "Simulate deletion (Don't delete anything)";
+                    return "Simulate deletion (just pretend doing it)";
 
                 // TODO: Idea -> Move files instead of deleting?
 

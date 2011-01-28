@@ -1,17 +1,13 @@
 ﻿CREDITS
 
-Thanks a lot to all who donated to the project! I did not really think
-that I receive a single donation, but it turns out that quite a few
-people seem to use and like RED :-)
+Thanks a lot to all users who donated to the project! I never expected 
+to receive a single donation. But as it turns out, quite a few people 
+seem to use and like RED :-)
 
 For now, I removed the donation button because I have a guilty
-conscience with regard to my decreasing time to improve RED. 
-BTW: Sorry for not updating RED for a long time now, I was really 
-busy with "real life"... 
+conscience with regard to my decreasing time to support RED. 
 
-without feedback Without you, KeePass would be a lot less powerful and useful!
-
-Special thanks to:
+Special thanks go to:
 
   * Wolf and the Computer Club Sunland Village (Mesa Arizona) 
     for their continuous kind feedback!
@@ -19,34 +15,36 @@ Special thanks to:
   * Havy A.C. (ZyntaXis) for helping me with the Windows 7 
     and Vista compatibility
 
+  * All other users who send me their feedback!
+
 
 
 DISCLAIMER
 
-To be honest with you as user of RED I have to tell you that one user of 
-RED (Version 2.1) reported that it deleted folders which were not empty 
-and contained important files. I'm really very sorry for that! I checked 
-all routines of RED several times to ensure nothing goes wrong, but somehow 
-it happened on the system of that user. Unfortunately, I could not really 
-determine what caused that behaviour. In addition to that the user did not 
-wanted to try to locate the error, because he was (understandably) very 
-upset and uninstalled RED instantly. But he told me that the directory 
-names he scanned contained chinese characters. Therefore I tried to reproduce 
-the error with chinese directory names but it did not work out - RED worked 
-as expected. 
+To be honest with you as user of RED I have to tell you that one user of RED 
+(v2.1) reported that it deleted folders which were not completely empty and 
+contained files important to him. I'm really very sorry for that! I checked all
+routines of RED several times to ensure nothing goes wrong, but somehow it 
+happened on the system of that user. Unfortunately, I could not determine what
+caused that behaviour. In addition to that the user did not wanted to try to
+locate the error, because he was (understandably) very upsetand uninstalled RED 
+instantly. But he told me that the directory names contained chinese characters. 
+So I tried to reproduce the error by testing RED with foreign directory names. 
+But I could not find a bug - RED worked as expected.
 
-My conclusion: I currently assume it was a individual case or a configuration 
-error and hope that it does not happen again. I also refactored and optimited 
-the whole sourcecode of RED 2.2 to improve the stability and the error handling.
+My conclusion: I currently assume it was a unfortunate exception or some sort
+of misconfiguration and I hope that it does not happen again. I also refactored
+and optimized the whole sourcecode of RED 2.2 to improve the stability and the
+error handling.
 
 To sum up, if you use RED for the first time have a look at the directories 
 RED found and rethink if they are plausible. And if you want to be really 
-safe double-click a few folders to see if they are really empty. This especially 
-applies to systems with directory names containing any special characters. 
-Contact me if you notice anything strange.
+safe double-click a few folders to see if they are really empty. This 
+especially applies to systems with directory names containing any special 
+characters. Contact me if you notice anything strange.
 
-(By the way: As I orginally developed RED for myself and I'm using it often 
-I took particular care to ensure everything works correctly.)
+(BTW: As I originally developed RED for myself therefore I took particular 
+care to ensure everything works correctly.)
 
 
 
@@ -56,34 +54,36 @@ HINTS & FAQ
   
   * You can use Regular expressions (Regex) in the "Ignore these 
     files" filter lists by putting the filter between two slashes.
-    Example: /^tmp\.[0-9]+/
+    Example: 
+    
+        /^tmp\.[0-9]+/ 
+        The line above matches all files like tmp.001, tmp.002 etc.
 
-  * Why am I getting these annoying "cannot access the file" or 
-    "Access to ... is denied." errors?
-    That means that another application locked a file or a 
-    directory so that RED can't access or delete it.
+  * Why am I getting these annoying "cannot access file" or 
+    "Access to ... is denied." errors? -> That means RED tried to
+    scan or delete a file or directory that was locked by another 
+    application. This is a safety feature to ensure that programs
+    don't access files that are currently opened by another.
+    To fix this problem close all other programs before using RED. 
+    If that does not help you could try using tools such as
+    Unlocker (http://cedrick.collomb.perso.sfr.fr/unlocker/).
 
   * Why .NET Framework!?
     I'm sorry that RED requires the .NET Framework (the "Java" of 
-    Microsoft) -- its really bloated. But actually I did not had 
-    the time to learn a "mature" programming language like C++. 
-    And nowadays every new windows comes with .NET preinstalled 
-    so it should work without...
+    Microsoft) - it's really bloated. Regrettably, by now I did not had 
+    the time to learn a "mature" programming language like C++.
+    But since today every new Windows system comes with .NET preinstalled 
+    it should not be that big problem...
 
 
 
 FEEDBACK
 
-Feedback is always appreciated and you can provide it by using my
-forum at http://www.jonasjohn.de/forum/. Or use the contact
-form on http://www.jonasjohn.de/contact.htm.
-
-
 If you found a bug, have an idea or any other feedback please click 
-on the "Report a bug" Link that should be visible above. Or manually 
+on the "Feedback" Link that should be visible above. Or manually 
 open the following URL:
 
-http://www.jonasjohn.de/lab/red/report_bug.htm
+http://www.jonasjohn.de/lab/red/feedback.htm
 
 There you will find the latest informations on how to submit your 
 feedback.
@@ -92,8 +92,7 @@ feedback.
 
 EXTERNAL GRAPHICS USED FOR RED
 
-RED makes extensive use of graphics made by the following projects or
-persons:
+I also thank the authors of the following graphics that I used in RED:
 
   * Nuvola icons (GNU LGPL 2.1. license)
     http://www.icon-king.com/projects/nuvola/
@@ -112,21 +111,15 @@ persons:
 TOOLS I USED TO DEVELOP RED
 
   * Visual C# 2010 Express
-  * Inno Setup (before 2.2 I used NSIS)
+  * Inno Setup (before v2.2 I used NSIS)
   * SourceForge.net (hosting the RED downloads - Thanks!)
-  * dict.leo.org & linguee.com for translation help
-- The dict.leo.org team for the great translation service
-
+  * dict.leo.org & linguee.com (great translation services)
 
 
 
 LICENSE
 
-Like all other applications made by me, RED is free for both commercial
-and personal use. But you can help support our products by donating money:
-http://www.jonasjohn.de/donating.htm
-
-RED is open source and can be freely used, feel free to have a look into 
+RED is open source and can be freely used. Feel free to have a look into 
 the sourcecode behind RED to fix it, fork it, extend it, learn from it, 
 improve it, ...
 
@@ -137,40 +130,18 @@ http://www.gnu.org/copyleft/lgpl.html
 
 
 
-TODO
-
-- implemented language files to support other languages...
-- optimize the sourcecode
-- more testing
-- let the user choose the context-menu entry in the setup
-- better error handling
-- implemented advanced command line parameters [-auto], [-hide], ...
-- test network drives with RED e.g. \\server1\dir1\ or something
-
-"Maybe" - ToDo's:
-- Also search in achives (ZIP, ...)
-- Search FTP Directories?
-
-
-
 VERSION HISTORY
 
+First release: Aug 04, 2005 / Last update: Jan 27, 2011
 
-The first version of RED was made with PHP by using Winbinder.
-But because I'm currently learning C# I started using Microsoft 
-Visual C# since Version 1.5. 
- 
-RED was tested with:
---> Windows XP (Home)
---> (but should also work with all .NET compatible systems)
-
-Get source code of RED!
---> http://www.jonasjohn.de/lab/red.htm
-
-First release: Aug 04, 2005 -- Last update: Jan 27, 2011
-
-
-2.2: - 
+2.2: - Improved error handling
+     - Added logging of errors and deleted directories
+     - Added multiple delete modes (e.g. delete to recycle bin)
+     - Implemented a function to delete a single empty directory
+     - Implemented optional function to detect paths in clipboard
+     - Infinite loop detection
+     - Added a few new configuration settings
+     - Removed counting method to increase speed
 
 2.1: - Implemented a "Protect" and "Unprotect" function to let the 
        user choose folders to keep.
@@ -195,8 +166,6 @@ First release: Aug 04, 2005 -- Last update: Jan 27, 2011
 
 1.4: - Updated the readme file and changed the license from GPL to LGPL.
      - fixed some small issues...
-
-1.3: - Replaced $string = "" with $string = '' => better performance<
 
 1.2: - Fixed the gauge in the process window 
      - implemented a second safety check to prevent deleting filled folders
@@ -223,7 +192,7 @@ First release: Aug 04, 2005 -- Last update: Jan 27, 2011
        the program to php with a Windows GUI trough WinBinder
 
 0.5: - Used NSIS Install System (http://nsis.sourceforge.net/) to create a
-       GUI for the perl program. 
+       GUI for the perl script 
 
 0.4: - Minor changes
 
@@ -233,6 +202,3 @@ First release: Aug 04, 2005 -- Last update: Jan 27, 2011
 
 0.1: - I made a simple perl script to delete empty folders - called it
        "DEF" (Delete Empty Folders)
-
-
-Thanks for using RED :)

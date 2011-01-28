@@ -109,7 +109,7 @@ namespace RED2
             var emptyDirectory = new DirectoryInfo(path);
 
             if (!emptyDirectory.Exists)
-                throw new Exception("Could not delete the directory \""+emptyDirectory.FullName+"\" because it does not exist anymore.");
+                throw new Exception("Could not delete the directory \"" + emptyDirectory.FullName + "\" because it does not exist anymore.");
 
             // Cleanup folder
 
@@ -136,10 +136,11 @@ namespace RED2
 
                             this.Data.AddLogMessage(String.Format("-> Successfully deleted file \"{0}\" because it matched the ignore pattern \"{1}\"", file.FullName, delPattern));
                         }
-                        catch (Exception ex) {
+                        catch (Exception ex)
+                        {
                             this.Data.AddLogMessage(String.Format("Failed to delete file \"{0}\" - Error message: \"{1}\"", file.FullName, ex.Message));
 
-                            throw new Exception("Could not delete a empty (trash) file - error message: " + ex.Message);
+                            throw new Exception("Could not delete this empty (trash) file:" + Environment.NewLine + file.FullName + Environment.NewLine + Environment.NewLine + "Error message: " + ex.Message);
                         }
                     }
                 }

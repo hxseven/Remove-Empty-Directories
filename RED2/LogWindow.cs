@@ -18,5 +18,10 @@ namespace RED2
         public void SetLog(string log) {
             this.tbLog.Text = log;
         }
+
+        private void tbLog_DoubleClick(object sender, EventArgs e)
+        {
+            this.tbLog.SelectAll();
+        }
     }
 }

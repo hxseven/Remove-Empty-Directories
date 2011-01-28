@@ -42,6 +42,7 @@
             this.tbLog.Size = new System.Drawing.Size(684, 462);
             this.tbLog.TabIndex = 0;
             this.tbLog.WordWrap = false;
+            this.tbLog.DoubleClick += new System.EventHandler(this.tbLog_DoubleClick);
             // 
             // LogWindow
             // 
@@ -49,11 +50,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 462);
             this.Controls.Add(this.tbLog);
+            this.MinimizeBox = false;
             this.Name = "LogWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Deletion log";
+            this.Text = "Logs";
             this.Load += new System.EventHandler(this.LogWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -97,7 +97,7 @@ namespace RED2
                 else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
             }
             else
-                throw new Exception("Failed to delete the directory: \"" + path + "\" because it is no longer empty.");
+                throw new Exception("Aborted deletion of the directory \"" + path + "\" because it is no longer empty. This can happen if RED previously failed to delete a empty (trash) file.");
         }
 
         public static void SecureDeleteFile(FileInfo file, DeleteModes deleteMode)

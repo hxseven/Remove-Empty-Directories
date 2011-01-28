@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Windows.Forms;
 using System.Security.Principal;
+using System.Windows.Forms;
 
 namespace RED2
 {
@@ -321,7 +321,7 @@ namespace RED2
             this.core.StartDeleteProcess();
         }
 
-        void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
+        private void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
         {
             switch (e.Status)
             {
@@ -342,7 +342,7 @@ namespace RED2
             this.pbProgressStatus.Value = e.ProgressStatus;
         }
 
-        void core_OnDeleteError(object sender, DeletionErrorEventArgs e)
+        private void core_OnDeleteError(object sender, DeletionErrorEventArgs e)
         {
             var errorDialog = new DeletionError();
 
@@ -367,7 +367,7 @@ namespace RED2
             }
         }
 
-        void core_OnDeleteProcessFinished(object sender, DeleteProcessFinishedEventArgs e)
+        private void core_OnDeleteProcessFinished(object sender, DeleteProcessFinishedEventArgs e)
         {
             runtimeWatch.Stop();
 
@@ -388,7 +388,7 @@ namespace RED2
 
         #region Generic process events
 
-        void config_OnSettingsSaved(object sender, EventArgs e)
+        private void config_OnSettingsSaved(object sender, EventArgs e)
         {
             // Update deletion stats
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
@@ -399,7 +399,7 @@ namespace RED2
             this.core.CancelCurrentProcess();
         }
 
-        void core_OnCancelled(object sender, EventArgs e)
+        private void core_OnCancelled(object sender, EventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
@@ -414,7 +414,7 @@ namespace RED2
             this.btnShowLog.Enabled = true;
         }
 
-        void core_OnAborted(object sender, EventArgs e)
+        private void core_OnAborted(object sender, EventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
@@ -429,7 +429,7 @@ namespace RED2
             this.btnShowLog.Enabled = true;
         }
 
-        void core_OnError(object sender, ErrorEventArgs e)
+        private void core_OnError(object sender, ErrorEventArgs e)
         {
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
 
@@ -666,11 +666,9 @@ namespace RED2
 
         private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.jonasjohn.de/lab/red/report_bug.htm");
+            Process.Start("http://www.jonasjohn.de/lab/red/feedback.htm");
 
         }
-
-        #endregion
 
         private void btnCopyDebugInfo_Click(object sender, EventArgs e)
         {
@@ -737,12 +735,17 @@ namespace RED2
                 info.AppendLine("Failed (" + ex.Message + ")");
             }
 
-            Clipboard.SetText(info.ToString(), TextDataFormat.Text);
+            try
+            {
+                Clipboard.SetText(info.ToString(), TextDataFormat.Text);
 
-            MessageBox.Show("Copied this text to your clipboard:" + Environment.NewLine + Environment.NewLine + info.ToString());
+                MessageBox.Show("Copied this text to your clipboard:" + Environment.NewLine + Environment.NewLine + info.ToString());
+            }
+            catch (Exception ex) {
+                MessageBox.Show("Sorry, could not copy the debug info into your clipboard because of this error: " + Environment.NewLine + ex.Message);
+            }
         }
 
-
-
+        #endregion
     }
 }

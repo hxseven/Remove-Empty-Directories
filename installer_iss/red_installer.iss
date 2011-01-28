@@ -11,7 +11,7 @@
 AppId={{06F25DC8-71E2-44E2-805A-F15E15B51C74}
 ;AppId=Remove Empty Directories
 AppName=Remove Empty Directories
-AppVersion=2.2
+AppVersion=2.2 (Admin Editon)
 AppPublisher=Jonas John
 AppCopyright=Remove Empty Directories © Jonas John 2006-2011
 AppPublisherURL=http://www.jonasjohn.de/
@@ -44,7 +44,6 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: RED2.exe; DestDir: {app}; Flags: ignoreversion
-;Source: RED2.manifest; DestDir: {app}; Flags: ignoreversion
 Source: license.txt; DestDir: {app}; Flags: ignoreversion
 Source: credits.txt; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -89,11 +88,7 @@ begin
     // Check whether application is already installed
     if RegKeyExists(HKEY_LOCAL_MACHINE,  'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Remove Empty Directories') then
     begin
-        if MsgBox('The setup has detected that RED is already installed on your computer. Do you wish to uninstall the previous version and continue with a fresh installation?', mbConfirmation, MB_YESNO) = IDNO then
-        begin
-            Result := False
-        end
-        else
+        if MsgBox('The setup has detected that RED is already installed on your computer. Do you wish to uninstall the previous version and continue with a fresh installation?', mbConfirmation, MB_YESNO) = IDYES then
         begin
 
             RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Remove Empty Directories', 'UninstallString', UninstallerPath);
@@ -103,14 +98,8 @@ begin
             //ShellExec('open', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
             ShellExec('runas', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
             //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
-
-            if RegKeyExists(HKEY_LOCAL_MACHINE,  'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Remove Empty Directories') then
-                Result := false
-            else
-                Result := true;
-                        
         end;
-    end;
-         
+    end;    
+    
     Result := true;
 end;
