@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Remove Empty Directories")]
 [assembly: AssemblyDescription("RED searches and deletes empty directories recursively below a given start folder.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Jonas John (www.jonasjohn.de)")]
+[assembly: AssemblyCompany("Remove Empty Directories")]
 [assembly: AssemblyProduct("Remove Empty Directories")]
-[assembly: AssemblyCopyright("Copyright (c) 2005-2011")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright (c) Jonas John 2005-2011")]
+[assembly: AssemblyTrademark("Remove Empty Directories")]
 [assembly: AssemblyCulture("")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 

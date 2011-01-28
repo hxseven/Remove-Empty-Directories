@@ -120,12 +120,6 @@
   <data name="btn_scan_again" xml:space="preserve">
     <value>Scan again</value>
   </data>
-  <data name="config_file" xml:space="preserve">
-    <value>red.config</value>
-  </data>
-  <data name="dont_scan_hidden_folders" xml:space="preserve">
-    <value>False</value>
-  </data>
   <data name="error" xml:space="preserve">
     <value>Error:</value>
   </data>
@@ -137,9 +131,6 @@
   </data>
   <data name="error_only_one_folder" xml:space="preserve">
     <value>Only one folder can be accepted.</value>
-  </data>
-  <data name="folder" xml:space="preserve">
-    <value>C:\</value>
   </data>
   <data name="found_x_empty_folders" xml:space="preserve">
     <value>Found {0} empty directories (checked {1} / runtime: {2:D2}:{3:D2} min)</value>
@@ -168,24 +159,6 @@
   <data name="icon_warning" xml:space="preserve">
     <value>Failed</value>
   </data>
-  <data name="default_ignore_0kb_files" xml:space="preserve">
-    <value>True</value>
-  </data>
-  <data name="ignore_files" xml:space="preserve">
-    <value>*.tmp\r\ndesktop.ini\r\nThumbs.db</value>
-  </data>
-  <data name="ignore_folders" xml:space="preserve">
-    <value>System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN\r\nGAC_MSIL</value>
-  </data>
-  <data name="default_keep_system_folders" xml:space="preserve">
-    <value>True</value>
-  </data>
-  <data name="default_max_depth" xml:space="preserve">
-    <value>-1</value>
-  </data>
-  <data name="default_pause_between" xml:space="preserve">
-    <value>80</value>
-  </data>
   <data name="please_select" xml:space="preserve">
     <value>Please select the folder that you want to be cleaned</value>
   </data>
@@ -213,28 +186,13 @@
   <data name="warning_really_delete" xml:space="preserve">
     <value>Warning, do you really want to delete empty system directories?\nThis may harm your operating system.</value>
   </data>
-  <data name="default_delete_mode" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="process_aborted" xml:space="preserve">
     <value>Process was aborted.</value>
-  </data>
-  <data name="default_ignore_errors" xml:space="preserve">
-    <value>False</value>
   </data>
   <data name="deletion_aborted" xml:space="preserve">
     <value>Delete process was aborted.</value>
   </data>
   <data name="delete_process_finished" xml:space="preserve">
     <value>Deleted {0} empty directories (failed to delete: {1} dirs / runtime: {2:D2}:{3:D2} min)</value>
-  </data>
-  <data name="default_clipboard_detection" xml:space="preserve">
-    <value>False</value>
-  </data>
-  <data name="default_infinite_loop_detection_count" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="default_hide_scan_errors" xml:space="preserve">
-    <value>False</value>
   </data>
 </root>

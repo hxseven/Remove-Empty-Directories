@@ -70,96 +70,6 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die red.config ähnelt.
-        /// </summary>
-        internal static string config_file {
-            get {
-                return ResourceManager.GetString("config_file", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
-        /// </summary>
-        internal static string default_clipboard_detection {
-            get {
-                return ResourceManager.GetString("default_clipboard_detection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 0 ähnelt.
-        /// </summary>
-        internal static string default_delete_mode {
-            get {
-                return ResourceManager.GetString("default_delete_mode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
-        /// </summary>
-        internal static string default_hide_scan_errors {
-            get {
-                return ResourceManager.GetString("default_hide_scan_errors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
-        /// </summary>
-        internal static string default_ignore_0kb_files {
-            get {
-                return ResourceManager.GetString("default_ignore_0kb_files", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
-        /// </summary>
-        internal static string default_ignore_errors {
-            get {
-                return ResourceManager.GetString("default_ignore_errors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 10 ähnelt.
-        /// </summary>
-        internal static string default_infinite_loop_detection_count {
-            get {
-                return ResourceManager.GetString("default_infinite_loop_detection_count", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die True ähnelt.
-        /// </summary>
-        internal static string default_keep_system_folders {
-            get {
-                return ResourceManager.GetString("default_keep_system_folders", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die -1 ähnelt.
-        /// </summary>
-        internal static string default_max_depth {
-            get {
-                return ResourceManager.GetString("default_max_depth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 80 ähnelt.
-        /// </summary>
-        internal static string default_pause_between {
-            get {
-                return ResourceManager.GetString("default_pause_between", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories (failed to delete: {1} dirs / runtime: {2:D2}:{3:D2} min) ähnelt.
         /// </summary>
         internal static string delete_process_finished {
@@ -174,15 +84,6 @@ namespace RED2.Properties {
         internal static string deletion_aborted {
             get {
                 return ResourceManager.GetString("deletion_aborted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die False ähnelt.
-        /// </summary>
-        internal static string dont_scan_hidden_folders {
-            get {
-                return ResourceManager.GetString("dont_scan_hidden_folders", resourceCulture);
             }
         }
         
@@ -219,15 +120,6 @@ namespace RED2.Properties {
         internal static string error_only_one_folder {
             get {
                 return ResourceManager.GetString("error_only_one_folder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die C:\ ähnelt.
-        /// </summary>
-        internal static string folder {
-            get {
-                return ResourceManager.GetString("folder", resourceCulture);
             }
         }
         
@@ -309,24 +201,6 @@ namespace RED2.Properties {
         internal static string icon_warning {
             get {
                 return ResourceManager.GetString("icon_warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die *.tmp\r\ndesktop.ini\r\nThumbs.db ähnelt.
-        /// </summary>
-        internal static string ignore_files {
-            get {
-                return ResourceManager.GetString("ignore_files", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN\r\nGAC_MSIL ähnelt.
-        /// </summary>
-        internal static string ignore_folders {
-            get {
-                return ResourceManager.GetString("ignore_folders", resourceCulture);
             }
         }
         

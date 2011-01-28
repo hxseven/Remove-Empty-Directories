@@ -22,5 +22,174 @@ namespace RED2.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
+        public string last_used_directory {
+            get {
+                return ((string)(this["last_used_directory"]));
+            }
+            set {
+                this["last_used_directory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool dont_scan_hidden_folders {
+            get {
+                return ((bool)(this["dont_scan_hidden_folders"]));
+            }
+            set {
+                this["dont_scan_hidden_folders"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ignore_0kb_files {
+            get {
+                return ((bool)(this["ignore_0kb_files"]));
+            }
+            set {
+                this["ignore_0kb_files"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool keep_system_folders {
+            get {
+                return ((bool)(this["keep_system_folders"]));
+            }
+            set {
+                this["keep_system_folders"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool clipboard_detection {
+            get {
+                return ((bool)(this["clipboard_detection"]));
+            }
+            set {
+                this["clipboard_detection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool hide_scan_errors {
+            get {
+                return ((bool)(this["hide_scan_errors"]));
+            }
+            set {
+                this["hide_scan_errors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*.tmp\r\ndesktop.ini\r\nThumbs.db")]
+        public string ignore_files {
+            get {
+                return ((string)(this["ignore_files"]));
+            }
+            set {
+                this["ignore_files"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE." +
+            "BIN\r\nGAC_MSIL")]
+        public string ignore_folders {
+            get {
+                return ((string)(this["ignore_folders"]));
+            }
+            set {
+                this["ignore_folders"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public decimal max_depth {
+            get {
+                return ((decimal)(this["max_depth"]));
+            }
+            set {
+                this["max_depth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public decimal infinite_loop_detection_count {
+            get {
+                return ((decimal)(this["infinite_loop_detection_count"]));
+            }
+            set {
+                this["infinite_loop_detection_count"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("80")]
+        public decimal pause_between {
+            get {
+                return ((decimal)(this["pause_between"]));
+            }
+            set {
+                this["pause_between"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ignore_errors {
+            get {
+                return ((bool)(this["ignore_errors"]));
+            }
+            set {
+                this["ignore_errors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int delete_stats {
+            get {
+                return ((int)(this["delete_stats"]));
+            }
+            set {
+                this["delete_stats"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int delete_mode {
+            get {
+                return ((int)(this["delete_mode"]));
+            }
+            set {
+                this["delete_mode"] = value;
+            }
+        }
     }
 }

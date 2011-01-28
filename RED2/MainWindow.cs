@@ -14,7 +14,6 @@ namespace RED2
     {
         private REDCore core = null;
         private TreeManager tree = null;
-        private ConfigurationManger config = null;
 
         private RuntimeData Data = new RuntimeData();
         private Stopwatch runtimeWatch = new Stopwatch();
@@ -36,9 +35,6 @@ namespace RED2
         /// <param name="e"></param>
         private void fMain_Load(object sender, EventArgs e)
         {
-            this.config = new ConfigurationManger(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
-            this.config.OnSettingsSaved += new EventHandler(config_OnSettingsSaved);
-
             this.core = new REDCore(this, this.Data);
 
             // Attach events
@@ -53,6 +49,8 @@ namespace RED2
             this.core.OnDeleteProcessFinished += new EventHandler<DeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
+            Properties.Settings.Default.PropertyChanged += new PropertyChangedEventHandler(Default_PropertyChanged);
+
             this.init();
         }
 
@@ -64,35 +62,35 @@ namespace RED2
 
             this.lbAppTitle.Text += string.Format("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
-            #region Read config settings
+            #region Bind config settings to controls
 
             // Read folder from the config file
-            this.config.AddControl("folder", this.tbFolder, RED2.Properties.Resources.folder);
+            this.tbFolder.DataBindings.Add("Text", Properties.Settings.Default, "last_used_directory");
 
-            this.config.AddControl("dont_scan_hidden_folders", this.cbIgnoreHiddenFolders, RED2.Properties.Resources.dont_scan_hidden_folders);
-            this.config.AddControl("ignore_0kb_files", this.cbIgnore0kbFiles, RED2.Properties.Resources.default_ignore_0kb_files);
-            this.config.AddControl("keep_system_folders", this.cbKeepSystemFolders, RED2.Properties.Resources.default_keep_system_folders);
-            this.config.AddControl("clipboard_detection", this.cbClipboardDetection, RED2.Properties.Resources.default_clipboard_detection);
-            this.config.AddControl("hide_scan_errors", this.cbHideScanErrors, RED2.Properties.Resources.default_hide_scan_errors);
+            this.cbIgnoreHiddenFolders.DataBindings.Add("Checked", Properties.Settings.Default, "dont_scan_hidden_folders");
+            this.cbIgnore0kbFiles.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_0kb_files");
+            this.cbKeepSystemFolders.DataBindings.Add("Checked", Properties.Settings.Default, "keep_system_folders");
+            this.cbClipboardDetection.DataBindings.Add("Checked", Properties.Settings.Default, "clipboard_detection");
+            this.cbHideScanErrors.DataBindings.Add("Checked", Properties.Settings.Default, "hide_scan_errors");
 
-            this.config.AddControl("ignore_files", this.tbIgnoreFiles, RED2.Properties.Resources.ignore_files);
-            this.config.AddControl("ignore_folders", this.tbIgnoreFolders, RED2.Properties.Resources.ignore_folders);
+            this.tbIgnoreFiles.DataBindings.Add("Text", Properties.Settings.Default, "ignore_files");
+            this.tbIgnoreFolders.DataBindings.Add("Text", Properties.Settings.Default, "ignore_folders");
 
-            this.config.AddControl("max_depth", this.nuMaxDepth, RED2.Properties.Resources.default_max_depth);
-            this.config.AddControl("infinite_loop_detection_count", this.nuInfiniteLoopDetectionCount, RED2.Properties.Resources.default_infinite_loop_detection_count);
-            this.config.AddControl("pause_between", this.nuPause, RED2.Properties.Resources.default_pause_between);
-            this.config.AddControl("ignore_errors", this.cbIgnoreErrors, RED2.Properties.Resources.default_ignore_errors);
+            this.nuMaxDepth.DataBindings.Add("Value", Properties.Settings.Default, "max_depth");
+            this.nuInfiniteLoopDetectionCount.DataBindings.Add("Value", Properties.Settings.Default, "infinite_loop_detection_count");
+            this.nuPause.DataBindings.Add("Value", Properties.Settings.Default, "pause_between");
+            this.cbIgnoreErrors.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_errors");
 
-            // Special fields
-            this.config.AddControl("delete_stats", this.lblRedStats, "0");
-            this.config.AddControl("delete_mode", this.cbDeleteMode, RED2.Properties.Resources.default_delete_mode);
+            // Special field
+            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
 
+            // Delete mode
             foreach (var d in DeleteModeItem.GetList())
                 this.cbDeleteMode.Items.Add(new DeleteModeItem(d));
 
-            // settings path:
-            this.config.LoadOptions();
+            this.cbDeleteMode.DataBindings.Add("SelectedIndex", Properties.Settings.Default, "delete_mode");
 
+            // Attach warning msg
             this.cbKeepSystemFolders.CheckedChanged += new System.EventHandler(this.cbKeepSystemFolders_CheckedChanged);
 
             #region Check if the user started RED as admin
@@ -153,6 +151,12 @@ namespace RED2
             #endregion
         }
 
+        void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Save all settings
+            Properties.Settings.Default.Save();
+        }
+
         private void drawDirectoryIcons()
         {
             #region Set and display folder status icons
@@ -207,7 +211,7 @@ namespace RED2
         private void btnScan_Click(object sender, EventArgs e)
         {
             this.tree.ClearTree();
-
+            MessageBox.Show(Properties.Settings.Default.last_used_directory);
             // Check given folder:
             DirectoryInfo selectedDirectory = null;
             try
@@ -228,7 +232,8 @@ namespace RED2
 
             this.btnShowLog.Enabled = false;
 
-            this.config.Save();
+            // TODO: necessary?
+            // Properties.Settings.Default.Save();
 
             this.Data.StartFolder = selectedDirectory;
             this.Data.MaxDepth = (int)this.nuMaxDepth.Value;
@@ -380,19 +385,13 @@ namespace RED2
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
 
-            this.config.DeletedFolderCount += e.DeletedFolderCount;
-            this.config.Save();
+            Properties.Settings.Default.delete_stats += e.DeletedFolderCount;
+            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
         }
 
         #endregion
 
         #region Generic process events
-
-        private void config_OnSettingsSaved(object sender, EventArgs e)
-        {
-            // Update deletion stats
-            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, this.config.DeletedFolderCount);
-        }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -631,12 +630,9 @@ namespace RED2
 
         private void btnResetConfig_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, "Do you really want to reset your current settings to the default values?\nYour settings can't be restored.", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
+            if (MessageBox.Show(this, "Do you really want to reset your current settings to the default values?\nYou will loose your current settings.", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
             {
-                File.Delete(Path.Combine(Application.StartupPath, RED2.Properties.Resources.config_file));
-
-                // Todo: Find better way
-                MessageBox.Show("Your current config file has been deleted.\nPlease restart RED now to load the default values.");
+                Properties.Settings.Default.Reset();
             }
         }
 
@@ -720,14 +716,15 @@ namespace RED2
             info.AppendLine("RED Config settings: ");
             try
             {
-                foreach (var key in this.config.GetSettingsList())
+                foreach (System.Configuration.SettingsProperty setting in Properties.Settings.Default.Properties)
                 {
+                    var value = Properties.Settings.Default.PropertyValues[setting.Name].PropertyValue.ToString();
 
-                    var val = this.config.GetValue(key);
+                    if (setting.Name == "ignore_files" || setting.Name == "ignore_folders")
+                        value = value.Replace("\r", "").Replace("\n", "\\n");
 
-                    if (key == "ignore_files" || key == "ignore_folders") val = val.Replace("\r", "").Replace("\n", "\\n");
+                    info.AppendLine("- " + setting.Name + ": " + value);
 
-                    info.AppendLine("- " + key + ": " + val);
                 }
             }
             catch (Exception ex)
@@ -741,7 +738,8 @@ namespace RED2
 
                 MessageBox.Show("Copied this text to your clipboard:" + Environment.NewLine + Environment.NewLine + info.ToString());
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show("Sorry, could not copy the debug info into your clipboard because of this error: " + Environment.NewLine + ex.Message);
             }
         }

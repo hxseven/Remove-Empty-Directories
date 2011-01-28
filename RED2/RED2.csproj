@@ -79,7 +79,6 @@
     <Compile Include="DeletionError.Designer.cs">
       <DependentUpon>DeletionError.cs</DependentUpon>
     </Compile>
-    <Compile Include="Lib\ConfigurationManger.cs" />
     <Compile Include="Lib\DeletionWorker.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -89,7 +88,6 @@
     <Compile Include="Lib\TreeManager.cs" />
     <Compile Include="Lib\Core.cs" />
     <Compile Include="Lib\UIHelpers.cs" />
-    <Compile Include="Lib\XMLSettings.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,6 +126,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
