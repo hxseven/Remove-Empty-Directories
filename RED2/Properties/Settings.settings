@@ -43,8 +43,8 @@ GAC_MSIL</Value>
     <Setting Name="pause_between" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">80</Value>
     </Setting>
-    <Setting Name="ignore_errors" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="ignore_deletion_errors" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="delete_stats" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>

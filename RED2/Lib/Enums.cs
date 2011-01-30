@@ -17,7 +17,8 @@
     {
         Empty,
         Error,
-        NotEmpty
+        NotEmpty,
+        Ignore
     }
 
     /// <summary>

@@ -158,13 +158,13 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ignore_errors {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ignore_deletion_errors {
             get {
-                return ((bool)(this["ignore_errors"]));
+                return ((bool)(this["ignore_deletion_errors"]));
             }
             set {
-                this["ignore_errors"] = value;
+                this["ignore_deletion_errors"] = value;
             }
         }
         

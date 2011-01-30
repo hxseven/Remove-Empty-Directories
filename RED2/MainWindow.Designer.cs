@@ -620,7 +620,7 @@
             this.cbIgnoreErrors.Name = "cbIgnoreErrors";
             this.cbIgnoreErrors.Size = new System.Drawing.Size(157, 17);
             this.cbIgnoreErrors.TabIndex = 15;
-            this.cbIgnoreErrors.Tag = "ignore_errors";
+            this.cbIgnoreErrors.Tag = "ignore_deletion_errors";
             this.cbIgnoreErrors.Text = "Ignore errors during deletion\r\n";
             this.cbIgnoreErrors.UseVisualStyleBackColor = true;
             // 

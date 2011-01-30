@@ -144,10 +144,11 @@ namespace RED2
             if (statusType == DirectorySearchStatusTypes.Empty)
             {
                 var fileCount = directory.GetFiles().Length;
-                bool containsTrash = (fileCount > 0);
+                var containsTrash = (fileCount > 0);
 
                 iconKey = containsTrash ? "folder_trash_files" : "folder";
 
+                // TODO: use data from scan thread
                 if ((directory.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden) iconKey = containsTrash ? "folder_hidden_trash_files" : "folder_hidden";
                 if ((directory.Attributes & FileAttributes.Encrypted) == FileAttributes.Encrypted) iconKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
                 if ((directory.Attributes & FileAttributes.System) == FileAttributes.System) iconKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
@@ -165,6 +166,11 @@ namespace RED2
                     if (optionalErrorMsg.Length > 55) optionalErrorMsg = optionalErrorMsg.Substring(0, 55) + "...";
                     treeNode.Text += " (" + optionalErrorMsg + ")";
                 }
+            }
+            else if (statusType == DirectorySearchStatusTypes.Ignore)
+            {
+                iconKey = "protected_icon";
+                treeNode.ForeColor = Color.Blue;
             }
 
             if (treeNode != this.rootNode)

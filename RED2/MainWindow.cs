@@ -50,6 +50,7 @@ namespace RED2
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
             Properties.Settings.Default.PropertyChanged += new PropertyChangedEventHandler(Default_PropertyChanged);
+            Properties.Settings.Default.SettingChanging += new System.Configuration.SettingChangingEventHandler(Default_SettingChanging);
 
             this.init();
         }
@@ -79,7 +80,7 @@ namespace RED2
             this.nuMaxDepth.DataBindings.Add("Value", Properties.Settings.Default, "max_depth");
             this.nuInfiniteLoopDetectionCount.DataBindings.Add("Value", Properties.Settings.Default, "infinite_loop_detection_count");
             this.nuPause.DataBindings.Add("Value", Properties.Settings.Default, "pause_between");
-            this.cbIgnoreErrors.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_errors");
+            this.cbIgnoreErrors.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_deletion_errors");
 
             // Special field
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
@@ -89,9 +90,6 @@ namespace RED2
                 this.cbDeleteMode.Items.Add(new DeleteModeItem(d));
 
             this.cbDeleteMode.DataBindings.Add("SelectedIndex", Properties.Settings.Default, "delete_mode");
-
-            // Attach warning msg
-            this.cbKeepSystemFolders.CheckedChanged += new System.EventHandler(this.cbKeepSystemFolders_CheckedChanged);
 
             #region Check if the user started RED as admin
 
@@ -103,6 +101,8 @@ namespace RED2
 
                 this.btnExplorerIntegrate.Enabled = !isIntegrated;
                 this.btnExplorerRemove.Enabled = isIntegrated;
+
+                this.Text += " (Admin mode)";
             }
             else
             {
@@ -149,6 +149,15 @@ namespace RED2
             }
 
             #endregion
+        }
+
+        void Default_SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
+        {
+            if (e.SettingName == "keep_system_folders" && !(bool)e.NewValue)
+            {
+                if (MessageBox.Show(this, SystemFunctions.ConvertLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
+                    e.Cancel = true;
+            }
         }
 
         void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -211,7 +220,7 @@ namespace RED2
         private void btnScan_Click(object sender, EventArgs e)
         {
             this.tree.ClearTree();
-         
+
             // Check given folder:
             DirectoryInfo selectedDirectory = null;
             try
@@ -314,7 +323,7 @@ namespace RED2
 
         private void updateDataObject()
         {
-            this.Data.IgnoreAllErrors = Properties.Settings.Default.ignore_errors;
+            this.Data.IgnoreAllErrors = Properties.Settings.Default.ignore_deletion_errors;
             this.Data.IgnoreFiles = Properties.Settings.Default.ignore_files;
             this.Data.IgnoreDirectoriesList = Properties.Settings.Default.ignore_directories;
             this.Data.IgnoreEmptyFiles = Properties.Settings.Default.ignore_0kb_files;
@@ -619,15 +628,6 @@ namespace RED2
         #endregion
 
         #region Config and about dialog related
-
-        private void cbKeepSystemFolders_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!this.cbKeepSystemFolders.Checked)
-            {
-                if (MessageBox.Show(this, SystemFunctions.ConvertLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
-                    this.cbKeepSystemFolders.Checked = true;
-            }
-        }
 
         private void btnResetConfig_Click(object sender, EventArgs e)
         {

@@ -47,8 +47,8 @@ namespace RED2
             searchEmptyFoldersWorker = new FindEmptyDirectoryWorker();
             searchEmptyFoldersWorker.Data = this.Data;
 
-            searchEmptyFoldersWorker.ProgressChanged += new ProgressChangedEventHandler(FFWorker_ProgressChanged);
-            searchEmptyFoldersWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FFWorker_RunWorkerCompleted);
+            searchEmptyFoldersWorker.ProgressChanged += new ProgressChangedEventHandler(searchEmptyFoldersWorker_ProgressChanged);
+            searchEmptyFoldersWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(searchEmptyFoldersWorker_RunWorkerCompleted);
 
             // Start worker
             searchEmptyFoldersWorker.RunWorkerAsync(this.Data.StartFolder);
@@ -60,7 +60,7 @@ namespace RED2
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void FFWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        void searchEmptyFoldersWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState is FoundEmptyDirInfoEventArgs)
             {
@@ -85,7 +85,7 @@ namespace RED2
             }
         }
 
-        void FFWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void searchEmptyFoldersWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.CurrentProcessStep = WorkflowSteps.Idle;
 

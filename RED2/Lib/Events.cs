@@ -107,6 +107,7 @@ namespace RED2
         {
             this.Directory = Directory;
             this.Type = type;
+            this.ErrorMessage = "";
         }
 
         public FoundEmptyDirInfoEventArgs(string Directory, DirectorySearchStatusTypes type, string ErrorMessage)

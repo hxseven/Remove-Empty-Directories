@@ -29,6 +29,7 @@ namespace RED2
         {
             return new DeleteModes[] { 
                 DeleteModes.RecycleBin, 
+                DeleteModes.RecycleBinShowErrors,
                 DeleteModes.RecycleBinWithQuestion,
                 DeleteModes.Direct,
                 DeleteModes.Simulate
@@ -42,8 +43,11 @@ namespace RED2
                 case DeleteModes.RecycleBin:
                     return "Delete to recycle bin (Default)";
 
+                case DeleteModes.RecycleBinShowErrors:
+                    return "Delete to recycle bin and show error messages (can be annoying)";
+
                 case DeleteModes.RecycleBinWithQuestion:
-                    return "Delete to recycle bin and ask before every deletion (can be annoying)";
+                    return "Delete to recycle bin and ask before every deletion (can be very annoying)";
 
                 case DeleteModes.Direct:
                     return "Delete directly and don't ask any questions (old RED mode)";

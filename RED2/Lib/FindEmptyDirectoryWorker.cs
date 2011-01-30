@@ -70,7 +70,7 @@ namespace RED2
                 e.Result = 0;
                 return;
             }
-            
+
             e.Result = 1;
         }
 
@@ -179,10 +179,34 @@ namespace RED2
 
                 foreach (var curDir in subFolderList)
                 {
+                    var attribs = curDir.Attributes;
+
                     // Hidden folder?
-                    bool ignoreSubDirectory = (this.Data.IgnoreHiddenFolders && ((curDir.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden));
-                    ignoreSubDirectory = (ignoreSubDirectory || (this.Data.KeepSystemFolders && ((curDir.Attributes & FileAttributes.System) == FileAttributes.System)));
-                    ignoreSubDirectory = (ignoreSubDirectory || checkIfDirectoryIsOnIgnoreList(curDir));
+                    bool ignoreSubDirectory = (this.Data.IgnoreHiddenFolders && ((attribs & FileAttributes.Hidden) == FileAttributes.Hidden));
+                    ignoreSubDirectory = (ignoreSubDirectory || (this.Data.KeepSystemFolders && ((attribs & FileAttributes.System) == FileAttributes.System)));
+
+                    if (!ignoreSubDirectory && checkIfDirectoryIsOnIgnoreList(curDir))
+                    {
+                        this.Data.AddLogMessage("Aborted scan of \"" + curDir.FullName + "\" because it is on the ignore list.");
+                        this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(curDir.FullName, DirectorySearchStatusTypes.Ignore));
+                        ignoreSubDirectory = true;
+                    }
+
+                    if (!ignoreSubDirectory && (attribs & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                    {
+                        this.Data.AddLogMessage("Aborted scan of \"" + curDir.FullName + "\" because it is a symbolic link");
+                        this.ReportProgress(0, new FoundEmptyDirInfoEventArgs(curDir.FullName, DirectorySearchStatusTypes.Error, "Aborted because dir is a symbolic link"));
+                        ignoreSubDirectory = true;
+                    }
+
+                    // TODO: Implement more checks
+                    //else if ((attribs & FileAttributes.Device) == FileAttributes.Device) msg = "Device - Aborted - found";
+                    //else if ((attribs & FileAttributes.Encrypted) == FileAttributes.Encrypted) msg = "Encrypted -  found";
+                    // The file will not be indexed by the operating system's content indexing service.
+                    // else if ((attribs & FileAttributes.NotContentIndexed) == FileAttributes.NotContentIndexed) msg = "NotContentIndexed - Device found";
+                    //else if ((attribs & FileAttributes.Offline) == FileAttributes.Offline) msg = "Offline -  found";
+                    //else if ((attribs & FileAttributes.ReadOnly) == FileAttributes.ReadOnly) msg = "ReadOnly -  found";
+                    //else if ((attribs & FileAttributes.Temporary) == FileAttributes.Temporary) msg = "Temporary -  found";
 
                     // Scan sub folder:
                     var subFolderStatus = DirectorySearchStatusTypes.NotEmpty;
@@ -229,6 +253,8 @@ namespace RED2
                 {
                     if (currentPath == "") continue;
 
+                    // skip directory if a part of it is on the filterlist
+                    // TODO: Use better compare method
                     if (Folder.FullName.ToLower().Contains(currentPath.ToLower()))
                         ignoreFolder = true;
                 }

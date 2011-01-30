@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
@@ -11,9 +12,10 @@ namespace RED2
     public enum DeleteModes
     {
         RecycleBin = 0,
-        RecycleBinWithQuestion = 1,
-        Direct = 2,
-        Simulate = 3
+        RecycleBinShowErrors = 1,
+        RecycleBinWithQuestion = 2,
+        Direct = 3,
+        Simulate = 4
     }
 
     /// <summary>
@@ -26,7 +28,7 @@ namespace RED2
         // Registry keys
         private const string registryMenuName = "Folder\\shell\\Remove empty dirs";
         private const string registryCommand = "Folder\\shell\\Remove empty dirs\\command";
-        
+
         public static string ConvertLineBreaks(string str)
         {
             return str.Replace(@"\r\n", "\r\n").Replace(@"\n", "\n");
@@ -86,7 +88,59 @@ namespace RED2
         {
             if (deleteMode == DeleteModes.Simulate) return;
 
+            //TODO: Add FileIOPermission code?
+
             FileSystem.DeleteDirectory(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+        }
+
+        public static bool IsDirLocked(string path)
+        {
+            try
+            {
+                // UGLY hack to determine whether we have write access
+                // to a specific directory
+
+                var r = new Random();
+                var tempName = path + "deltest";
+
+                int counter = 0;
+                while (Directory.Exists(tempName))
+                {
+
+                    tempName = path + "deltest" + r.Next(0, 9999).ToString();
+                    if (counter > 100) return true; // Something strange is going on... stop here...
+                    counter++;
+                }
+
+                Directory.Move(path, tempName);
+                Directory.Move(tempName, path);
+
+                return false;
+            }
+            catch //(Exception ex)
+            {
+                // Could not rename -> probably we have no 
+                // write access to the directory
+                return true;
+            }
+        }
+
+        public static bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                {
+                    return false;
+                }
+            }
+
+            catch (IOException)
+            {
+                // Could not open file -> probably we have no 
+                // write access to the file
+                return true;
+            }
         }
 
         public static void SecureDeleteDirectory(string path, DeleteModes deleteMode)
@@ -96,7 +150,21 @@ namespace RED2
             // Last security check before deletion
             if (Directory.GetFiles(path).Length == 0 && Directory.GetDirectories(path).Length == 0)
             {
-                if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                if (deleteMode == DeleteModes.RecycleBin)
+                {
+                    // Check CLR permissions -> could raise a exception
+                    new FileIOPermission(FileIOPermissionAccess.Write, path + Path.DirectorySeparatorChar.ToString()).Demand();
+
+                    //if (!CheckWriteAccess(Directory.GetAccessControl(path)))
+                    if (IsDirLocked(path))
+                        throw new Exception("Could not delete directory \"" + path + "\" because the access is protected by the (file) system (permission denied).");
+
+                    FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                }
+                else if (deleteMode == DeleteModes.RecycleBinShowErrors)
+                {
+                    FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+                }
                 else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                 else if (deleteMode == DeleteModes.Direct) Directory.Delete(path);
                 else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
@@ -109,11 +177,25 @@ namespace RED2
         {
             if (deleteMode == DeleteModes.Simulate) return;
 
-            if (deleteMode == DeleteModes.RecycleBin) FileSystem.DeleteFile(file.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+            if (deleteMode == DeleteModes.RecycleBin)
+            {
+                // Check CLR permissions -> could raise a exception
+                new FileIOPermission(FileIOPermissionAccess.Write, file.FullName).Demand();
+
+                if (IsFileLocked(file))
+                    throw new Exception("Could not delete file \"" + file.FullName + "\" because the access is protected by the (file) system (permission denied).");
+
+                FileSystem.DeleteFile(file.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+            }
+            else if (deleteMode == DeleteModes.RecycleBinShowErrors)
+            {
+                FileSystem.DeleteFile(file.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
+            }
             else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteFile(file.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
             else if (deleteMode == DeleteModes.Direct)
             {
-                //if (SystemFunctions.random.NextDouble() > 0.5) throw new Exception("Test error");
+                // Was used for testing the error handling:
+                // if (SystemFunctions.random.NextDouble() > 0.5) throw new Exception("Test error");
                 file.Delete();
             }
             else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
