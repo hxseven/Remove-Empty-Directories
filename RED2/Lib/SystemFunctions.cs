@@ -88,6 +88,8 @@ namespace RED2
         {
             if (deleteMode == DeleteModes.Simulate) return;
 
+            if (path == "") throw new Exception("Could not delete directory because the path was empty.");
+
             //TODO: Add FileIOPermission code?
 
             FileSystem.DeleteDirectory(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);

@@ -186,18 +186,15 @@ namespace RED2
         /// <returns></returns>
         public string GetSelectedFolderPath()
         {
-            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
-            {
-                var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
-                return folder.FullName;
-            }
+            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null && this.treeView.SelectedNode.Tag is DirectoryInfo)
+                return ((DirectoryInfo)this.treeView.SelectedNode.Tag).FullName;
 
             return "";
         }
 
         internal void DeleteSelectedDirectory()
         {
-            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null)
+            if (this.treeView.SelectedNode != null && this.treeView.SelectedNode.Tag != null && this.treeView.SelectedNode.Tag is DirectoryInfo)
             {
                 var folder = (DirectoryInfo)this.treeView.SelectedNode.Tag;
 

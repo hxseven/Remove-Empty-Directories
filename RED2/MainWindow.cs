@@ -511,7 +511,7 @@ namespace RED2
 
                 // To simplify the code here there is only the RecycleBinWithQuestion or simulate possible here
                 // (all others will be ignored)
-                SystemFunctions.ManuallyDeleteDirectory(deletePath, ((DeleteModeItem)this.cbDeleteMode.SelectedItem).DeleteMode);
+                SystemFunctions.ManuallyDeleteDirectory(deletePath, (DeleteModes)Properties.Settings.Default.delete_mode);
 
                 // Remove root node
                 this.tree.RemoveNode(deletePath);

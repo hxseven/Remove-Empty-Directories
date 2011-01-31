@@ -7,11 +7,13 @@ to use and like RED :-)
 
 Special thanks go to:
 
-  * Wolf and the Computer Club Sunland Village (Mesa Arizona) 
-    for their continuous kind feedback!
+  * Wolf from the Computer Club Sunland Village (Mesa Arizona) 
+    for his continuous kind feedback and beta testing!
 
   * Havy A.C. (ZyntaXis) for helping me with the Windows 7 
     and Vista compatibility
+
+  * Russ for his idea of protecting and unprotecting directories
 
   * All other users who send me their feedback!
 
@@ -130,7 +132,7 @@ http://www.gnu.org/copyleft/lgpl.html
 
 VERSION HISTORY
 
-First release: Aug 04, 2005 / Last update: Jan 27, 2011
+First release: Aug 04, 2005 / Last update: Jan 30, 2011
 
 2.2: - Improved error handling
      - Added logging of errors and deleted directories
