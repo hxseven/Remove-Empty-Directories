@@ -132,7 +132,7 @@ http://www.gnu.org/copyleft/lgpl.html
 
 VERSION HISTORY
 
-First release: Aug 04, 2005 / Last update: Jan 30, 2011
+First release: Aug 04, 2005 / Last update: Feb 06, 2011
 
 2.2: - Improved error handling
      - Added logging of errors and deleted directories
