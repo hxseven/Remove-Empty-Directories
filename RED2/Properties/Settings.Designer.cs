@@ -85,18 +85,6 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool hide_scan_errors {
-            get {
-                return ((bool)(this["hide_scan_errors"]));
-            }
-            set {
-                this["hide_scan_errors"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("*.tmp\r\ndesktop.ini\r\nThumbs.db")]
         public string ignore_files {
             get {
@@ -110,7 +98,7 @@ namespace RED2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE." +
-            "BIN\r\nGAC_MSIL")]
+            "BIN\r\nGAC_MSIL\r\nwinsxs\r\nSystem32")]
         public string ignore_directories {
             get {
                 return ((string)(this["ignore_directories"]));
@@ -189,6 +177,18 @@ namespace RED2.Properties {
             }
             set {
                 this["delete_mode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool hide_scan_errors {
+            get {
+                return ((bool)(this["hide_scan_errors"]));
+            }
+            set {
+                this["hide_scan_errors"] = value;
             }
         }
     }

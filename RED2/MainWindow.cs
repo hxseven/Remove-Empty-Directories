@@ -386,7 +386,7 @@ namespace RED2
         {
             runtimeWatch.Stop();
 
-            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount, runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds));
+            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount, e.ProtectedCount, runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds));
 
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
 

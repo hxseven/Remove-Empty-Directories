@@ -193,6 +193,6 @@
     <value>Delete process was aborted.</value>
   </data>
   <data name="delete_process_finished" xml:space="preserve">
-    <value>Deleted {0} empty directories (failed to delete: {1} dirs / runtime: {2:D2}:{3:D2} min)</value>
+    <value>Deleted {0} empty directories (failed to delete: {1} dirs / protected: {2} / runtime: {3:D2}:{4:D2} min)</value>
   </data>
 </root>

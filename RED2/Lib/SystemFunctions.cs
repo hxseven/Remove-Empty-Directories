@@ -18,6 +18,14 @@ namespace RED2
         Simulate = 4
     }
 
+    [Serializable]
+    public class REDPermissionDeniedException : Exception
+    {
+        public REDPermissionDeniedException() { }
+        public REDPermissionDeniedException(string message) : base(message) { }
+        public REDPermissionDeniedException(string message, Exception inner) : base(message, inner) { }
+    }
+
     /// <summary>
     /// A collection of (generic) system functions
     /// 
@@ -136,8 +144,7 @@ namespace RED2
                     return false;
                 }
             }
-
-            catch (IOException)
+            catch //(IOException)
             {
                 // Could not open file -> probably we have no 
                 // write access to the file
@@ -159,7 +166,7 @@ namespace RED2
 
                     //if (!CheckWriteAccess(Directory.GetAccessControl(path)))
                     if (IsDirLocked(path))
-                        throw new Exception("Could not delete directory \"" + path + "\" because the access is protected by the (file) system (permission denied).");
+                        throw new REDPermissionDeniedException("Could not delete directory \"" + path + "\" because the access is protected by the (file) system (permission denied).");
 
                     FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                 }
@@ -185,7 +192,7 @@ namespace RED2
                 new FileIOPermission(FileIOPermissionAccess.Write, file.FullName).Demand();
 
                 if (IsFileLocked(file))
-                    throw new Exception("Could not delete file \"" + file.FullName + "\" because the access is protected by the (file) system (permission denied).");
+                    throw new REDPermissionDeniedException("Could not delete file \"" + file.FullName + "\" because the access is protected by the (file) system (permission denied).");
 
                 FileSystem.DeleteFile(file.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
             }

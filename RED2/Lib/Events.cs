@@ -53,13 +53,15 @@ namespace RED2
 
     public class DeleteProcessFinishedEventArgs : EventArgs
     {
-        public int DeletedFolderCount { get; set; } 
+        public int DeletedFolderCount { get; set; }
         public int FailedFolderCount { get; set; }
+        public int ProtectedCount { get; set; }
 
-        public DeleteProcessFinishedEventArgs(int DeletedFolderCount, int FailedFolderCount)
+        public DeleteProcessFinishedEventArgs(int deletedFolderCount, int failedFolderCount, int protectedCount)
         {
-            this.DeletedFolderCount = DeletedFolderCount;
-            this.FailedFolderCount = FailedFolderCount;
+            this.DeletedFolderCount = deletedFolderCount;
+            this.FailedFolderCount = failedFolderCount;
+            this.ProtectedCount = protectedCount;
         }
     }
 

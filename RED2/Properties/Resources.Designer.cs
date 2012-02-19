@@ -70,7 +70,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories (failed to delete: {1} dirs / runtime: {2:D2}:{3:D2} min) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deleted {0} empty directories (failed to delete: {1} dirs / protected: {2} / runtime: {3:D2}:{4:D2} min) ähnelt.
         /// </summary>
         internal static string delete_process_finished {
             get {

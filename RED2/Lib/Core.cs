@@ -200,11 +200,12 @@ namespace RED2
                 // TODO: Use separate class here?
                 int deletedCount = this.deletionWorker.DeletedCount;
                 int failedCount = this.deletionWorker.FailedCount;
+                int protectedCount = this.deletionWorker.ProtectedCount;
 
                 this.deletionWorker.Dispose(); this.deletionWorker = null;
 
                 if (this.OnDeleteProcessFinished != null)
-                    this.OnDeleteProcessFinished(this, new DeleteProcessFinishedEventArgs(deletedCount, failedCount));
+                    this.OnDeleteProcessFinished(this, new DeleteProcessFinishedEventArgs(deletedCount, failedCount, protectedCount));
             }
         }
 

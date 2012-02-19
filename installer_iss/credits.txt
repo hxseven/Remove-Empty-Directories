@@ -27,7 +27,7 @@ contained files important to him. I'm really very sorry for that! I checked all
 routines of RED several times to ensure nothing goes wrong, but somehow it 
 happened on the system of that user. Unfortunately, I could not determine what
 caused that behaviour. In addition to that the user did not wanted to try to
-locate the error, because he was (understandably) very upsetand uninstalled RED 
+locate the error, because he was (understandably) very upset and uninstalled RED 
 instantly. But he told me that the directory names contained chinese characters. 
 So I tried to reproduce the error by testing RED with foreign directory names. 
 But I could not find a bug - RED worked as expected.

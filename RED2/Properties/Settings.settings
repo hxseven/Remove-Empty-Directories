@@ -17,9 +17,6 @@
     <Setting Name="clipboard_detection" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="hide_scan_errors" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="ignore_files" Type="System.String" Scope="User">
       <Value Profile="(Default)">*.tmp
 desktop.ini
@@ -32,7 +29,9 @@ Papierkorb
 Recycled
 NtUninstall
 $RECYCLE.BIN
-GAC_MSIL</Value>
+GAC_MSIL
+winsxs
+System32</Value>
     </Setting>
     <Setting Name="max_depth" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-1</Value>
@@ -51,6 +50,9 @@ GAC_MSIL</Value>
     </Setting>
     <Setting Name="delete_mode" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="hide_scan_errors" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -14,6 +14,7 @@ namespace RED2
 
         public int DeletedCount { get; set; }
         public int FailedCount { get; set; }
+        public int ProtectedCount { get; set; }
 
         public int ListPos { get; set; }
 
@@ -68,6 +69,15 @@ namespace RED2
 
                         status = DirectoryDeletionStatusTypes.Deleted;
                         this.DeletedCount++;
+                    }
+                    catch (REDPermissionDeniedException ex)
+                    {
+                        errorMessage = ex.Message;
+
+                        this.Data.AddLogMessage(String.Format("Directory is protected by the system \"{0}\" - Message: \"{1}\"", folder, errorMessage));
+
+                        status = DirectoryDeletionStatusTypes.Protected;
+                        this.ProtectedCount++;
                     }
                     catch (Exception ex)
                     {
@@ -140,7 +150,12 @@ namespace RED2
                         {
                             this.Data.AddLogMessage(String.Format("Failed to delete file \"{0}\" - Error message: \"{1}\"", file.FullName, ex.Message));
 
-                            throw new Exception("Could not delete this empty (trash) file:" + Environment.NewLine + file.FullName + Environment.NewLine + Environment.NewLine + "Error message: " + ex.Message);
+                            var msg = "Could not delete this empty (trash) file:" + Environment.NewLine + file.FullName + Environment.NewLine + Environment.NewLine + "Error message: " + ex.Message;
+
+                            if (ex is REDPermissionDeniedException)
+                                throw new REDPermissionDeniedException(msg, ex);
+                            else
+                                throw new Exception(msg, ex);
                         }
                     }
                 }
