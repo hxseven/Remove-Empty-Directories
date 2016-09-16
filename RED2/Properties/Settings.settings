@@ -54,8 +54,8 @@ System32</Value>
     <Setting Name="hide_scan_errors" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="min_folder_age_hours" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">5</Value>
+    <Setting Name="min_folder_age_hours" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>
