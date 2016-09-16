@@ -195,4 +195,7 @@
   <data name="delete_process_finished" xml:space="preserve">
     <value>Deleted {0} empty directories (failed to delete: {1} dirs / protected: {2} / runtime: {3:D2}:{4:D2} min)</value>
   </data>
+  <data name="young_folder_skipped" xml:space="preserve">
+    <value>\"{0}\" folder skipped because creation time [{2}] is &lt; {1} hours old</value>
+  </data>
 </root>

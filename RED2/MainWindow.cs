@@ -120,6 +120,8 @@ namespace RED2
             else
                 this.tbCredits.AppendText("Error: Could not find the credits text file:" + Environment.NewLine + credits);
 
+            this.nuFolderAge.DataBindings.Add("Value", Properties.Settings.Default, "min_folder_age_hours");
+
             #endregion
 
             this.lbStatus.Text = "";
@@ -330,6 +332,7 @@ namespace RED2
             this.Data.IgnoreHiddenFolders = Properties.Settings.Default.dont_scan_hidden_folders;
             this.Data.KeepSystemFolders = Properties.Settings.Default.keep_system_folders;
             this.Data.HideScanErrors = Properties.Settings.Default.hide_scan_errors;
+            this.Data.MinFolderAgeHours = Properties.Settings.Default.min_folder_age_hours;
             this.Data.MaxDepth = (int)Properties.Settings.Default.max_depth;
             this.Data.InfiniteLoopDetectionCount = (int)Properties.Settings.Default.infinite_loop_detection_count;
             this.Data.DeleteMode = (DeleteModes)Properties.Settings.Default.delete_mode;
