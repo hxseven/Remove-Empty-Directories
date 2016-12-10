@@ -26,6 +26,7 @@ namespace RED2
         public bool KeepSystemFolders { get; set; }
         public bool HideScanErrors { get; set; }
         public double PauseTime { get; set; }
+        public uint MinFolderAgeHours { get; set; }
 
         public int MaxDepth { get; set; }
         public int InfiniteLoopDetectionCount { get; set; }

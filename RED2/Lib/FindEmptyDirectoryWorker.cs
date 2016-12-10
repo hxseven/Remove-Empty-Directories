@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 
 namespace RED2
 {
@@ -213,7 +214,15 @@ namespace RED2
 
                     if (!ignoreSubDirectory)
                     {
-                        subFolderStatus = this.checkIfDirectoryEmpty(curDir, depth + 1);
+                        // JRS ADDED check for AGE of folder
+                        if(curDir.CreationTime.AddHours(this.Data.MinFolderAgeHours) < DateTime.Now)
+                        {
+                            subFolderStatus = this.checkIfDirectoryEmpty(curDir, depth + 1);
+                        }
+                        else 
+                        {
+                            this.Data.AddLogMessage(String.Format(RED2.Properties.Resources.young_folder_skipped, curDir.FullName, this.Data.MinFolderAgeHours.ToString(), curDir.CreationTime.ToString()));
+                        }
 
                         // Report status to the GUI
                         if (subFolderStatus == DirectorySearchStatusTypes.Empty)
