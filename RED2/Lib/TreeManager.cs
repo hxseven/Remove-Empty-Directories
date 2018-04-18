@@ -116,7 +116,7 @@ namespace RED2
 
             newTreeNode.Tag = directory;
 
-            if (directory.Parent.FullName.Trim('\\') == this.rootPath)
+			if (directory.Parent.FullName.Trim('\\').Equals(this.rootPath, StringComparison.OrdinalIgnoreCase))
             {
                 this.rootNode.Nodes.Add(newTreeNode);
             }
