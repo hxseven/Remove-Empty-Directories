@@ -67,6 +67,7 @@ namespace RED2
 
             // Read folder from the config file
             this.tbFolder.DataBindings.Add("Text", Properties.Settings.Default, "last_used_directory");
+			this.cbUpdateTree.DataBindings.Add("Checked", Properties.Settings.Default, "update_tree");
 
             this.cbIgnoreHiddenFolders.DataBindings.Add("Checked", Properties.Settings.Default, "dont_scan_hidden_folders");
             this.cbIgnore0kbFiles.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_0kb_files");
@@ -251,7 +252,7 @@ namespace RED2
 
             this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
 
-            this.tree.AddRootNode(this.Data.StartFolder, DirectoryIcons.home);
+            this.tree.CreateRootNode(this.Data.StartFolder, DirectoryIcons.home);
 
             this.btnCancel.Enabled = true;
             this.cmStrip.Enabled = false;
@@ -295,6 +296,8 @@ namespace RED2
             this.btnShowLog.Enabled = true;
             this.cmStrip.Enabled = true;
 
+			this.tvFolders.ResumeLayout();
+			this.tree.AddRootNode();
             this.tree.EnsureRootNodeIsVisible();
 
             this.btnScan.Text = RED2.Properties.Resources.btn_scan_again;
@@ -749,5 +752,20 @@ namespace RED2
         }
 
         #endregion
+
+		private void cbUpdateTree_CheckedChanged(object sender, EventArgs e)
+		{
+			if (cbUpdateTree.Checked)
+			{
+				tree.UpdateUi = true;
+				tvFolders.ResumeLayout();
+				this.tree.AddRootNode();
+			}
+			else
+			{
+				tree.UpdateUi = false;
+				tvFolders.SuspendLayout();
+			}
+		}
     }
 }
