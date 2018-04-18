@@ -85,7 +85,7 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("*.tmp\r\ndesktop.ini\r\nThumbs.db")]
+        [global::System.Configuration.DefaultSettingValueAttribute("*.tmp\r\ndesktop.ini\r\nThumbs.db\r\n.ds_store\r\n._*")]
         public string ignore_files {
             get {
                 return ((string)(this["ignore_files"]));
