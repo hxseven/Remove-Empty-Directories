@@ -126,7 +126,7 @@ namespace RED2
             #endregion
 
             this.lbStatus.Text = "";
-            this.cmStrip.Enabled = false;
+			UpdateContextMenu(cmStrip, false);
 
             this.pbProgressStatus.Maximum = 100;
             this.pbProgressStatus.Minimum = 0;
@@ -255,7 +255,7 @@ namespace RED2
             this.tree.CreateRootNode(this.Data.StartFolder, DirectoryIcons.home);
 
             this.btnCancel.Enabled = true;
-            this.cmStrip.Enabled = false;
+			UpdateContextMenu(cmStrip, false);
 
             this.Data.AddLogSpacer();
             setStatusAndLogMessage(RED2.Properties.Resources.searching_empty_folders);
@@ -294,7 +294,7 @@ namespace RED2
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
-            this.cmStrip.Enabled = true;
+			UpdateContextMenu(cmStrip, true);
 
 			this.tvFolders.ResumeLayout();
 			this.tree.AddRootNode();
@@ -314,7 +314,7 @@ namespace RED2
 
             this.btnScan.Enabled = false;
             this.btnCancel.Enabled = true;
-            this.cmStrip.Enabled = false;
+			UpdateContextMenu(cmStrip, false);
             this.btnDelete.Enabled = false;
             this.btnShowLog.Enabled = false;
 
@@ -766,6 +766,22 @@ namespace RED2
 				tree.UpdateUi = false;
 				tvFolders.SuspendLayout();
 			}
+		}
+
+		private void cmStrip_Opening(object sender, CancelEventArgs e)
+		{
+			openFolderToolStripMenuItem.Enabled = tvFolders.SelectedNode != null;
+		}
+
+		/// <summary>
+		/// Enables/disables all items in the context menu
+		/// </summary>
+		/// <param name="contextMenuStrip"></param>
+		/// <param name="enable"></param>
+		private void UpdateContextMenu(ContextMenuStrip contextMenuStrip, bool enable)
+		{
+			foreach (ToolStripItem item in contextMenuStrip.Items)
+				item.Enabled = enable;
 		}
     }
 }

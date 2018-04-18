@@ -423,6 +423,7 @@
             this.cmStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmStrip.ShowImageMargin = false;
 			this.cmStrip.Size = new System.Drawing.Size(214, 176);
+			this.cmStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cmStrip_Opening);
             // 
             // openFolderToolStripMenuItem
             // 
