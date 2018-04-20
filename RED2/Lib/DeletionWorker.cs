@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Threading;
+using Alphaleonis.Win32.Filesystem;
 
 namespace RED2
 {

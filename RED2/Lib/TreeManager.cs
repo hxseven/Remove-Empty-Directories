@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+using Alphaleonis.Win32.Filesystem;
+using FileAttributes = System.IO.FileAttributes;
 
 namespace RED2
 {

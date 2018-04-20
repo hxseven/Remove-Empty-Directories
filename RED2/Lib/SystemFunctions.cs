@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
+using Alphaleonis.Win32.Filesystem;
+using FileAccess = System.IO.FileAccess;
+using FileMode = System.IO.FileMode;
+using FileShare = System.IO.FileShare;
 
 namespace RED2
 {
