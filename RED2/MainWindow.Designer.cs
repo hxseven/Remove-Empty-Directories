@@ -197,6 +197,7 @@
             // 
 			// cbUpdateTree
 			// 
+			this.cbUpdateTree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbUpdateTree.AutoSize = true;
 			this.cbUpdateTree.Checked = true;
 			this.cbUpdateTree.CheckState = System.Windows.Forms.CheckState.Checked;
