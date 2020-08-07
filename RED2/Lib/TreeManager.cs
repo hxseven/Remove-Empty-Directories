@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+using Alphaleonis.Win32.Filesystem;
+using FileAttributes = System.IO.FileAttributes;
 
 namespace RED2
 {
@@ -22,6 +23,8 @@ namespace RED2
 
         public event EventHandler<ProtectionStatusChangedEventArgs> OnProtectionStatusChanged;
         public event EventHandler<DeleteRequestFromTreeEventArgs> OnDeleteRequest;
+
+		public bool UpdateUi { get; set; } = true;
 
         public TreeManager(TreeView dirTree)
         {
@@ -52,7 +55,7 @@ namespace RED2
             this.treeView.Nodes.Clear();
         }
 
-        internal void AddRootNode(DirectoryInfo directory, DirectoryIcons imageKey)
+        internal void CreateRootNode(DirectoryInfo directory, DirectoryIcons imageKey)
         {
             this.rootPath = directory.FullName.Trim('\\');
 
@@ -64,6 +67,16 @@ namespace RED2
             directoryToTreeNodeMapping = new Dictionary<String, TreeNode>();
             directoryToTreeNodeMapping.Add(directory.FullName, rootNode);
 
+			if (this.UpdateUi)
+				AddRootNode();
+		}
+
+		internal void AddRootNode()
+		{
+			if (rootNode == null || (treeView.Nodes.Count == 1 && treeView.Nodes[0] == rootNode))
+				return;
+
+			this.treeView.Nodes.Clear();
             this.treeView.Nodes.Add(rootNode);
         }
 
@@ -83,6 +96,7 @@ namespace RED2
 
             treeNode.ImageKey = iconKey.ToString();
             treeNode.SelectedImageKey = iconKey.ToString();
+			if (this.UpdateUi)
             treeNode.EnsureVisible();
         }
 
@@ -116,7 +130,7 @@ namespace RED2
 
             newTreeNode.Tag = directory;
 
-            if (directory.Parent.FullName.Trim('\\') == this.rootPath)
+			if (directory.Parent.FullName.Trim('\\').Equals(this.rootPath, StringComparison.OrdinalIgnoreCase))
             {
                 this.rootNode.Nodes.Add(newTreeNode);
             }
@@ -128,6 +142,7 @@ namespace RED2
 
             directoryToTreeNodeMapping.Add(path, newTreeNode);
 
+			if (this.UpdateUi)
             newTreeNode.EnsureVisible();
 
             return newTreeNode;

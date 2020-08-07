@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
+using Alphaleonis.Win32.Filesystem;
+using FileAccess = System.IO.FileAccess;
+using FileMode = System.IO.FileMode;
+using FileShare = System.IO.FileShare;
 
 namespace RED2
 {
@@ -155,6 +158,11 @@ namespace RED2
         public static void SecureDeleteDirectory(string path, DeleteModes deleteMode)
         {
             if (deleteMode == DeleteModes.Simulate) return;
+            if (deleteMode == DeleteModes.Direct)
+            {
+                Directory.Delete(path, recursive: false, ignoreReadOnly: true); //throws IOException if not empty anymore
+                return;
+            }
 
             // Last security check before deletion
             if (Directory.GetFiles(path).Length == 0 && Directory.GetDirectories(path).Length == 0)
@@ -175,7 +183,6 @@ namespace RED2
                     FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
                 }
                 else if (deleteMode == DeleteModes.RecycleBinWithQuestion) FileSystem.DeleteDirectory(path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.ThrowException);
-                else if (deleteMode == DeleteModes.Direct) Directory.Delete(path);
                 else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
             }
             else
@@ -205,7 +212,7 @@ namespace RED2
             {
                 // Was used for testing the error handling:
                 // if (SystemFunctions.random.NextDouble() > 0.5) throw new Exception("Test error");
-                file.Delete();
+                file.Delete(ignoreReadOnly: true);
             }
             else throw new Exception("Internal error: Unknown delete mode: \"" + deleteMode.ToString() + "\"");
         }

@@ -20,7 +20,9 @@
     <Setting Name="ignore_files" Type="System.String" Scope="User">
       <Value Profile="(Default)">*.tmp
 desktop.ini
-Thumbs.db</Value>
+Thumbs.db
+.ds_store
+._*</Value>
     </Setting>
     <Setting Name="ignore_directories" Type="System.String" Scope="User">
       <Value Profile="(Default)">System Volume Information
@@ -56,6 +58,9 @@ System32</Value>
     </Setting>
     <Setting Name="min_folder_age_hours" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="update_tree" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

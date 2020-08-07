@@ -33,6 +33,7 @@
             this.ilFolderIcons = new System.Windows.Forms.ImageList(this.components);
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tabSearch = new System.Windows.Forms.TabPage();
+			this.cbUpdateTree = new System.Windows.Forms.CheckBox();
             this.btnShowLog = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnScan = new System.Windows.Forms.Button();
@@ -170,6 +171,7 @@
             // 
             this.tabSearch.AccessibleDescription = "";
             this.tabSearch.AccessibleName = "";
+			this.tabSearch.Controls.Add(this.cbUpdateTree);
             this.tabSearch.Controls.Add(this.btnShowLog);
             this.tabSearch.Controls.Add(this.btnCancel);
             this.tabSearch.Controls.Add(this.btnScan);
@@ -186,13 +188,27 @@
             this.tabSearch.ImageKey = "search";
             this.tabSearch.Location = new System.Drawing.Point(4, 23);
             this.tabSearch.Name = "tabSearch";
-            this.tabSearch.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
             this.tabSearch.Size = new System.Drawing.Size(608, 496);
             this.tabSearch.TabIndex = 0;
             this.tabSearch.Text = "Scan";
             this.tabSearch.ToolTipText = "Search for empty directories";
             this.tabSearch.UseVisualStyleBackColor = true;
             // 
+			// cbUpdateTree
+			// 
+			this.cbUpdateTree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cbUpdateTree.AutoSize = true;
+			this.cbUpdateTree.Checked = true;
+			this.cbUpdateTree.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.cbUpdateTree.Location = new System.Drawing.Point(484, 426);
+			this.cbUpdateTree.Name = "cbUpdateTree";
+			this.cbUpdateTree.Size = new System.Drawing.Size(105, 17);
+			this.cbUpdateTree.TabIndex = 18;
+			this.cbUpdateTree.Text = "Update interface";
+			this.cbUpdateTree.UseVisualStyleBackColor = true;
+			this.cbUpdateTree.CheckedChanged += new System.EventHandler(this.cbUpdateTree_CheckedChanged);
+			// 
             // btnShowLog
             // 
             this.btnShowLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -362,10 +378,9 @@
             // lbStatus
             // 
             this.lbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lbStatus.AutoSize = true;
             this.lbStatus.Location = new System.Drawing.Point(166, 426);
             this.lbStatus.Name = "lbStatus";
-            this.lbStatus.Size = new System.Drawing.Size(57, 13);
+			this.lbStatus.Size = new System.Drawing.Size(302, 13);
             this.lbStatus.TabIndex = 13;
             this.lbStatus.Text = "Status text";
             // 
@@ -408,7 +423,8 @@
             this.cmStrip.Name = "cmStrip";
             this.cmStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmStrip.ShowImageMargin = false;
-            this.cmStrip.Size = new System.Drawing.Size(214, 154);
+			this.cmStrip.Size = new System.Drawing.Size(214, 176);
+			this.cmStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cmStrip_Opening);
             // 
             // openFolderToolStripMenuItem
             // 
@@ -522,7 +538,7 @@
             this.tabSettings.ImageKey = "preferences";
             this.tabSettings.Location = new System.Drawing.Point(4, 23);
             this.tabSettings.Name = "tabSettings";
-            this.tabSettings.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabSettings.Padding = new System.Windows.Forms.Padding(3);
             this.tabSettings.Size = new System.Drawing.Size(608, 496);
             this.tabSettings.TabIndex = 1;
             this.tabSettings.Text = "Settings";
@@ -844,7 +860,7 @@
             // nuFolderAge
             // 
             this.nuFolderAge.Location = new System.Drawing.Point(211, 84);
-            this.nuFolderAge.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.nuFolderAge.Margin = new System.Windows.Forms.Padding(2);
             this.nuFolderAge.Maximum = new decimal(new int[] {
             96,
             0,
@@ -1062,7 +1078,7 @@
             this.label5.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(8, 24);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(183, 14);
+			this.label5.Size = new System.Drawing.Size(182, 14);
             this.label5.TabIndex = 5;
             this.label5.Text = "Copyright © 2005 - 2011 Jonas John";
             // 
@@ -1213,6 +1229,7 @@
         private System.Windows.Forms.Button btnCopyDebugInfo;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.NumericUpDown nuFolderAge;
+		private System.Windows.Forms.CheckBox cbUpdateTree;
 	}
 }
 
