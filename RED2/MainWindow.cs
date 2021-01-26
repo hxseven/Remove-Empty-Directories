@@ -499,9 +499,11 @@ namespace RED2
             if (this.tvFolders.SelectedNode == null) return;
             this.tcMain.SelectedIndex = 1;
 
-            // TODO: Find a better way...
+            Properties.Settings.Default.ignore_directories += "\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName;
+
+            // TODO: Update the results + tree to reflect the newly ignored item
+            // Current solution: The user has to do a complete rescan
             this.btnDelete.Enabled = false;
-            this.tbIgnoreFolders.AppendText("\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName);
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
