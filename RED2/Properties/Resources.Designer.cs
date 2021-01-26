@@ -19,7 +19,7 @@ namespace RED2.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -97,7 +97,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, the path you picked is not a directory or does not exist!.
+        ///   Looks up a localized string similar to The path you picked is not a directory or does not exist..
         /// </summary>
         internal static string error_dir_does_not_exist {
             get {
@@ -106,7 +106,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore file settings are in a bad format!.
+        ///   Looks up a localized string similar to Ignore file settings are in a bad format.
         /// </summary>
         internal static string error_ignore_settings {
             get {

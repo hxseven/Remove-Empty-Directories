@@ -7,7 +7,7 @@ namespace RED2
 	static class Program
 	{
 		/// <summary>
-		/// Der Haupteinstiegspunkt für die Anwendung.
+        /// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main()

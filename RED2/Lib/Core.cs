@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace RED2
 {
     /// <summary>
-    /// RED core class, handles all the "hard work" and communicates with the GUI by using various events.
+    /// RED core class, handles all the "hard work" and communicates with the GUI by using events.
     /// </summary>
     public class REDCore
     {

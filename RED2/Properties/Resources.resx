@@ -124,10 +124,10 @@
     <value>Error:</value>
   </data>
   <data name="error_dir_does_not_exist" xml:space="preserve">
-    <value>Sorry, the path you picked is not a directory or does not exist!</value>
+    <value>The path you picked is not a directory or does not exist.</value>
   </data>
   <data name="error_ignore_settings" xml:space="preserve">
-    <value>Ignore file settings are in a bad format!</value>
+    <value>Ignore file settings are in a bad format</value>
   </data>
   <data name="error_only_one_folder" xml:space="preserve">
     <value>Only one folder can be accepted.</value>

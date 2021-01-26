@@ -165,7 +165,7 @@ namespace RED2
 
         void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // Save all settings
+            // Save settings when any of them was changed
             Properties.Settings.Default.Save();
         }
 
@@ -278,7 +278,7 @@ namespace RED2
 
         void core_OnFoundFinishedScanForEmptyDirs(object sender, FinishedScanForEmptyDirsEventArgs e)
         {
-            // Finished scan
+            // Scan finished
 
             runtimeWatch.Stop();
 
@@ -635,7 +635,7 @@ namespace RED2
 
         #endregion
 
-        #region Config and about dialog related
+        #region Config and misc stuff
 
         private void btnResetConfig_Click(object sender, EventArgs e)
         {
@@ -661,17 +661,17 @@ namespace RED2
 
         private void llWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.jonasjohn.de/lab/red.htm");
+            Process.Start("https://www.jonasjohn.de/lab/red.htm");
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(string.Format("http://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+            Process.Start(string.Format("https://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
         }
 
         private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://www.jonasjohn.de/lab/red_feedback.htm");
+            Process.Start("https://www.jonasjohn.de/lab/red_feedback.htm");
 
         }
 

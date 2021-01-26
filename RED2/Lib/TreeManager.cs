@@ -168,8 +168,14 @@ namespace RED2
                 if ((directory.Attributes & FileAttributes.Encrypted) == FileAttributes.Encrypted) iconKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
                 if ((directory.Attributes & FileAttributes.System) == FileAttributes.System) iconKey = containsTrash ? "folder_lock_trash_files" : "folder_lock";
 
-                if (containsTrash)
+                if (containsTrash && fileCount == 1)
+                {
+                    treeNode.Text += " (contains " + fileCount.ToString() + " empty file)";
+                }
+                else if (containsTrash)
+                {
                     treeNode.Text += " (contains " + fileCount.ToString() + " empty files)";
+                }
             }
             else if (statusType == DirectorySearchStatusTypes.Error)
             {

@@ -7,7 +7,7 @@ using FileAttributes = System.IO.FileAttributes;
 namespace RED2
 {
     /// <summary>
-    /// Scans for empty directories
+    /// Searches for empty directories
     /// </summary>
     public class FindEmptyDirectoryWorker : BackgroundWorker
     {
@@ -182,9 +182,10 @@ namespace RED2
                 {
                     var attribs = curDir.Attributes;
 
-                    // Hidden folder?
-                    bool ignoreSubDirectory = (this.Data.IgnoreHiddenFolders && ((attribs & FileAttributes.Hidden) == FileAttributes.Hidden));
-                    ignoreSubDirectory = (ignoreSubDirectory || (this.Data.KeepSystemFolders && ((attribs & FileAttributes.System) == FileAttributes.System)));
+                    bool ignoreSystemDir = (this.Data.KeepSystemFolders && ((attribs & FileAttributes.System) == FileAttributes.System));
+                    bool ignoreHiddenDir = (this.Data.IgnoreHiddenFolders && ((attribs & FileAttributes.Hidden) == FileAttributes.Hidden));
+
+                    bool ignoreSubDirectory = (ignoreSystemDir || ignoreHiddenDir);
 
                     if (!ignoreSubDirectory && checkIfDirectoryIsOnIgnoreList(curDir))
                     {
