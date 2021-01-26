@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Remove Empty Directories")]
-[assembly: AssemblyDescription("RED searches and deletes empty directories recursively below a given start folder.")]
+[assembly: AssemblyDescription("Searches and deletes empty directories recursively below the specified starting folder." )]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Remove Empty Directories")]
+[assembly: AssemblyCompany("Jonas John")]
 [assembly: AssemblyProduct("Remove Empty Directories")]
-[assembly: AssemblyCopyright("Copyright (c) Jonas John")]
-[assembly: AssemblyTrademark("Remove Empty Directories")]
+[assembly: AssemblyCopyright("Copyright (c) Jonas John (Released under LGPL)")]
+[assembly: AssemblyTrademark("The GNU Lesser General Public License (LGPL)")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

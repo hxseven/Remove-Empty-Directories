@@ -17,20 +17,26 @@ directories with empty files as empty).
 
 ## System requirements
 
-- Windows XP, Vista or 7 and RED might also work with Windows 8 and Linux (by using [Mono](http://en.wikipedia.org/wiki/Mono_%28software%29))
-- Microsoft .NET Framework 3.5 or later (the installer should check that)
+- Windows 7 or 10 (Version 2.2 should still work with older Windows versions like XP or Vista)
+- Microsoft .NET Framework 4.6.2 or later (the installer checks and installs the framework)
 
 
 ## Development
 
-RED is developed by [Jonas John](http://www.jonasjohn.de/) ([@hxseven](http://twitter.com/hxseven)).
+RED was developed by [Jonas John](http://www.jonasjohn.de/) ([@hxseven](http://twitter.com/hxseven)) and various contributors.
 
 * [Project website](http://www.jonasjohn.de/red.htm)
 * [Source code](https://github.com/hxseven/Remove-Empty-Directories)
 * [Issue tracker](https://github.com/hxseven/Remove-Empty-Directories/issues)
-* [Sourceforge project page](http://sourceforge.net/projects/rem-empty-dir/)
+* [Old sourceforge project page](http://sourceforge.net/projects/rem-empty-dir/)
 
-You are welcome to contribute code!
+You are welcome to contribute code :)
+
+
+## Dependencies
+
+- [AlphaFS library](https://github.com/alphaleonis/AlphaFS)
+- [Inno Setup](https://jrsoftware.org/isinfo.php) + [Inno Setup Dependency Installer](https://github.com/DomGries/InnoDependencyInstaller)
 
 
 ## License
