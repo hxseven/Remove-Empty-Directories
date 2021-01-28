@@ -114,12 +114,12 @@ namespace RED2
 
             #endregion
 
-            var credits = Path.Combine(Application.StartupPath, "credits.txt");
-
-            if (File.Exists(credits))
-                this.tbCredits.AppendText(File.ReadAllText(credits));
-            else
-                this.tbCredits.AppendText("Error: Could not find the credits text file:" + Environment.NewLine + credits);
+            // Moved the credits file into the GUI textbox control
+            // var credits = Path.Combine(Application.StartupPath, "credits.txt");
+            // if (File.Exists(credits))
+            //     this.tbCredits.AppendText(File.ReadAllText(credits));
+            // else
+            //     this.tbCredits.AppendText("Error: Could not find the credits text file:" + Environment.NewLine + credits);
 
             this.nuFolderAge.DataBindings.Add("Value", Properties.Settings.Default, "min_folder_age_hours");
 

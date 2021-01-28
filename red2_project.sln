@@ -1,20 +1,31 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RED2", "RED2\RED2.csproj", "{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Debug|x86.Build.0 = Debug|Any CPU
 		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Release|x86.ActiveCfg = Release|Any CPU
+		{643E0BFC-DBFA-4FE5-ADB6-AC4387849762}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E80EAAB-29DD-4BED-9F6F-6FBFF73F5E99}
 	EndGlobalSection
 EndGlobal

@@ -465,6 +465,61 @@
   <metadata name="cmStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>120, 16</value>
   </metadata>
+  <data name="tbCredits.Text" xml:space="preserve">
+    <value>CREDITS
+
+Thanks a lot to all users who donated to the project! I never expected to 
+receive a single donation. But as it turns out, quite a few people seem to 
+use and like RED :) 
+
+
+Special thanks go to:
+  
+  * gioccher for many improvements and bugfixes he contributed
+
+  * jsytniak for the "Ignore folders newer than N hours" feature he implemented
+
+  * Wolf from the Computer Club Sunland Village (Mesa Arizona) 
+    for his continuous kind feedback and beta testing!
+
+  * Havy A.C. (ZyntaXis) for helping me with the Windows 7 
+    and Vista compatibility
+
+  * Russ for his idea of protecting and unprotecting directories
+
+  * All other users who did send me their feedback and error reports!
+
+
+
+HINTS &amp; FAQ
+
+  * Right-click on a directory in the tree to get more options.
+  
+  * Why am I getting these annoying "cannot access file" or 
+    "Access to ... is denied." errors? -&gt; That means RED tried to
+    scan or delete a file or directory that was locked by another 
+    application. This is a safety feature to ensure that programs
+    don't access files that are currently opened by another.
+    To fix this problem close all other programs before using RED. 
+    If that does not help you could try using tools such as
+    Unlocker (http://cedrick.collomb.perso.sfr.fr/unlocker/).
+
+
+
+TOOLS I USED TO DEVELOP RED
+
+  * Microsoft Visual Studio C# Community
+  * Inno Setup
+
+
+
+LICENSE
+
+The program is distributed under the terms of the GNU Lesser General 
+Public License which you can read over here: 
+
+http://www.gnu.org/copyleft/lgpl.html</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>62</value>
   </metadata>
