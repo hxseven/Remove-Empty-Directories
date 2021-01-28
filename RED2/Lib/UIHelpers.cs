@@ -41,19 +41,19 @@ namespace RED2
             switch (this.DeleteMode)
             {
                 case DeleteModes.RecycleBin:
-                    return "Delete to recycle bin (Default)";
-
-                case DeleteModes.RecycleBinShowErrors:
-                    return "Delete to recycle bin and show error messages (can be annoying)";
-
-                case DeleteModes.RecycleBinWithQuestion:
-                    return "Delete to recycle bin and ask before every deletion (can be very annoying)";
+                    return "Delete to recycle bin and ignore errors (safer but slower, default setting)";
 
                 case DeleteModes.Direct:
-                    return "Delete directly and don't ask any questions (old RED mode)";
+                    return "Bypass recycle bin and directly delete dirs (more dangerous but faster)";
+
+                case DeleteModes.RecycleBinShowErrors:
+                    return "Delete to recycle bin and show all errors (can be annoying)";
+
+                case DeleteModes.RecycleBinWithQuestion:
+                    return "Delete to recycle bin and ask before every deletion";
 
                 case DeleteModes.Simulate:
-                    return "Simulate deletion (just pretend doing it)";
+                    return "Simulate deletion (just pretend doing it, for testing)";
 
                 // TODO: Idea -> Move files instead of deleting?
 
