@@ -6,7 +6,7 @@ using System.Text;
 namespace RED2
 {
     /// <summary>
-    /// Container for all runtime related data
+    /// Container for runtime related data
     /// </summary>
     public class RuntimeData
     {
@@ -22,6 +22,7 @@ namespace RED2
         public string IgnoreDirectoriesList { get; set; }
 
         public bool IgnoreEmptyFiles { get; set; }
+
         public bool IgnoreHiddenFolders { get; set; }
         public bool KeepSystemFolders { get; set; }
         public bool HideScanErrors { get; set; }

@@ -232,7 +232,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RED deleted {0} directories for you :).
+        ///   Looks up a localized string similar to RED deleted {0} empty directories for you since you installed it :).
         /// </summary>
         internal static string red_deleted {
             get {

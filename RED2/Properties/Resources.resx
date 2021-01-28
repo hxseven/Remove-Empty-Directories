@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btn_scan_again" xml:space="preserve">
     <value>Scan again</value>
@@ -166,7 +166,7 @@
     <value>Process was cancelled!</value>
   </data>
   <data name="red_deleted" xml:space="preserve">
-    <value>RED deleted {0} directories for you :)</value>
+    <value>RED deleted {0} empty directories for you since you installed it :)</value>
   </data>
   <data name="removing_empty_folders" xml:space="preserve">
     <value>Deleting empty directories ({0}/{1})...</value>

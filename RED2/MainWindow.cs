@@ -224,7 +224,7 @@ namespace RED2
         {
             this.tree.ClearTree();
 
-            // Check given folder:
+            // Check given folder
             DirectoryInfo selectedDirectory = null;
             try
             {
@@ -453,13 +453,11 @@ namespace RED2
 
         #endregion
 
-        #region Tree related methods
+        #region Tree view related methods
 
         /// <summary>
         /// User clicks twice on a folder
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void tvFolders_DoubleClick(object sender, EventArgs e)
         {
             SystemFunctions.OpenDirectoryWithExplorer(this.tree.GetSelectedFolderPath());
@@ -544,7 +542,7 @@ namespace RED2
 
         #endregion
 
-        #region General UI related functions
+        #region GUI related functions / events
 
         private void setStatusAndLogMessage(string msg)
         {
@@ -639,7 +637,7 @@ namespace RED2
 
         private void btnResetConfig_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, "Do you really want to reset your current settings to the default values?\nYou will loose your current settings.", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
+            if (MessageBox.Show(this, "Do you really want to reset all settings to the default values?", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
             {
                 Properties.Settings.Default.Reset();
             }

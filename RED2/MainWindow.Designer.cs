@@ -245,7 +245,7 @@
             this.btnScan.Name = "btnScan";
             this.btnScan.Size = new System.Drawing.Size(98, 35);
             this.btnScan.TabIndex = 4;
-            this.btnScan.Text = "&Scan folders";
+            this.btnScan.Text = "&Find directories";
             this.btnScan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnScan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnScan.UseVisualStyleBackColor = true;
@@ -261,7 +261,7 @@
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(112, 35);
             this.btnDelete.TabIndex = 5;
-            this.btnDelete.Text = "&Delete folders";
+            this.btnDelete.Text = "&Delete matches";
             this.btnDelete.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -568,7 +568,7 @@
             this.lblReqAdmin.Name = "lblReqAdmin";
             this.lblReqAdmin.Size = new System.Drawing.Size(256, 13);
             this.lblReqAdmin.TabIndex = 26;
-            this.lblReqAdmin.Text = "You need to run RED as Administrator to change this";
+            this.lblReqAdmin.Text = "You need to start the application as an Admin user to change this";
             // 
             // btnExplorerRemove
             // 
@@ -577,7 +577,7 @@
             this.btnExplorerRemove.Name = "btnExplorerRemove";
             this.btnExplorerRemove.Size = new System.Drawing.Size(129, 27);
             this.btnExplorerRemove.TabIndex = 25;
-            this.btnExplorerRemove.Text = "Remove";
+            this.btnExplorerRemove.Text = "Uninstall";
             this.btnExplorerRemove.UseVisualStyleBackColor = true;
             this.btnExplorerRemove.Click += new System.EventHandler(this.btnExplorerRemove_Click);
             // 
@@ -588,7 +588,7 @@
             this.btnExplorerIntegrate.Name = "btnExplorerIntegrate";
             this.btnExplorerIntegrate.Size = new System.Drawing.Size(129, 27);
             this.btnExplorerIntegrate.TabIndex = 24;
-            this.btnExplorerIntegrate.Text = "Integrate";
+            this.btnExplorerIntegrate.Text = "Install";
             this.btnExplorerIntegrate.UseVisualStyleBackColor = true;
             this.btnExplorerIntegrate.Click += new System.EventHandler(this.btnExplorerIntegrate_Click);
             // 
@@ -599,7 +599,7 @@
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(221, 13);
             this.label16.TabIndex = 14;
-            this.label16.Text = "Integrate RED into the Explorer context menu";
+            this.label16.Text = "Integrate RED into the Windows Explorer context menu";
             // 
             // gpOptions
             // 
@@ -629,7 +629,7 @@
             this.cbHideScanErrors.Size = new System.Drawing.Size(103, 17);
             this.cbHideScanErrors.TabIndex = 16;
             this.cbHideScanErrors.Tag = "hide_scan_errors";
-            this.cbHideScanErrors.Text = "Hide scan errors";
+            this.cbHideScanErrors.Text = "Hide search errors (like access denied errors)";
             this.cbHideScanErrors.UseVisualStyleBackColor = true;
             // 
             // cbIgnoreErrors
@@ -711,7 +711,7 @@
             this.cbIgnore0kbFiles.Size = new System.Drawing.Size(259, 17);
             this.cbIgnore0kbFiles.TabIndex = 3;
             this.cbIgnore0kbFiles.Tag = "ignore_0kb_files";
-            this.cbIgnore0kbFiles.Text = "Directories with files that are 0 KB count as empty";
+            this.cbIgnore0kbFiles.Text = "Directories with empty files will be considered empty";
             this.cbIgnore0kbFiles.UseVisualStyleBackColor = true;
             // 
             // groupBox4
