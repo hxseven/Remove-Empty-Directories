@@ -18,20 +18,19 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ignore_files" Type="System.String" Scope="User">
-      <Value Profile="(Default)">*.tmp
-desktop.ini
+      <Value Profile="(Default)">desktop.ini
 Thumbs.db
-.ds_store
+.DS_Store
 ._*</Value>
     </Setting>
     <Setting Name="ignore_directories" Type="System.String" Scope="User">
       <Value Profile="(Default)">System Volume Information
 RECYCLER
-Papierkorb
 Recycled
 NtUninstall
 $RECYCLE.BIN
 GAC_MSIL
+GAC_32
 winsxs
 System32</Value>
     </Setting>

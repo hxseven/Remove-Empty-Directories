@@ -12,7 +12,7 @@ namespace RED2.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -85,7 +85,7 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("*.tmp\r\ndesktop.ini\r\nThumbs.db\r\n.ds_store\r\n._*")]
+        [global::System.Configuration.DefaultSettingValueAttribute("desktop.ini\r\nThumbs.db\r\n.DS_Store\r\n._*")]
         public string ignore_files {
             get {
                 return ((string)(this["ignore_files"]));
@@ -97,8 +97,8 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("System Volume Information\r\nRECYCLER\r\nPapierkorb\r\nRecycled\r\nNtUninstall\r\n$RECYCLE." +
-            "BIN\r\nGAC_MSIL\r\nwinsxs\r\nSystem32")]
+        [global::System.Configuration.DefaultSettingValueAttribute("System Volume Information\r\nRECYCLER\r\nRecycled\r\nNtUninstall\r\n$RECYCLE.BIN\r\nGAC_MSI" +
+            "L\r\nGAC_32\r\nwinsxs\r\nSystem32")]
         public string ignore_directories {
             get {
                 return ((string)(this["ignore_directories"]));
