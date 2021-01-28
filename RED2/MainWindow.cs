@@ -367,6 +367,13 @@ namespace RED2
             this.Data.InfiniteLoopDetectionCount = (int)Properties.Settings.Default.infinite_loop_detection_count;
             this.Data.DeleteMode = (DeleteModes)Properties.Settings.Default.delete_mode;
             this.Data.PauseTime = (int)Properties.Settings.Default.pause_between;
+
+            // Set pause time at least to one ms, otherwise the UI might freeze because 
+            // of too many simultaneous events
+            if (this.Data.PauseTime <= 0)
+            {
+                this.Data.PauseTime = 1;
+            }
         }
 
         private void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
