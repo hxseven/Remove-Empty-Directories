@@ -206,13 +206,13 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool update_tree {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool fast_search_mode {
             get {
-                return ((bool)(this["update_tree"]));
+                return ((bool)(this["fast_search_mode"]));
             }
             set {
-                this["update_tree"] = value;
+                this["fast_search_mode"] = value;
             }
         }
     }

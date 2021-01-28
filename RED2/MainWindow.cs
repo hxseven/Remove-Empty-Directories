@@ -67,7 +67,7 @@ namespace RED2
 
             // Read folder from the config file
             this.tbFolder.DataBindings.Add("Text", Properties.Settings.Default, "last_used_directory");
-			this.cbUpdateTree.DataBindings.Add("Checked", Properties.Settings.Default, "update_tree");
+			this.cbFastSearchMode.DataBindings.Add("Checked", Properties.Settings.Default, "fast_search_mode");
 
             this.cbIgnoreHiddenFolders.DataBindings.Add("Checked", Properties.Settings.Default, "dont_scan_hidden_folders");
             this.cbIgnore0kbFiles.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_0kb_files");
@@ -104,12 +104,20 @@ namespace RED2
                 this.btnExplorerRemove.Enabled = isIntegrated;
 
                 this.Text += " (Admin mode)";
+
+                this.lblReqAdmin.ForeColor = Color.DarkGray;
             }
             else
             {
-                this.lblReqAdmin.ForeColor = Color.Red;
-                this.btnExplorerIntegrate.Enabled = false;
-                this.btnExplorerRemove.Enabled = false;
+                this.groupBoxExplorerIntegration.Enabled = false;
+
+                // Highlight admin info text bold 
+                // Note: Changed it from red to bold because red looked like an error
+                // but actually it's just an info message
+                this.lblReqAdmin.Font = new Font(Label.DefaultFont, FontStyle.Bold);
+
+                // this.btnExplorerIntegrate.Enabled = false;
+                // this.btnExplorerRemove.Enabled = false;
             }
 
             #endregion
@@ -250,6 +258,14 @@ namespace RED2
             this.Data.StartFolder = selectedDirectory;
             updateDataObject();
 
+            // Disable UI updates when fast mode is enabled
+            this.tree.UpdateUi = !Properties.Settings.Default.fast_search_mode;
+
+            if (Properties.Settings.Default.fast_search_mode)
+            {
+                this.tvFolders.SuspendLayout();
+            }
+
             this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
 
             this.tree.CreateRootNode(this.Data.StartFolder, DirectoryIcons.home);
@@ -278,11 +294,17 @@ namespace RED2
 
         void core_OnFoundFinishedScanForEmptyDirs(object sender, FinishedScanForEmptyDirsEventArgs e)
         {
-            // Scan finished
+            // Search finished
 
             runtimeWatch.Stop();
 
-            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.found_x_empty_folders, e.EmptyFolderCount, e.FolderCount, runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds));
+            setStatusAndLogMessage(String.Format(
+                RED2.Properties.Resources.found_x_empty_folders, 
+                e.EmptyFolderCount, 
+                e.FolderCount,
+                runtimeWatch.Elapsed.Minutes, 
+                runtimeWatch.Elapsed.Seconds
+            ));
 
             this.btnDelete.Enabled = (e.EmptyFolderCount > 0);
             this.pbProgressStatus.Style = ProgressBarStyle.Blocks;
@@ -294,11 +316,16 @@ namespace RED2
             this.btnScan.Enabled = true;
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
+
 			UpdateContextMenu(cmStrip, true);
 
-			this.tvFolders.ResumeLayout();
-			this.tree.AddRootNode();
-            this.tree.EnsureRootNodeIsVisible();
+            if (Properties.Settings.Default.fast_search_mode)
+            {
+    			this.tvFolders.ResumeLayout();
+                this.tree.AddRootNode();
+                this.tree.EnsureRootNodeIsVisible();
+                this.tvFolders.ExpandAll();
+            }
 
             this.btnScan.Text = RED2.Properties.Resources.btn_scan_again;
         }
@@ -407,12 +434,7 @@ namespace RED2
 
         #endregion
 
-        #region Generic process events
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.core.CancelCurrentProcess();
-        }
+        #region Process core events / callbacks
 
         private void core_OnCancelled(object sender, EventArgs e)
         {
@@ -495,9 +517,11 @@ namespace RED2
         private void proToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (this.tvFolders.SelectedNode == null) return;
-            this.tcMain.SelectedIndex = 1;
 
             Properties.Settings.Default.ignore_directories += "\r\n" + ((DirectoryInfo)this.tvFolders.SelectedNode.Tag).FullName;
+
+            // Focus third tab (Ignore list)
+            this.tcMain.SelectedIndex = 2;
 
             // TODO: Update the results + tree to reflect the newly ignored item
             // Current solution: The user has to do a complete rescan
@@ -540,9 +564,23 @@ namespace RED2
             }
         }
 
+        private void toolStripExpandAll_Click(object sender, EventArgs e)
+        {
+            this.tvFolders.ExpandAll();
+        }
+
+        private void toolStripCollapseAll_Click(object sender, EventArgs e)
+        {
+            this.tvFolders.CollapseAll();
+        }
+
         #endregion
 
         #region GUI related functions / events
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.core.CancelCurrentProcess();
+        }
 
         private void setStatusAndLogMessage(string msg)
         {
@@ -662,6 +700,11 @@ namespace RED2
             Process.Start("https://www.jonasjohn.de/lab/red.htm");
         }
 
+        private void llGithub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/hxseven/Remove-Empty-Directories");
+        }
+
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(string.Format("https://www.jonasjohn.de/lab/check_update.php?p=red&version={0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
@@ -750,38 +793,23 @@ namespace RED2
                 MessageBox.Show("Sorry, could not copy the debug info into your clipboard because of this error: " + Environment.NewLine + ex.Message);
             }
         }
+        
+        private void cmStrip_Opening(object sender, CancelEventArgs e)
+        {
+            openFolderToolStripMenuItem.Enabled = tvFolders.SelectedNode != null;
+        }
+
+        /// <summary>
+        /// Enables/disables all items in the context menu
+        /// </summary>
+        /// <param name="contextMenuStrip"></param>
+        /// <param name="enable"></param>
+        private void UpdateContextMenu(ContextMenuStrip contextMenuStrip, bool enable)
+        {
+            foreach (ToolStripItem item in contextMenuStrip.Items)
+                item.Enabled = enable;
+        }
 
         #endregion
-
-		private void cbUpdateTree_CheckedChanged(object sender, EventArgs e)
-		{
-			if (cbUpdateTree.Checked)
-			{
-				tree.UpdateUi = true;
-				tvFolders.ResumeLayout();
-				this.tree.AddRootNode();
-			}
-			else
-			{
-				tree.UpdateUi = false;
-				tvFolders.SuspendLayout();
-			}
-		}
-
-		private void cmStrip_Opening(object sender, CancelEventArgs e)
-		{
-			openFolderToolStripMenuItem.Enabled = tvFolders.SelectedNode != null;
-		}
-
-		/// <summary>
-		/// Enables/disables all items in the context menu
-		/// </summary>
-		/// <param name="contextMenuStrip"></param>
-		/// <param name="enable"></param>
-		private void UpdateContextMenu(ContextMenuStrip contextMenuStrip, bool enable)
-		{
-			foreach (ToolStripItem item in contextMenuStrip.Items)
-				item.Enabled = enable;
-		}
     }
 }

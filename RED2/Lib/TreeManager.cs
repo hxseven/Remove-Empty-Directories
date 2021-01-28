@@ -68,8 +68,10 @@ namespace RED2
             directoryToTreeNodeMapping.Add(directory.FullName, rootNode);
 
 			if (this.UpdateUi)
-				AddRootNode();
-		}
+            {
+                AddRootNode();
+            }
+        }
 
 		internal void AddRootNode()
 		{
@@ -96,8 +98,11 @@ namespace RED2
 
             treeNode.ImageKey = iconKey.ToString();
             treeNode.SelectedImageKey = iconKey.ToString();
+
 			if (this.UpdateUi)
-            treeNode.EnsureVisible();
+            {
+                treeNode.EnsureVisible();
+            }
         }
 
         // TODO: Find better code structure for the following two routines
@@ -130,7 +135,7 @@ namespace RED2
 
             newTreeNode.Tag = directory;
 
-			if (directory.Parent.FullName.Trim('\\').Equals(this.rootPath, StringComparison.OrdinalIgnoreCase))
+            if (directory.Parent.FullName.Trim('\\').Equals(this.rootPath, StringComparison.OrdinalIgnoreCase))
             {
                 this.rootNode.Nodes.Add(newTreeNode);
             }
@@ -142,8 +147,10 @@ namespace RED2
 
             directoryToTreeNodeMapping.Add(path, newTreeNode);
 
-			if (this.UpdateUi)
-            newTreeNode.EnsureVisible();
+            if (this.UpdateUi)
+            {
+                newTreeNode.EnsureVisible();
+            }
 
             return newTreeNode;
         }
