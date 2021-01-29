@@ -1,6 +1,8 @@
 // contribute: https://github.com/DomGries/InnoDependencyInstaller
 // official article: https://codeproject.com/Articles/20868/Inno-Setup-Dependency-Installer
 
+#define APP_ID "06F25DC8-71E2-44E2-805A-F15E15B51C74"
+
 #define MyAppSetupName "Remove Empty Directories"
 #define MyAppVersion "2.3"
 #define MyAppPublisher "Jonas John"
@@ -16,7 +18,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{06F25DC8-71E2-44E2-805A-F15E15B51C74}
+AppId={{{#APP_ID}}
 AppName={#MyAppSetupName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppSetupName} {#MyAppVersion}
@@ -383,6 +385,10 @@ Name: "{commondesktop}\{#MyAppSetupName}"; Filename: "{app}\{#MyAppExeName}"; Ta
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"
 
+[Registry]
+; remove explorer context entry if it exists
+Root: HKCR; Subkey: Folder\shell\Remove empty dirs; ValueType: string; Flags: uninsdeletekey deletekey dontcreatekey; Tasks: ; Languages: 
+
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppSetupName}}"; Flags: nowait postinstall skipifsilent
 
@@ -390,7 +396,37 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppSetupN
 function InitializeSetup: Boolean;
 var
   Version: String;
+  UninstallerPath: String;
+  ErrorCode: Integer;
 begin
+
+  // Check whether application is already installed (legacy)
+  if RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Remove Empty Directories') then begin
+    if MsgBox('The setup has detected that RED is already installed on your computer. Do you wish to uninstall the previous version and continue with a fresh installation?', mbConfirmation, MB_YESNO) = IDYES then begin
+      RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Remove Empty Directories', 'UninstallString', UninstallerPath);
+
+      // ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+      // use above statement if extra level security is required usually it is not req
+      //ShellExec('open', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      ShellExec('runas', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
+    end;
+  end;
+
+  // Check whether application is already installed (new way with appId)
+  if RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{{#APP_ID}}_is1') then begin
+    if MsgBox('The setup has detected that RED is already installed on your computer. Do you wish to uninstall the previous version and continue with a fresh installation?', mbConfirmation, MB_YESNO) = IDYES then begin
+      RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{{#APP_ID}}_is1', 'UninstallString', UninstallerPath);
+
+      // ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+      // use above statement if extra level security is required usually it is not req
+      //ShellExec('open', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      ShellExec('runas', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
+    end;
+  end;
+
+  // Check for .NET Framework 4.6.2
   // https://www.microsoft.com/en-US/download/details.aspx?id=53345
   if not IsDotNetInstalled(net462, 0) then begin
     AddDependency('dotnetfx46.exe',
