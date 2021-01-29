@@ -9,11 +9,14 @@
 #define MyAppCopyright 'Copyright (c) Jonas John'
 #define MyAppURL "https://www.jonasjohn.de/"
 
-#define MyAppSourceDir "..\RED2\bin"
+#define MyAppSourceDir ""
 #define MyAppExeName "RED2.exe"
 
-#define SourceBinPathX86 "x86\Release-x86\RED2.exe"
-#define SourceBinPathX64 "x64\Release-x64\RED2.exe"
+#define SourceBinPathX86 "..\RED2\bin\x86\Release-x86\RED2.exe"
+#define SourceBinPathX64 "..\RED2\bin\x64\Release-x64\RED2.exe"
+
+; DLL is the same for X86 & X64
+#define SourceDLLPath "..\RED2\bin\x86\Release-x86\AlphaFS.dll"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -29,13 +32,18 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-OutputBaseFilename={#MyAppSetupName}-{#MyAppVersion}
+OutputBaseFilename=red-setup-{#MyAppVersion}
 DefaultGroupName={#MyAppSetupName}
 DefaultDirName={autopf}\{#MyAppSetupName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
-SourceDir={#MyAppSourceDir}
+; SourceDir={#MyAppSourceDir}
 OutputDir={#SourcePath}\bin
 AllowNoIcons=yes
+LicenseFile=license.txt
+; WizardStyle=modern
+
+; Compression=lzma
+SolidCompression=yes
 
 MinVersion=6.0
 PrivilegesRequired=admin
@@ -371,11 +379,14 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
+
 [Files]
+// TODO: .NET could be included in the installer
 // Source: "dotnetfx46.exe"; Flags: dontcopy noencryption
 Source: "{#SourceBinPathX64}"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Check: IsX64; Flags: ignoreversion
 Source: "{#SourceBinPathX86}"; DestDir: "{app}"; Check: not IsX64; Flags: ignoreversion
-Source: "x64\Release-x64\AlphaFS.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDLLPath}"; DestDir: "{app}"; Flags: ignoreversion
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppSetupName}"; Filename: "{app}\{#MyAppExeName}"
@@ -383,7 +394,7 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppSetupName}}"; Filename: "{uninstallex
 Name: "{commondesktop}\{#MyAppSetupName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Registry]
 ; remove explorer context entry if it exists
