@@ -134,7 +134,7 @@ namespace RED2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("80")]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
         public decimal pause_between {
             get {
                 return ((decimal)(this["pause_between"]));

@@ -41,7 +41,7 @@ System32</Value>
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="pause_between" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">80</Value>
+      <Value Profile="(Default)">15</Value>
     </Setting>
     <Setting Name="ignore_deletion_errors" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

@@ -61,7 +61,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scan again.
+        ///   Looks up a localized string similar to Search again.
         /// </summary>
         internal static string btn_scan_again {
             get {
@@ -115,7 +115,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only one folder can be accepted..
+        ///   Looks up a localized string similar to Only one directory can be accepted..
         /// </summary>
         internal static string error_only_one_folder {
             get {
@@ -205,7 +205,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select the folder that you want to be cleaned.
+        ///   Looks up a localized string similar to Please select the directory that you want to be cleaned.
         /// </summary>
         internal static string please_select {
             get {
@@ -241,7 +241,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deleting empty directories ({0}/{1})....
+        ///   Looks up a localized string similar to Deleting empty directories ({0} of {1}).
         /// </summary>
         internal static string removing_empty_folders {
             get {
@@ -286,7 +286,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning, do you really want to delete empty system directories?\nThis may harm your operating system..
+        ///   Looks up a localized string similar to Warning, do you want to delete empty system directories? This may harm your operating system..
         /// </summary>
         internal static string warning_really_delete {
             get {

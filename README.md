@@ -1,7 +1,7 @@
-Remove Empty Directories (RED)
-==============================
+Remove Empty Directories
+========================
 
-RED searches, displays, and deletes empty directories recursively below a given start folder. Furthermore, 
+RED finds, displays, and deletes empty directories recursively below a given start folder. Furthermore, 
 it allows you to create custom rules for keeping and deleting folders (e.g. treat directories with empty files as empty).
 
 
@@ -30,6 +30,7 @@ Here are some tasks you can help with:
 - Fix typos and general wording
 - Optimize user interface
 - Create a strategy/foundation for translations
+- Add unit tests
 
 ## History
 
@@ -45,7 +46,7 @@ Since then [a small team of contributors](https://github.com/hxseven/Remove-Empt
   - Added more descriptions and examples to explain settings
   - Increased default window size and added more whitespace to make it look less crowded
 - Optimized config defaults
-  - Deleted some unnecessary entries
+  - Deleted some unnecessary entries and updated some values
   - Removed *.tmp as default pattern to make the default settings safer because those files could still contain valuable data in some cases.
 - Long paths support and other improvements (contributed by gioccher, see #5)
   - Fix crash due to case sensitivity of paths 

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btn_scan_again" xml:space="preserve">
-    <value>Scan again</value>
+    <value>Search again</value>
   </data>
   <data name="error" xml:space="preserve">
     <value>Error:</value>
@@ -130,7 +130,7 @@
     <value>Ignore file settings are in a bad format</value>
   </data>
   <data name="error_only_one_folder" xml:space="preserve">
-    <value>Only one folder can be accepted.</value>
+    <value>Only one directory can be accepted.</value>
   </data>
   <data name="found_x_empty_folders" xml:space="preserve">
     <value>Found {0} empty directories (checked {1} / runtime: {2:D2}:{3:D2} min)</value>
@@ -160,7 +160,7 @@
     <value>Failed</value>
   </data>
   <data name="please_select" xml:space="preserve">
-    <value>Please select the folder that you want to be cleaned</value>
+    <value>Please select the directory that you want to be cleaned</value>
   </data>
   <data name="process_cancelled" xml:space="preserve">
     <value>Process was cancelled!</value>
@@ -169,7 +169,7 @@
     <value>RED deleted {0} empty directories for you since you installed it :)</value>
   </data>
   <data name="removing_empty_folders" xml:space="preserve">
-    <value>Deleting empty directories ({0}/{1})...</value>
+    <value>Deleting empty directories ({0} of {1})</value>
   </data>
   <data name="started_deletion_process" xml:space="preserve">
     <value>Started deletion process...</value>
@@ -184,7 +184,7 @@
     <value>Warning!</value>
   </data>
   <data name="warning_really_delete" xml:space="preserve">
-    <value>Warning, do you really want to delete empty system directories?\nThis may harm your operating system.</value>
+    <value>Warning, do you want to delete empty system directories? This may harm your operating system.</value>
   </data>
   <data name="process_aborted" xml:space="preserve">
     <value>Process was aborted.</value>
