@@ -40,6 +40,7 @@ Since then [a small team of contributors](https://github.com/hxseven/Remove-Empt
 ## Changelog
 
 2.3
+- Disabled settings during active search or deletion process
 - Refactored the interface to improve the design and usability
   - Divided packed settings tab into three separate tabs
   - Renamed some options and captions to make more sense 
@@ -50,7 +51,7 @@ Since then [a small team of contributors](https://github.com/hxseven/Remove-Empt
   - Removed *.tmp as default pattern to make the default settings safer because those files could still contain valuable data in some cases.
 - Long paths support and other improvements (contributed by gioccher, see #5)
   - Fix crash due to case sensitivity of paths 
-  - Speed up crawl and deletion by disabling UI updates (aka fast search mode)
+  - Speed up crawl and deletion by disabling UI updates (dubbed fast mode)
   - Long path support by switching to AlphaFS 
   - And more minor improvements (see closed pull request #5 for details)
 - Ignore folders newer than N hours #3 (contributed by jsytniak, see #3)

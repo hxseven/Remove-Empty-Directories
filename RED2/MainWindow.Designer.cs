@@ -68,7 +68,7 @@
             this.btnChooseFolder = new System.Windows.Forms.Button();
             this.lblPickAFolder = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.gbDeleteMode = new System.Windows.Forms.GroupBox();
             this.label15 = new System.Windows.Forms.Label();
             this.cbDeleteMode = new System.Windows.Forms.ComboBox();
             this.groupBoxExplorerIntegration = new System.Windows.Forms.GroupBox();
@@ -76,7 +76,7 @@
             this.btnExplorerRemove = new System.Windows.Forms.Button();
             this.btnExplorerIntegrate = new System.Windows.Forms.Button();
             this.label16 = new System.Windows.Forms.Label();
-            this.gpOptions = new System.Windows.Forms.GroupBox();
+            this.gbOptions = new System.Windows.Forms.GroupBox();
             this.label25 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
@@ -99,7 +99,7 @@
             this.btnResetConfig = new System.Windows.Forms.Button();
             this.btnCopyDebugInfo = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.gbIgnoreFilenames = new System.Windows.Forms.GroupBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.tbIgnoreFiles = new System.Windows.Forms.TextBox();
@@ -121,22 +121,25 @@
             this.label5 = new System.Windows.Forms.Label();
             this.llWebsite = new System.Windows.Forms.LinkLabel();
             this.lbAppTitle = new System.Windows.Forms.Label();
+            this.lbFastModeInfo = new System.Windows.Forms.Label();
+            this.gbAdvancedSettings = new System.Windows.Forms.GroupBox();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
             this.cmStrip.SuspendLayout();
             this.tabSettings.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.gbDeleteMode.SuspendLayout();
             this.groupBoxExplorerIntegration.SuspendLayout();
-            this.gpOptions.SuspendLayout();
+            this.gbOptions.SuspendLayout();
             this.tabIgnoreList.SuspendLayout();
             this.tabAdvanced.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuFolderAge)).BeginInit();
-            this.groupBox2.SuspendLayout();
+            this.gbIgnoreFilenames.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
             this.tabAbout.SuspendLayout();
+            this.gbAdvancedSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // ilFolderIcons
@@ -186,6 +189,7 @@
             // 
             this.tabSearch.AccessibleDescription = "";
             this.tabSearch.AccessibleName = "";
+            this.tabSearch.Controls.Add(this.lbFastModeInfo);
             this.tabSearch.Controls.Add(this.btnShowLog);
             this.tabSearch.Controls.Add(this.btnCancel);
             this.tabSearch.Controls.Add(this.btnScan);
@@ -212,6 +216,7 @@
             // btnShowLog
             // 
             this.btnShowLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnShowLog.Enabled = false;
             this.btnShowLog.Location = new System.Drawing.Point(380, 498);
             this.btnShowLog.Name = "btnShowLog";
             this.btnShowLog.Size = new System.Drawing.Size(79, 34);
@@ -540,7 +545,7 @@
             this.btnChooseFolder.Name = "btnChooseFolder";
             this.btnChooseFolder.Size = new System.Drawing.Size(126, 21);
             this.btnChooseFolder.TabIndex = 2;
-            this.btnChooseFolder.Text = "Open directory";
+            this.btnChooseFolder.Text = "Browse...";
             this.btnChooseFolder.UseVisualStyleBackColor = true;
             this.btnChooseFolder.Click += new System.EventHandler(this.btnChooseFolder_Click);
             // 
@@ -554,9 +559,9 @@
             // 
             // tabSettings
             // 
-            this.tabSettings.Controls.Add(this.groupBox3);
+            this.tabSettings.Controls.Add(this.gbDeleteMode);
             this.tabSettings.Controls.Add(this.groupBoxExplorerIntegration);
-            this.tabSettings.Controls.Add(this.gpOptions);
+            this.tabSettings.Controls.Add(this.gbOptions);
             this.tabSettings.ImageKey = "preferences";
             this.tabSettings.Location = new System.Drawing.Point(4, 27);
             this.tabSettings.Name = "tabSettings";
@@ -567,18 +572,18 @@
             this.tabSettings.ToolTipText = "Application settings";
             this.tabSettings.UseVisualStyleBackColor = true;
             // 
-            // groupBox3
+            // gbDeleteMode
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.gbDeleteMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.label15);
-            this.groupBox3.Controls.Add(this.cbDeleteMode);
-            this.groupBox3.Location = new System.Drawing.Point(14, 358);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(669, 84);
-            this.groupBox3.TabIndex = 20;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Delete mode";
+            this.gbDeleteMode.Controls.Add(this.label15);
+            this.gbDeleteMode.Controls.Add(this.cbDeleteMode);
+            this.gbDeleteMode.Location = new System.Drawing.Point(14, 358);
+            this.gbDeleteMode.Name = "gbDeleteMode";
+            this.gbDeleteMode.Size = new System.Drawing.Size(669, 84);
+            this.gbDeleteMode.TabIndex = 20;
+            this.gbDeleteMode.TabStop = false;
+            this.gbDeleteMode.Text = "Delete mode";
             // 
             // label15
             // 
@@ -656,26 +661,26 @@
             this.label16.TabIndex = 14;
             this.label16.Text = "Integrate RED into the Windows Explorer context menu";
             // 
-            // gpOptions
+            // gbOptions
             // 
-            this.gpOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.gbOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gpOptions.Controls.Add(this.label25);
-            this.gpOptions.Controls.Add(this.label11);
-            this.gpOptions.Controls.Add(this.label21);
-            this.gpOptions.Controls.Add(this.cbFastSearchMode);
-            this.gpOptions.Controls.Add(this.cbHideScanErrors);
-            this.gpOptions.Controls.Add(this.cbIgnoreErrors);
-            this.gpOptions.Controls.Add(this.cbClipboardDetection);
-            this.gpOptions.Controls.Add(this.cbIgnoreHiddenFolders);
-            this.gpOptions.Controls.Add(this.cbIgnore0kbFiles);
-            this.gpOptions.Location = new System.Drawing.Point(14, 12);
-            this.gpOptions.Name = "gpOptions";
-            this.gpOptions.Size = new System.Drawing.Size(669, 330);
-            this.gpOptions.TabIndex = 19;
-            this.gpOptions.TabStop = false;
-            this.gpOptions.Text = "General options";
+            this.gbOptions.Controls.Add(this.label25);
+            this.gbOptions.Controls.Add(this.label11);
+            this.gbOptions.Controls.Add(this.label21);
+            this.gbOptions.Controls.Add(this.cbFastSearchMode);
+            this.gbOptions.Controls.Add(this.cbHideScanErrors);
+            this.gbOptions.Controls.Add(this.cbIgnoreErrors);
+            this.gbOptions.Controls.Add(this.cbClipboardDetection);
+            this.gbOptions.Controls.Add(this.cbIgnoreHiddenFolders);
+            this.gbOptions.Controls.Add(this.cbIgnore0kbFiles);
+            this.gbOptions.Location = new System.Drawing.Point(14, 12);
+            this.gbOptions.Name = "gbOptions";
+            this.gbOptions.Size = new System.Drawing.Size(669, 330);
+            this.gbOptions.TabIndex = 19;
+            this.gbOptions.TabStop = false;
+            this.gbOptions.Text = "General options";
             // 
             // label25
             // 
@@ -706,20 +711,18 @@
             this.label21.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label21.Location = new System.Drawing.Point(36, 105);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(448, 26);
+            this.label21.Size = new System.Drawing.Size(586, 26);
             this.label21.TabIndex = 19;
-            this.label21.Text = "This option disables list updates during the search process and only shows a resu" +
-    "lt at the end.\r\nYou won\'t be able to see what the progress is but it will be fas" +
-    "ter.";
+            this.label21.Text = resources.GetString("label21.Text");
             // 
             // cbFastSearchMode
             // 
             this.cbFastSearchMode.AutoSize = true;
             this.cbFastSearchMode.Location = new System.Drawing.Point(19, 86);
             this.cbFastSearchMode.Name = "cbFastSearchMode";
-            this.cbFastSearchMode.Size = new System.Drawing.Size(110, 17);
+            this.cbFastSearchMode.Size = new System.Drawing.Size(75, 17);
             this.cbFastSearchMode.TabIndex = 18;
-            this.cbFastSearchMode.Text = "Fast search mode";
+            this.cbFastSearchMode.Text = "Fast mode";
             this.cbFastSearchMode.UseVisualStyleBackColor = true;
             // 
             // cbHideScanErrors
@@ -830,23 +833,11 @@
             // 
             // tabAdvanced
             // 
-            this.tabAdvanced.Controls.Add(this.label27);
-            this.tabAdvanced.Controls.Add(this.label26);
-            this.tabAdvanced.Controls.Add(this.label24);
-            this.tabAdvanced.Controls.Add(this.label19);
-            this.tabAdvanced.Controls.Add(this.nuFolderAge);
+            this.tabAdvanced.Controls.Add(this.gbAdvancedSettings);
             this.tabAdvanced.Controls.Add(this.btnResetConfig);
             this.tabAdvanced.Controls.Add(this.btnCopyDebugInfo);
-            this.tabAdvanced.Controls.Add(this.label20);
-            this.tabAdvanced.Controls.Add(this.groupBox2);
-            this.tabAdvanced.Controls.Add(this.label3);
-            this.tabAdvanced.Controls.Add(this.nuMaxDepth);
-            this.tabAdvanced.Controls.Add(this.label4);
+            this.tabAdvanced.Controls.Add(this.gbIgnoreFilenames);
             this.tabAdvanced.Controls.Add(this.label8);
-            this.tabAdvanced.Controls.Add(this.nuInfiniteLoopDetectionCount);
-            this.tabAdvanced.Controls.Add(this.nuPause);
-            this.tabAdvanced.Controls.Add(this.label7);
-            this.tabAdvanced.Controls.Add(this.cbKeepSystemFolders);
             this.tabAdvanced.ImageKey = "(none)";
             this.tabAdvanced.Location = new System.Drawing.Point(4, 27);
             this.tabAdvanced.Name = "tabAdvanced";
@@ -860,7 +851,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label27.Location = new System.Drawing.Point(29, 84);
+            this.label27.Location = new System.Drawing.Point(16, 78);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(259, 13);
             this.label27.TabIndex = 29;
@@ -870,7 +861,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label26.Location = new System.Drawing.Point(380, 84);
+            this.label26.Location = new System.Drawing.Point(357, 79);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(246, 13);
             this.label26.TabIndex = 28;
@@ -879,7 +870,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(30, 21);
+            this.label24.Location = new System.Drawing.Point(16, 26);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(190, 13);
             this.label24.TabIndex = 27;
@@ -888,7 +879,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(380, 61);
+            this.label19.Location = new System.Drawing.Point(357, 56);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(167, 13);
             this.label19.TabIndex = 26;
@@ -896,7 +887,7 @@
             // 
             // nuFolderAge
             // 
-            this.nuFolderAge.Location = new System.Drawing.Point(611, 57);
+            this.nuFolderAge.Location = new System.Drawing.Point(588, 52);
             this.nuFolderAge.Margin = new System.Windows.Forms.Padding(2);
             this.nuFolderAge.Maximum = new decimal(new int[] {
             96,
@@ -910,7 +901,7 @@
             // btnResetConfig
             // 
             this.btnResetConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnResetConfig.Location = new System.Drawing.Point(335, 505);
+            this.btnResetConfig.Location = new System.Drawing.Point(318, 505);
             this.btnResetConfig.Name = "btnResetConfig";
             this.btnResetConfig.Size = new System.Drawing.Size(183, 27);
             this.btnResetConfig.TabIndex = 23;
@@ -921,7 +912,7 @@
             // btnCopyDebugInfo
             // 
             this.btnCopyDebugInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCopyDebugInfo.Location = new System.Drawing.Point(32, 505);
+            this.btnCopyDebugInfo.Location = new System.Drawing.Point(15, 505);
             this.btnCopyDebugInfo.Name = "btnCopyDebugInfo";
             this.btnCopyDebugInfo.Size = new System.Drawing.Size(297, 27);
             this.btnCopyDebugInfo.TabIndex = 24;
@@ -933,27 +924,27 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label20.Location = new System.Drawing.Point(29, 140);
+            this.label20.Location = new System.Drawing.Point(16, 134);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(314, 13);
             this.label20.TabIndex = 19;
             this.label20.Text = "This gives you time to stop the process but is not really necessary";
             // 
-            // groupBox2
+            // gbIgnoreFilenames
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.gbIgnoreFilenames.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.label23);
-            this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Controls.Add(this.tbIgnoreFiles);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(15, 175);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(668, 322);
-            this.groupBox2.TabIndex = 20;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Filenames to ignore";
+            this.gbIgnoreFilenames.Controls.Add(this.label23);
+            this.gbIgnoreFilenames.Controls.Add(this.label14);
+            this.gbIgnoreFilenames.Controls.Add(this.tbIgnoreFiles);
+            this.gbIgnoreFilenames.Controls.Add(this.label2);
+            this.gbIgnoreFilenames.Location = new System.Drawing.Point(15, 194);
+            this.gbIgnoreFilenames.Name = "gbIgnoreFilenames";
+            this.gbIgnoreFilenames.Size = new System.Drawing.Size(668, 303);
+            this.gbIgnoreFilenames.TabIndex = 20;
+            this.gbIgnoreFilenames.TabStop = false;
+            this.gbIgnoreFilenames.Text = "Filenames to ignore";
             // 
             // label23
             // 
@@ -988,7 +979,7 @@
             this.tbIgnoreFiles.Multiline = true;
             this.tbIgnoreFiles.Name = "tbIgnoreFiles";
             this.tbIgnoreFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbIgnoreFiles.Size = new System.Drawing.Size(631, 158);
+            this.tbIgnoreFiles.Size = new System.Drawing.Size(631, 139);
             this.tbIgnoreFiles.TabIndex = 5;
             this.tbIgnoreFiles.WordWrap = false;
             // 
@@ -1004,7 +995,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(29, 62);
+            this.label3.Location = new System.Drawing.Point(16, 56);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(200, 13);
             this.label3.TabIndex = 13;
@@ -1012,7 +1003,7 @@
             // 
             // nuMaxDepth
             // 
-            this.nuMaxDepth.Location = new System.Drawing.Point(262, 58);
+            this.nuMaxDepth.Location = new System.Drawing.Point(249, 52);
             this.nuMaxDepth.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -1035,7 +1026,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(380, 124);
+            this.label4.Location = new System.Drawing.Point(357, 119);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(200, 13);
             this.label4.TabIndex = 20;
@@ -1052,7 +1043,7 @@
             // 
             // nuInfiniteLoopDetectionCount
             // 
-            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(611, 120);
+            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(588, 115);
             this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -1069,7 +1060,7 @@
             // 
             // nuPause
             // 
-            this.nuPause.Location = new System.Drawing.Point(262, 115);
+            this.nuPause.Location = new System.Drawing.Point(249, 109);
             this.nuPause.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -1087,7 +1078,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(29, 119);
+            this.label7.Location = new System.Drawing.Point(16, 113);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(148, 13);
             this.label7.TabIndex = 17;
@@ -1098,7 +1089,7 @@
             this.cbKeepSystemFolders.AutoSize = true;
             this.cbKeepSystemFolders.Checked = true;
             this.cbKeepSystemFolders.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbKeepSystemFolders.Location = new System.Drawing.Point(262, 21);
+            this.cbKeepSystemFolders.Location = new System.Drawing.Point(248, 26);
             this.cbKeepSystemFolders.Name = "cbKeepSystemFolders";
             this.cbKeepSystemFolders.Size = new System.Drawing.Size(15, 14);
             this.cbKeepSystemFolders.TabIndex = 2;
@@ -1218,6 +1209,42 @@
             this.lbAppTitle.TabIndex = 0;
             this.lbAppTitle.Text = "Remove Empty Directories - Version ";
             // 
+            // lbFastModeInfo
+            // 
+            this.lbFastModeInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbFastModeInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.lbFastModeInfo.ForeColor = System.Drawing.Color.Gray;
+            this.lbFastModeInfo.Location = new System.Drawing.Point(107, 257);
+            this.lbFastModeInfo.Name = "lbFastModeInfo";
+            this.lbFastModeInfo.Size = new System.Drawing.Size(346, 13);
+            this.lbFastModeInfo.TabIndex = 18;
+            this.lbFastModeInfo.Text = "[Fast mode is enabled, results will be shown after the process is finished]";
+            this.lbFastModeInfo.Visible = false;
+            // 
+            // gbAdvancedSettings
+            // 
+            this.gbAdvancedSettings.Controls.Add(this.label20);
+            this.gbAdvancedSettings.Controls.Add(this.label26);
+            this.gbAdvancedSettings.Controls.Add(this.label27);
+            this.gbAdvancedSettings.Controls.Add(this.label19);
+            this.gbAdvancedSettings.Controls.Add(this.cbKeepSystemFolders);
+            this.gbAdvancedSettings.Controls.Add(this.nuFolderAge);
+            this.gbAdvancedSettings.Controls.Add(this.label7);
+            this.gbAdvancedSettings.Controls.Add(this.label24);
+            this.gbAdvancedSettings.Controls.Add(this.nuPause);
+            this.gbAdvancedSettings.Controls.Add(this.nuMaxDepth);
+            this.gbAdvancedSettings.Controls.Add(this.label4);
+            this.gbAdvancedSettings.Controls.Add(this.label3);
+            this.gbAdvancedSettings.Controls.Add(this.nuInfiniteLoopDetectionCount);
+            this.gbAdvancedSettings.Location = new System.Drawing.Point(15, 17);
+            this.gbAdvancedSettings.Name = "gbAdvancedSettings";
+            this.gbAdvancedSettings.Size = new System.Drawing.Size(668, 160);
+            this.gbAdvancedSettings.TabIndex = 30;
+            this.gbAdvancedSettings.TabStop = false;
+            this.gbAdvancedSettings.Text = "Advanced settings";
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -1240,24 +1267,26 @@
             this.pnlIcons.PerformLayout();
             this.cmStrip.ResumeLayout(false);
             this.tabSettings.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.gbDeleteMode.ResumeLayout(false);
+            this.gbDeleteMode.PerformLayout();
             this.groupBoxExplorerIntegration.ResumeLayout(false);
             this.groupBoxExplorerIntegration.PerformLayout();
-            this.gpOptions.ResumeLayout(false);
-            this.gpOptions.PerformLayout();
+            this.gbOptions.ResumeLayout(false);
+            this.gbOptions.PerformLayout();
             this.tabIgnoreList.ResumeLayout(false);
             this.tabIgnoreList.PerformLayout();
             this.tabAdvanced.ResumeLayout(false);
             this.tabAdvanced.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuFolderAge)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.gbIgnoreFilenames.ResumeLayout(false);
+            this.gbIgnoreFilenames.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuPause)).EndInit();
             this.tabAbout.ResumeLayout(false);
             this.tabAbout.PerformLayout();
+            this.gbAdvancedSettings.ResumeLayout(false);
+            this.gbAdvancedSettings.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1265,7 +1294,6 @@
 		#endregion
 
         private System.Windows.Forms.TabControl tcMain;
-		private System.Windows.Forms.TabPage tabSettings;
 		private System.Windows.Forms.TabPage tabAbout;
 		private System.Windows.Forms.Label lbAppTitle;
 		private System.Windows.Forms.CheckBox cbIgnore0kbFiles;
@@ -1292,8 +1320,8 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.NumericUpDown nuPause;
 		private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox gpOptions;
+        private System.Windows.Forms.GroupBox gbIgnoreFilenames;
+        private System.Windows.Forms.GroupBox gbOptions;
         private System.Windows.Forms.TextBox tbIgnoreFolders;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ImageList ilFolderIcons;
@@ -1345,7 +1373,7 @@
         private System.Windows.Forms.TabPage tabIgnoreList;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox gbDeleteMode;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem toolStripExpandAll;
@@ -1355,6 +1383,9 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.LinkLabel llGithub;
+        private System.Windows.Forms.Label lbFastModeInfo;
+        private System.Windows.Forms.TabPage tabSettings;
+        private System.Windows.Forms.GroupBox gbAdvancedSettings;
     }
 }
 

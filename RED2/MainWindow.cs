@@ -56,7 +56,8 @@ namespace RED2
             Properties.Settings.Default.SettingChanging += new System.Configuration.SettingChangingEventHandler(Default_SettingChanging);
 
             // Init tree manager / helper
-            this.tree = new TreeManager(this.tvFolders);
+            this.tree = new TreeManager(this.tvFolders, this.lbFastModeInfo);
+            this.tree.SetFastMode(Properties.Settings.Default.fast_search_mode);
             this.tree.OnProtectionStatusChanged += new EventHandler<ProtectionStatusChangedEventArgs>(tree_OnProtectionStatusChanged);
             this.tree.OnDeleteRequest += new EventHandler<DeleteRequestFromTreeEventArgs>(tree_OnDeleteRequest);
 
@@ -74,8 +75,6 @@ namespace RED2
             this.pbProgressStatus.Maximum = 100;
             this.pbProgressStatus.Minimum = 0;
             this.pbProgressStatus.Step = 5;
-
-            this.btnShowLog.Enabled = false;
 
             drawDirectoryIcons();
 
@@ -170,6 +169,10 @@ namespace RED2
                 if (MessageBox.Show(this, SystemFunctions.ConvertLineBreaks(RED2.Properties.Resources.warning_really_delete), RED2.Properties.Resources.warning, MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.Cancel)
                     e.Cancel = true;
             }
+            else if (e.SettingName == "fast_search_mode")
+            {
+                this.tree.SetFastMode((bool)e.NewValue);
+            }
         }
 
         void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -227,12 +230,8 @@ namespace RED2
         /// <summary>
         /// Starts the Scan-Progress
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnScan_Click(object sender, EventArgs e)
         {
-            this.tree.ClearTree();
-
             // Check given folder
             DirectoryInfo selectedDirectory = null;
             try
@@ -251,31 +250,16 @@ namespace RED2
                 return;
             }
 
-            this.btnShowLog.Enabled = false;
-
-            // TODO: necessary?
-            // Properties.Settings.Default.Save();
-
             this.Data.StartFolder = selectedDirectory;
-            updateDataObject();
-
-            // Disable UI updates when fast mode is enabled
-            if (Properties.Settings.Default.fast_search_mode)
-            {
-                this.tree.UpdateUi = false;
-                this.tvFolders.SuspendLayout();
-            }
-            else
-            {
-                this.tree.UpdateUi = true;
-            }
+            updateRuntimeDataObject();
 
             this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
 
-            this.tree.CreateRootNode(this.Data.StartFolder, DirectoryIcons.home);
+            this.setProcessActiveLock(true);
 
-            this.btnCancel.Enabled = true;
-			UpdateContextMenu(cmStrip, false);
+            this.tree.OnSearchStart(this.Data.StartFolder);
+
+            UpdateContextMenu(cmStrip, false);
 
             this.Data.AddLogSpacer();
             setStatusAndLogMessage(RED2.Properties.Resources.searching_empty_folders);
@@ -317,19 +301,13 @@ namespace RED2
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
             this.pbProgressStatus.Step = 5;
 
+            this.setProcessActiveLock(false);
+
             this.btnScan.Enabled = true;
-            this.btnCancel.Enabled = false;
-            this.btnShowLog.Enabled = true;
 
 			UpdateContextMenu(cmStrip, true);
 
-            if (Properties.Settings.Default.fast_search_mode)
-            {
-    			this.tvFolders.ResumeLayout();
-                this.tree.AddRootNode();
-                this.tree.EnsureRootNodeIsVisible();
-                this.tvFolders.ExpandAll();
-            }
+            this.tree.OnSearchFinished();
 
             this.btnScan.Text = RED2.Properties.Resources.btn_scan_again;
         }
@@ -344,12 +322,14 @@ namespace RED2
             setStatusAndLogMessage(RED2.Properties.Resources.started_deletion_process);
 
             this.btnScan.Enabled = false;
-            this.btnCancel.Enabled = true;
 			UpdateContextMenu(cmStrip, false);
             this.btnDelete.Enabled = false;
-            this.btnShowLog.Enabled = false;
 
-            updateDataObject();
+            this.setProcessActiveLock(true);
+
+            updateRuntimeDataObject();
+
+            this.tree.OnDeletionProcessStart();
 
             runtimeWatch.Reset();
             runtimeWatch.Start();
@@ -357,7 +337,7 @@ namespace RED2
             this.core.StartDeleteProcess();
         }
 
-        private void updateDataObject()
+        private void updateRuntimeDataObject()
         {
             this.Data.IgnoreAllErrors = Properties.Settings.Default.ignore_deletion_errors;
             this.Data.IgnoreFiles = Properties.Settings.Default.ignore_files;
@@ -371,13 +351,6 @@ namespace RED2
             this.Data.InfiniteLoopDetectionCount = (int)Properties.Settings.Default.infinite_loop_detection_count;
             this.Data.DeleteMode = (DeleteModes)Properties.Settings.Default.delete_mode;
             this.Data.PauseTime = (int)Properties.Settings.Default.pause_between;
-
-            // Set pause time at least to one ms, otherwise the UI might freeze because 
-            // of too many simultaneous events
-            if (this.Data.PauseTime <= 0)
-            {
-                this.Data.PauseTime = 1;
-            }
         }
 
         private void core_OnDeleteProcessChanged(object sender, DeleteProcessUpdateEventArgs e)
@@ -430,19 +403,25 @@ namespace RED2
         {
             runtimeWatch.Stop();
 
-            setStatusAndLogMessage(String.Format(RED2.Properties.Resources.delete_process_finished, e.DeletedFolderCount, e.FailedFolderCount, e.ProtectedCount, runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds));
+            setStatusAndLogMessage(
+                String.Format(RED2.Properties.Resources.delete_process_finished, 
+                e.DeletedFolderCount, e.FailedFolderCount, e.ProtectedCount, 
+                runtimeWatch.Elapsed.Minutes, runtimeWatch.Elapsed.Seconds)
+            );
 
             this.pbProgressStatus.Value = this.pbProgressStatus.Maximum;
 
             this.btnDelete.Enabled = false;
             this.btnScan.Enabled = true;
-            this.btnCancel.Enabled = false;
-            this.btnShowLog.Enabled = true;
+
+            this.setProcessActiveLock(false);
 
             // Increase deletion statistics (shown in about tab)
             Properties.Settings.Default.delete_stats += e.DeletedFolderCount;
 
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
+            
+            this.tree.OnDeletionProcessFinished();
         }
 
         #endregion
@@ -459,9 +438,10 @@ namespace RED2
                 setStatusAndLogMessage(RED2.Properties.Resources.process_cancelled);
 
             this.btnScan.Enabled = true;
-            this.btnCancel.Enabled = false;
             this.btnDelete.Enabled = false;
-            this.btnShowLog.Enabled = true;
+
+            this.setProcessActiveLock(false);
+            this.tree.OnProcessCancelled();
         }
 
         private void core_OnAborted(object sender, EventArgs e)
@@ -474,9 +454,10 @@ namespace RED2
                 setStatusAndLogMessage(RED2.Properties.Resources.process_aborted);
 
             this.btnScan.Enabled = true;
-            this.btnCancel.Enabled = false;
             this.btnDelete.Enabled = false;
-            this.btnShowLog.Enabled = true;
+
+            this.setProcessActiveLock(false);    
+            this.tree.OnProcessCancelled();
         }
 
         private void core_OnError(object sender, ErrorEventArgs e)
@@ -590,6 +571,26 @@ namespace RED2
         #endregion
 
         #region GUI related functions / events
+      
+        /// <summary>
+        /// Locks various GUI elements when search or deletion is active
+        /// </summary>
+        /// <param name="isActive"></param>
+        private void setProcessActiveLock(bool isActive)
+        {
+            this.btnCancel.Enabled = isActive;
+            this.btnShowLog.Enabled = !isActive;
+         
+            this.gbOptions.Enabled = !isActive;
+            this.gbDeleteMode.Enabled = !isActive;
+            this.tbIgnoreFolders.Enabled = !isActive;
+
+            this.gbAdvancedSettings.Enabled = !isActive;
+            this.gbIgnoreFilenames.Enabled = !isActive;
+
+            this.btnResetConfig.Enabled = !isActive;
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.core.CancelCurrentProcess();
@@ -605,8 +606,6 @@ namespace RED2
         /// Part of the drag & drop functions 
         /// (you can drag a folder into RED)
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void fMain_DragDrop(object sender, DragEventArgs e)
         {
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -621,8 +620,6 @@ namespace RED2
         /// Part of the drag & drop functions 
         /// (you can drag a folder into RED)
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void fMain_DragEnter(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -662,8 +659,6 @@ namespace RED2
         /// <summary>
         /// Let the user select a folder
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnChooseFolder_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.last_used_directory = SystemFunctions.ChooseDirectoryDialog(Properties.Settings.Default.last_used_directory);

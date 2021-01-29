@@ -163,7 +163,7 @@
     <value>Please select the directory that you want to be cleaned</value>
   </data>
   <data name="process_cancelled" xml:space="preserve">
-    <value>Process was cancelled!</value>
+    <value>Process was cancelled</value>
   </data>
   <data name="red_deleted" xml:space="preserve">
     <value>RED deleted {0} empty directories for you since you installed it :)</value>
@@ -187,7 +187,7 @@
     <value>Warning, do you want to delete empty system directories? This may harm your operating system.</value>
   </data>
   <data name="process_aborted" xml:space="preserve">
-    <value>Process was aborted.</value>
+    <value>Process was aborted</value>
   </data>
   <data name="deletion_aborted" xml:space="preserve">
     <value>Delete process was aborted.</value>

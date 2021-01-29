@@ -18,6 +18,8 @@ namespace RED2
         private TreeNode rootNode = null;
         private string rootPath = "";
 
+        private Label fastModeInfoLabel = null;
+
         private Dictionary<String, TreeNode> directoryToTreeNodeMapping = null;
 
         /// <summary>
@@ -29,16 +31,99 @@ namespace RED2
         public event EventHandler<ProtectionStatusChangedEventArgs> OnProtectionStatusChanged;
         public event EventHandler<DeleteRequestFromTreeEventArgs> OnDeleteRequest;
 
-		public bool UpdateUi { get; set; } = true;
+		private bool fastMode { get; set; } = true;
 
-        public TreeManager(TreeView dirTree)
+        public TreeManager(TreeView dirTree, Label fastModeInfoLabel)
         {
             this.treeView = dirTree;
             this.treeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tvFolders_MouseClick);
 
-            this.ClearTree();
+            this.fastModeInfoLabel = fastModeInfoLabel;
+
+            this.resetTree();
 
             this.rootPath = "";
+        }
+
+        #region Incoming "events"
+        public void SetFastMode(bool fastModeActive)
+        {
+            this.fastMode = fastModeActive;
+
+            if (this.fastMode)
+            {
+                this.treeView.SuspendLayout();
+            }
+            else
+            {
+                this.clearFastMode();
+                this.treeView.ResumeLayout();
+            }
+        }
+
+        public void OnSearchStart(DirectoryInfo directory)
+        {
+            this.resetTree();
+
+            // Disable UI updates when fast mode is enabled
+            if (this.fastMode)
+            {
+                suspendTreeViewForFastMode();
+            }
+
+            this.createRootNode(directory, DirectoryIcons.home);
+        }
+
+        public void OnSearchFinished()
+        {
+            this.showFastModeResults();
+        }
+
+        public void OnDeletionProcessStart()
+        {
+            if (this.fastMode)
+            {
+                this.treeView.Nodes.Clear();
+                suspendTreeViewForFastMode();
+            }
+        }
+        public void OnDeletionProcessFinished()
+        {
+            this.showFastModeResults();
+        }  
+
+        public void OnProcessCancelled()
+        {
+            this.showFastModeResults();
+        }
+
+        #endregion
+        private void suspendTreeViewForFastMode()
+        {
+            this.treeView.SuspendLayout();
+
+            this.treeView.BackColor = System.Drawing.SystemColors.Control;
+            this.fastModeInfoLabel.Visible = true;
+        }
+
+        private void clearFastMode()
+        {
+            this.treeView.BackColor = System.Drawing.SystemColors.Window;
+            this.fastModeInfoLabel.Visible = false;
+        }
+
+        private void showFastModeResults()
+        {
+            if (!this.fastMode) return;
+
+            this.treeView.ResumeLayout();
+            this.clearFastMode();
+
+            this.addRootNode();
+
+            // Scroll to root node and expand all dirs
+            this.rootNode.EnsureVisible();
+            this.treeView.ExpandAll();
         }
 
         /// <summary>
@@ -49,7 +134,7 @@ namespace RED2
             this.treeView.SelectedNode = this.treeView.GetNodeAt(e.X, e.Y);
         }
 
-        public void ClearTree()
+        private void resetTree()
         {
             this.rootNode = null;
             this.directoryToTreeNodeMapping = new Dictionary<string, TreeNode>();
@@ -58,7 +143,7 @@ namespace RED2
             this.treeView.Nodes.Clear();
         }
 
-        internal void CreateRootNode(DirectoryInfo directory, DirectoryIcons imageKey)
+        private void createRootNode(DirectoryInfo directory, DirectoryIcons imageKey)
         {
             this.rootPath = directory.FullName.Trim('\\');
 
@@ -70,13 +155,14 @@ namespace RED2
             directoryToTreeNodeMapping = new Dictionary<String, TreeNode>();
             directoryToTreeNodeMapping.Add(directory.FullName, rootNode);
 
-			if (this.UpdateUi)
+			if (!this.fastMode)
             {
-                AddRootNode();
+                // During fast mode the root node will be added after the search finished 
+                addRootNode();
             }
         }
 
-		internal void AddRootNode()
+		private void addRootNode()
 		{
 			if (rootNode == null || (treeView.Nodes.Count == 1 && treeView.Nodes[0] == rootNode))
 				return;
@@ -85,14 +171,10 @@ namespace RED2
             this.treeView.Nodes.Add(rootNode);
         }
 
-        internal void EnsureRootNodeIsVisible()
-        {
-            this.rootNode.EnsureVisible();
-        }
         private void scrollToNode(TreeNode node)
         {
             // Ignore when fast mode is enabled
-            if (this.UpdateUi)
+            if (!this.fastMode)
             {
                 node.EnsureVisible();
             }
@@ -257,7 +339,7 @@ namespace RED2
             }
         }
 
-        #region Directory protection methods
+        #region Directory protection
 
         internal void ProtectSelected()
         {

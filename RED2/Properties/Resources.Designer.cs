@@ -214,7 +214,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process was aborted..
+        ///   Looks up a localized string similar to Process was aborted.
         /// </summary>
         internal static string process_aborted {
             get {
@@ -223,7 +223,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process was cancelled!.
+        ///   Looks up a localized string similar to Process was cancelled.
         /// </summary>
         internal static string process_cancelled {
             get {
