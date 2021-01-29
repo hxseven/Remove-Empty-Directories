@@ -31,10 +31,10 @@ namespace RED2
         /// <summary>
         /// On load
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void fMain_Load(object sender, EventArgs e)
         {
+            #region Init RED core
+            
             this.core = new REDCore(this, this.Data);
 
             // Attach events
@@ -49,25 +49,46 @@ namespace RED2
             this.core.OnDeleteProcessFinished += new EventHandler<DeleteProcessFinishedEventArgs>(core_OnDeleteProcessFinished);
             this.core.OnDeleteError += new EventHandler<DeletionErrorEventArgs>(core_OnDeleteError);
 
+            #endregion
+
+            // Subscribe to settings events
             Properties.Settings.Default.PropertyChanged += new PropertyChangedEventHandler(Default_PropertyChanged);
             Properties.Settings.Default.SettingChanging += new System.Configuration.SettingChangingEventHandler(Default_SettingChanging);
 
-            this.init();
-        }
-
-        private void init()
-        {
+            // Init tree manager / helper
             this.tree = new TreeManager(this.tvFolders);
             this.tree.OnProtectionStatusChanged += new EventHandler<ProtectionStatusChangedEventArgs>(tree_OnProtectionStatusChanged);
             this.tree.OnDeleteRequest += new EventHandler<DeleteRequestFromTreeEventArgs>(tree_OnDeleteRequest);
 
+            this.bindConfigToControls();
+
+            // Update labels
+            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
             this.lbAppTitle.Text += string.Format("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            this.lbStatus.Text = "";
 
-            #region Bind config settings to controls
+            this.adminCheck();
 
-            // Read folder from the config file
+			UpdateContextMenu(cmStrip, false);
+
+            this.pbProgressStatus.Maximum = 100;
+            this.pbProgressStatus.Minimum = 0;
+            this.pbProgressStatus.Step = 5;
+
+            this.btnShowLog.Enabled = false;
+
+            drawDirectoryIcons();
+
+            this.processCommandLineArgs();
+        }
+
+        /// <summary>
+        /// Bind config settings to UI controls
+        /// </summary>
+        private void bindConfigToControls()
+        {
             this.tbFolder.DataBindings.Add("Text", Properties.Settings.Default, "last_used_directory");
-			this.cbFastSearchMode.DataBindings.Add("Checked", Properties.Settings.Default, "fast_search_mode");
+            this.cbFastSearchMode.DataBindings.Add("Checked", Properties.Settings.Default, "fast_search_mode");
 
             this.cbIgnoreHiddenFolders.DataBindings.Add("Checked", Properties.Settings.Default, "dont_scan_hidden_folders");
             this.cbIgnore0kbFiles.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_0kb_files");
@@ -82,18 +103,20 @@ namespace RED2
             this.nuInfiniteLoopDetectionCount.DataBindings.Add("Value", Properties.Settings.Default, "infinite_loop_detection_count");
             this.nuPause.DataBindings.Add("Value", Properties.Settings.Default, "pause_between");
             this.cbIgnoreErrors.DataBindings.Add("Checked", Properties.Settings.Default, "ignore_deletion_errors");
+            this.nuFolderAge.DataBindings.Add("Value", Properties.Settings.Default, "min_folder_age_hours");
 
-            // Special field
-            this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
-
-            // Delete mode
+            // Populate delete mode item list
             foreach (var d in DeleteModeItem.GetList())
                 this.cbDeleteMode.Items.Add(new DeleteModeItem(d));
 
             this.cbDeleteMode.DataBindings.Add("SelectedIndex", Properties.Settings.Default, "delete_mode");
+        }
 
-            #region Check if the user started RED as admin
-
+        /// <summary>
+        /// Check if we were started with admin rights 
+        /// </summary>
+        private void adminCheck()
+        {
             var principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 
             if (principal.IsInRole(WindowsBuiltInRole.Administrator))
@@ -119,33 +142,13 @@ namespace RED2
                 // this.btnExplorerIntegrate.Enabled = false;
                 // this.btnExplorerRemove.Enabled = false;
             }
+        }
 
-            #endregion
-
-            // Moved the credits file into the GUI textbox control
-            // var credits = Path.Combine(Application.StartupPath, "credits.txt");
-            // if (File.Exists(credits))
-            //     this.tbCredits.AppendText(File.ReadAllText(credits));
-            // else
-            //     this.tbCredits.AppendText("Error: Could not find the credits text file:" + Environment.NewLine + credits);
-
-            this.nuFolderAge.DataBindings.Add("Value", Properties.Settings.Default, "min_folder_age_hours");
-
-            #endregion
-
-            this.lbStatus.Text = "";
-			UpdateContextMenu(cmStrip, false);
-
-            this.pbProgressStatus.Maximum = 100;
-            this.pbProgressStatus.Minimum = 0;
-            this.pbProgressStatus.Step = 5;
-
-            this.btnShowLog.Enabled = false;
-
-            drawDirectoryIcons();
-
-            #region Read and apply command line arguments
-
+        /// <summary>
+        /// Read and apply command line arguments
+        /// </summary>
+        private void processCommandLineArgs()
+        {
             string[] args = Environment.GetCommandLineArgs();
 
             if (args.Length > 1)
@@ -158,8 +161,6 @@ namespace RED2
 
                 Properties.Settings.Default.last_used_directory = path;
             }
-
-            #endregion
         }
 
         void Default_SettingChanging(object sender, System.Configuration.SettingChangingEventArgs e)
@@ -259,11 +260,14 @@ namespace RED2
             updateDataObject();
 
             // Disable UI updates when fast mode is enabled
-            this.tree.UpdateUi = !Properties.Settings.Default.fast_search_mode;
-
             if (Properties.Settings.Default.fast_search_mode)
             {
+                this.tree.UpdateUi = false;
                 this.tvFolders.SuspendLayout();
+            }
+            else
+            {
+                this.tree.UpdateUi = true;
             }
 
             this.pbProgressStatus.Style = ProgressBarStyle.Marquee;
@@ -435,7 +439,9 @@ namespace RED2
             this.btnCancel.Enabled = false;
             this.btnShowLog.Enabled = true;
 
+            // Increase deletion statistics (shown in about tab)
             Properties.Settings.Default.delete_stats += e.DeletedFolderCount;
+
             this.lblRedStats.Text = String.Format(RED2.Properties.Resources.red_deleted, Properties.Settings.Default.delete_stats);
         }
 
