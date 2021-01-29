@@ -105,7 +105,7 @@ namespace RED2
                 // Get file list
                 FileInfo[] fileList = null;
 
-                // some directories could trigger a exception:
+                // some directories could trigger an exception:
                 try
                 {
                     fileList = startDir.GetFiles();

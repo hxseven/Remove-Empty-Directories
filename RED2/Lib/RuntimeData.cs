@@ -34,6 +34,10 @@ namespace RED2
 
         public StringBuilder LogMessages = null;
         public Dictionary<string, bool> ProtectedFolderList = new Dictionary<string, bool>();
+
+        /// <summary>
+        /// List containing all empty directories that were found
+        /// </summary>
         public List<string> EmptyFolderList { get; set; }
 
         public RuntimeData()
@@ -43,14 +47,19 @@ namespace RED2
             this.EmptyFolderList = new List<string>();
         }
 
+        private string[] fixNewLines(string input)
+        {
+            return input.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+        }
+
         public string[] GetIgnoreFileList()
         {
-            return this.IgnoreFiles.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+            return this.fixNewLines(this.IgnoreFiles);
         }
 
         public string[] GetIgnoreDirectories()
         {
-            return this.IgnoreDirectoriesList.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+            return this.fixNewLines(this.IgnoreDirectoriesList);
         }
 
         public void AddLogMessage(string msg)

@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace RED2
 {
     /// <summary>
-    /// RED core class, handles all the "hard work" and communicates with the GUI by using events.
+    /// RED core class, handles events and communicates with the GUI
     /// </summary>
     public class REDCore
     {
@@ -44,22 +44,19 @@ namespace RED2
             // Rest folder list
             this.Data.ProtectedFolderList = new Dictionary<string, bool>();
 
+            // Start async empty directory search worker
             searchEmptyFoldersWorker = new FindEmptyDirectoryWorker();
             searchEmptyFoldersWorker.Data = this.Data;
 
             searchEmptyFoldersWorker.ProgressChanged += new ProgressChangedEventHandler(searchEmptyFoldersWorker_ProgressChanged);
             searchEmptyFoldersWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(searchEmptyFoldersWorker_RunWorkerCompleted);
 
-            // Start worker
             searchEmptyFoldersWorker.RunWorkerAsync(this.Data.StartFolder);
         }
 
         /// <summary>
-        /// This function gets called on a status update of the 
-        /// find worker
+        /// This function gets called on a status update of the find worker
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         void searchEmptyFoldersWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState is FoundEmptyDirInfoEventArgs)
@@ -67,9 +64,14 @@ namespace RED2
                 var info = (FoundEmptyDirInfoEventArgs)e.UserState;
 
                 if (info.Type == DirectorySearchStatusTypes.Empty)
+                {
+                    // Found an empty dir, add it to the list
                     this.Data.EmptyFolderList.Add(info.Directory);
+                }
                 else if (info.Type == DirectorySearchStatusTypes.Error && this.Data.HideScanErrors)
+                {
                     return;
+                }
 
                 if (this.OnFoundEmptyDirectory != null)
                     this.OnFoundEmptyDirectory(this, info);
@@ -148,6 +150,7 @@ namespace RED2
         {
             this.CurrentProcessStep = WorkflowSteps.DeleteProcessRunning;
 
+            // Kick-off deletion worker to async delete directories
             this.deletionWorker = new DeletionWorker();
             this.deletionWorker.Data = this.Data;
 
@@ -202,7 +205,8 @@ namespace RED2
                 int failedCount = this.deletionWorker.FailedCount;
                 int protectedCount = this.deletionWorker.ProtectedCount;
 
-                this.deletionWorker.Dispose(); this.deletionWorker = null;
+                this.deletionWorker.Dispose(); 
+                this.deletionWorker = null;
 
                 if (this.OnDeleteProcessFinished != null)
                     this.OnDeleteProcessFinished(this, new DeleteProcessFinishedEventArgs(deletedCount, failedCount, protectedCount));
