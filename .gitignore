@@ -6,3 +6,4 @@ Installer/output/
 Installer/bin/
 .vs
 packages/
+Scripts/test-*
