@@ -133,7 +133,7 @@
     <value>Only one directory can be accepted.</value>
   </data>
   <data name="found_x_empty_folders" xml:space="preserve">
-    <value>Found {0} empty directories (checked {1} / runtime: {2:D2}:{3:D2} min)</value>
+    <value>Found {0} empty directories (Checked: {1} / Runtime: {2:D2}:{3:D2} min)</value>
   </data>
   <data name="icon_contains_trash" xml:space="preserve">
     <value>Contains "trash"</value>
@@ -193,7 +193,7 @@
     <value>Delete process was aborted.</value>
   </data>
   <data name="delete_process_finished" xml:space="preserve">
-    <value>Deleted {0} empty directories (failed to delete: {1} dirs / protected: {2} / runtime: {3:D2}:{4:D2} min)</value>
+    <value>Deleted {0} empty directories (Failed: {1}, Skipped: {2}, Runtime: {3:D2}:{4:D2} min)</value>
   </data>
   <data name="young_folder_skipped" xml:space="preserve">
     <value>\"{0}\" folder skipped because creation time [{2}] is &lt; {1} hours old</value>

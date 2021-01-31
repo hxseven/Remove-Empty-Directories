@@ -70,7 +70,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deleted {0} empty directories (failed to delete: {1} dirs / protected: {2} / runtime: {3:D2}:{4:D2} min).
+        ///   Looks up a localized string similar to Deleted {0} empty directories (Failed: {1}, Skipped: {2}, Runtime: {3:D2}:{4:D2} min).
         /// </summary>
         internal static string delete_process_finished {
             get {
@@ -124,7 +124,7 @@ namespace RED2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Found {0} empty directories (checked {1} / runtime: {2:D2}:{3:D2} min).
+        ///   Looks up a localized string similar to Found {0} empty directories (Checked: {1} / Runtime: {2:D2}:{3:D2} min).
         /// </summary>
         internal static string found_x_empty_folders {
             get {

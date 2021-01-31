@@ -33,6 +33,7 @@
             this.ilFolderIcons = new System.Windows.Forms.ImageList(this.components);
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tabSearch = new System.Windows.Forms.TabPage();
+            this.lbFastModeInfo = new System.Windows.Forms.Label();
             this.btnShowLog = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnScan = new System.Windows.Forms.Button();
@@ -91,27 +92,28 @@
             this.tbIgnoreFolders = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tabAdvanced = new System.Windows.Forms.TabPage();
-            this.label27 = new System.Windows.Forms.Label();
+            this.gbAdvancedSettings = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
+            this.cbKeepSystemFolders = new System.Windows.Forms.CheckBox();
             this.nuFolderAge = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.nuPause = new System.Windows.Forms.NumericUpDown();
+            this.nuMaxDepth = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
             this.btnResetConfig = new System.Windows.Forms.Button();
             this.btnCopyDebugInfo = new System.Windows.Forms.Button();
-            this.label20 = new System.Windows.Forms.Label();
             this.gbIgnoreFilenames = new System.Windows.Forms.GroupBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.tbIgnoreFiles = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.nuMaxDepth = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.nuInfiniteLoopDetectionCount = new System.Windows.Forms.NumericUpDown();
-            this.nuPause = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cbKeepSystemFolders = new System.Windows.Forms.CheckBox();
             this.tabAbout = new System.Windows.Forms.TabPage();
             this.llGithub = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
@@ -121,8 +123,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.llWebsite = new System.Windows.Forms.LinkLabel();
             this.lbAppTitle = new System.Windows.Forms.Label();
-            this.lbFastModeInfo = new System.Windows.Forms.Label();
-            this.gbAdvancedSettings = new System.Windows.Forms.GroupBox();
             this.tcMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.pnlIcons.SuspendLayout();
@@ -133,13 +133,13 @@
             this.gbOptions.SuspendLayout();
             this.tabIgnoreList.SuspendLayout();
             this.tabAdvanced.SuspendLayout();
+            this.gbAdvancedSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuFolderAge)).BeginInit();
-            this.gbIgnoreFilenames.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nuPause)).BeginInit();
+            this.gbIgnoreFilenames.SuspendLayout();
             this.tabAbout.SuspendLayout();
-            this.gbAdvancedSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // ilFolderIcons
@@ -212,6 +212,20 @@
             this.tabSearch.Text = "Find";
             this.tabSearch.ToolTipText = "Search for empty directories";
             this.tabSearch.UseVisualStyleBackColor = true;
+            // 
+            // lbFastModeInfo
+            // 
+            this.lbFastModeInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbFastModeInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.lbFastModeInfo.ForeColor = System.Drawing.Color.Gray;
+            this.lbFastModeInfo.Location = new System.Drawing.Point(107, 257);
+            this.lbFastModeInfo.Name = "lbFastModeInfo";
+            this.lbFastModeInfo.Size = new System.Drawing.Size(346, 13);
+            this.lbFastModeInfo.TabIndex = 18;
+            this.lbFastModeInfo.Text = "[Fast mode is enabled, results will be shown after the process is finished]";
+            this.lbFastModeInfo.Visible = false;
             // 
             // btnShowLog
             // 
@@ -384,18 +398,18 @@
             // 
             this.lbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbStatus.Location = new System.Drawing.Point(170, 473);
+            this.lbStatus.Location = new System.Drawing.Point(149, 475);
             this.lbStatus.Name = "lbStatus";
-            this.lbStatus.Size = new System.Drawing.Size(392, 13);
+            this.lbStatus.Size = new System.Drawing.Size(532, 13);
             this.lbStatus.TabIndex = 13;
             this.lbStatus.Text = "Status text";
             // 
             // pbProgressStatus
             // 
             this.pbProgressStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pbProgressStatus.Location = new System.Drawing.Point(14, 473);
+            this.pbProgressStatus.Location = new System.Drawing.Point(14, 475);
             this.pbProgressStatus.Name = "pbProgressStatus";
-            this.pbProgressStatus.Size = new System.Drawing.Size(153, 13);
+            this.pbProgressStatus.Size = new System.Drawing.Size(129, 13);
             this.pbProgressStatus.TabIndex = 12;
             // 
             // tvFolders
@@ -847,15 +861,37 @@
             this.tabAdvanced.Text = "Advanced settings";
             this.tabAdvanced.UseVisualStyleBackColor = true;
             // 
-            // label27
+            // gbAdvancedSettings
             // 
-            this.label27.AutoSize = true;
-            this.label27.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label27.Location = new System.Drawing.Point(16, 78);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(259, 13);
-            this.label27.TabIndex = 29;
-            this.label27.Text = "RED will only able to find empty directories that are N ";
+            this.gbAdvancedSettings.Controls.Add(this.label20);
+            this.gbAdvancedSettings.Controls.Add(this.label26);
+            this.gbAdvancedSettings.Controls.Add(this.label27);
+            this.gbAdvancedSettings.Controls.Add(this.label19);
+            this.gbAdvancedSettings.Controls.Add(this.cbKeepSystemFolders);
+            this.gbAdvancedSettings.Controls.Add(this.nuFolderAge);
+            this.gbAdvancedSettings.Controls.Add(this.label7);
+            this.gbAdvancedSettings.Controls.Add(this.label24);
+            this.gbAdvancedSettings.Controls.Add(this.nuPause);
+            this.gbAdvancedSettings.Controls.Add(this.nuMaxDepth);
+            this.gbAdvancedSettings.Controls.Add(this.label4);
+            this.gbAdvancedSettings.Controls.Add(this.label3);
+            this.gbAdvancedSettings.Controls.Add(this.nuInfiniteLoopDetectionCount);
+            this.gbAdvancedSettings.Location = new System.Drawing.Point(15, 17);
+            this.gbAdvancedSettings.Name = "gbAdvancedSettings";
+            this.gbAdvancedSettings.Size = new System.Drawing.Size(668, 160);
+            this.gbAdvancedSettings.TabIndex = 30;
+            this.gbAdvancedSettings.TabStop = false;
+            this.gbAdvancedSettings.Text = "Advanced settings";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label20.Location = new System.Drawing.Point(16, 134);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(314, 13);
+            this.label20.TabIndex = 19;
+            this.label20.Text = "This gives you time to stop the process but is not really necessary";
             // 
             // label26
             // 
@@ -867,14 +903,15 @@
             this.label26.TabIndex = 28;
             this.label26.Text = "This allows you to ignore freshly created directories";
             // 
-            // label24
+            // label27
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(16, 26);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(190, 13);
-            this.label24.TabIndex = 27;
-            this.label24.Text = "Skip system directories (recommended)";
+            this.label27.AutoSize = true;
+            this.label27.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label27.Location = new System.Drawing.Point(16, 78);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(259, 13);
+            this.label27.TabIndex = 29;
+            this.label27.Text = "RED will only able to find empty directories that are N ";
             // 
             // label19
             // 
@@ -884,6 +921,18 @@
             this.label19.Size = new System.Drawing.Size(167, 13);
             this.label19.TabIndex = 26;
             this.label19.Text = "Skip folders less than N hours old:";
+            // 
+            // cbKeepSystemFolders
+            // 
+            this.cbKeepSystemFolders.AutoSize = true;
+            this.cbKeepSystemFolders.Checked = true;
+            this.cbKeepSystemFolders.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbKeepSystemFolders.Location = new System.Drawing.Point(248, 26);
+            this.cbKeepSystemFolders.Name = "cbKeepSystemFolders";
+            this.cbKeepSystemFolders.Size = new System.Drawing.Size(15, 14);
+            this.cbKeepSystemFolders.TabIndex = 2;
+            this.cbKeepSystemFolders.Tag = "keep_system_dirs";
+            this.cbKeepSystemFolders.UseVisualStyleBackColor = true;
             // 
             // nuFolderAge
             // 
@@ -897,6 +946,98 @@
             this.nuFolderAge.Name = "nuFolderAge";
             this.nuFolderAge.Size = new System.Drawing.Size(53, 20);
             this.nuFolderAge.TabIndex = 25;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(16, 113);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(148, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Pause between each deletion";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(16, 26);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(190, 13);
+            this.label24.TabIndex = 27;
+            this.label24.Text = "Skip system directories (recommended)";
+            // 
+            // nuPause
+            // 
+            this.nuPause.Location = new System.Drawing.Point(249, 109);
+            this.nuPause.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nuPause.Name = "nuPause";
+            this.nuPause.Size = new System.Drawing.Size(53, 20);
+            this.nuPause.TabIndex = 8;
+            this.nuPause.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // nuMaxDepth
+            // 
+            this.nuMaxDepth.Location = new System.Drawing.Point(249, 52);
+            this.nuMaxDepth.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
+            this.nuMaxDepth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.nuMaxDepth.Name = "nuMaxDepth";
+            this.nuMaxDepth.Size = new System.Drawing.Size(53, 20);
+            this.nuMaxDepth.TabIndex = 7;
+            this.nuMaxDepth.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(357, 119);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(200, 13);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Infinite-loop detection: Stop after N errors";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 56);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(200, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Max directory nesting depth (-1 = infinite):";
+            // 
+            // nuInfiniteLoopDetectionCount
+            // 
+            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(588, 115);
+            this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nuInfiniteLoopDetectionCount.Name = "nuInfiniteLoopDetectionCount";
+            this.nuInfiniteLoopDetectionCount.Size = new System.Drawing.Size(53, 20);
+            this.nuInfiniteLoopDetectionCount.TabIndex = 21;
+            this.nuInfiniteLoopDetectionCount.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             // 
             // btnResetConfig
             // 
@@ -919,16 +1060,6 @@
             this.btnCopyDebugInfo.Text = "Copy debugging information to clipboard (for error reports)";
             this.btnCopyDebugInfo.UseVisualStyleBackColor = true;
             this.btnCopyDebugInfo.Click += new System.EventHandler(this.btnCopyDebugInfo_Click);
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label20.Location = new System.Drawing.Point(16, 134);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(314, 13);
-            this.label20.TabIndex = 19;
-            this.label20.Text = "This gives you time to stop the process but is not really necessary";
             // 
             // gbIgnoreFilenames
             // 
@@ -992,46 +1123,6 @@
             this.label2.TabIndex = 10;
             this.label2.Text = resources.GetString("label2.Text");
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(200, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Max directory nesting depth (-1 = infinite):";
-            // 
-            // nuMaxDepth
-            // 
-            this.nuMaxDepth.Location = new System.Drawing.Point(249, 52);
-            this.nuMaxDepth.Maximum = new decimal(new int[] {
-            10000000,
-            0,
-            0,
-            0});
-            this.nuMaxDepth.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.nuMaxDepth.Name = "nuMaxDepth";
-            this.nuMaxDepth.Size = new System.Drawing.Size(53, 20);
-            this.nuMaxDepth.TabIndex = 7;
-            this.nuMaxDepth.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(357, 119);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(200, 13);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "Infinite-loop detection: Stop after N errors";
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -1040,61 +1131,6 @@
             this.label8.Size = new System.Drawing.Size(20, 13);
             this.label8.TabIndex = 18;
             this.label8.Text = "ms";
-            // 
-            // nuInfiniteLoopDetectionCount
-            // 
-            this.nuInfiniteLoopDetectionCount.Location = new System.Drawing.Point(588, 115);
-            this.nuInfiniteLoopDetectionCount.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.nuInfiniteLoopDetectionCount.Name = "nuInfiniteLoopDetectionCount";
-            this.nuInfiniteLoopDetectionCount.Size = new System.Drawing.Size(53, 20);
-            this.nuInfiniteLoopDetectionCount.TabIndex = 21;
-            this.nuInfiniteLoopDetectionCount.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            // 
-            // nuPause
-            // 
-            this.nuPause.Location = new System.Drawing.Point(249, 109);
-            this.nuPause.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.nuPause.Name = "nuPause";
-            this.nuPause.Size = new System.Drawing.Size(53, 20);
-            this.nuPause.TabIndex = 8;
-            this.nuPause.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 113);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(148, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "Pause between each deletion";
-            // 
-            // cbKeepSystemFolders
-            // 
-            this.cbKeepSystemFolders.AutoSize = true;
-            this.cbKeepSystemFolders.Checked = true;
-            this.cbKeepSystemFolders.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbKeepSystemFolders.Location = new System.Drawing.Point(248, 26);
-            this.cbKeepSystemFolders.Name = "cbKeepSystemFolders";
-            this.cbKeepSystemFolders.Size = new System.Drawing.Size(15, 14);
-            this.cbKeepSystemFolders.TabIndex = 2;
-            this.cbKeepSystemFolders.Tag = "keep_system_dirs";
-            this.cbKeepSystemFolders.UseVisualStyleBackColor = true;
             // 
             // tabAbout
             // 
@@ -1209,42 +1245,6 @@
             this.lbAppTitle.TabIndex = 0;
             this.lbAppTitle.Text = "Remove Empty Directories - Version ";
             // 
-            // lbFastModeInfo
-            // 
-            this.lbFastModeInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbFastModeInfo.BackColor = System.Drawing.SystemColors.Control;
-            this.lbFastModeInfo.ForeColor = System.Drawing.Color.Gray;
-            this.lbFastModeInfo.Location = new System.Drawing.Point(107, 257);
-            this.lbFastModeInfo.Name = "lbFastModeInfo";
-            this.lbFastModeInfo.Size = new System.Drawing.Size(346, 13);
-            this.lbFastModeInfo.TabIndex = 18;
-            this.lbFastModeInfo.Text = "[Fast mode is enabled, results will be shown after the process is finished]";
-            this.lbFastModeInfo.Visible = false;
-            // 
-            // gbAdvancedSettings
-            // 
-            this.gbAdvancedSettings.Controls.Add(this.label20);
-            this.gbAdvancedSettings.Controls.Add(this.label26);
-            this.gbAdvancedSettings.Controls.Add(this.label27);
-            this.gbAdvancedSettings.Controls.Add(this.label19);
-            this.gbAdvancedSettings.Controls.Add(this.cbKeepSystemFolders);
-            this.gbAdvancedSettings.Controls.Add(this.nuFolderAge);
-            this.gbAdvancedSettings.Controls.Add(this.label7);
-            this.gbAdvancedSettings.Controls.Add(this.label24);
-            this.gbAdvancedSettings.Controls.Add(this.nuPause);
-            this.gbAdvancedSettings.Controls.Add(this.nuMaxDepth);
-            this.gbAdvancedSettings.Controls.Add(this.label4);
-            this.gbAdvancedSettings.Controls.Add(this.label3);
-            this.gbAdvancedSettings.Controls.Add(this.nuInfiniteLoopDetectionCount);
-            this.gbAdvancedSettings.Location = new System.Drawing.Point(15, 17);
-            this.gbAdvancedSettings.Name = "gbAdvancedSettings";
-            this.gbAdvancedSettings.Size = new System.Drawing.Size(668, 160);
-            this.gbAdvancedSettings.TabIndex = 30;
-            this.gbAdvancedSettings.TabStop = false;
-            this.gbAdvancedSettings.Text = "Advanced settings";
-            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -1277,16 +1277,16 @@
             this.tabIgnoreList.PerformLayout();
             this.tabAdvanced.ResumeLayout(false);
             this.tabAdvanced.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nuFolderAge)).EndInit();
-            this.gbIgnoreFilenames.ResumeLayout(false);
-            this.gbIgnoreFilenames.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nuPause)).EndInit();
-            this.tabAbout.ResumeLayout(false);
-            this.tabAbout.PerformLayout();
             this.gbAdvancedSettings.ResumeLayout(false);
             this.gbAdvancedSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nuFolderAge)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nuPause)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nuMaxDepth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nuInfiniteLoopDetectionCount)).EndInit();
+            this.gbIgnoreFilenames.ResumeLayout(false);
+            this.gbIgnoreFilenames.PerformLayout();
+            this.tabAbout.ResumeLayout(false);
+            this.tabAbout.PerformLayout();
             this.ResumeLayout(false);
 
 		}

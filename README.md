@@ -29,12 +29,13 @@ Here are some tasks you can help with:
 - Look at open issues/bugs and try to fix them
 - Fix typos and general wording
 - Optimize user interface
-- Create a strategy/foundation for translations
+- Create a strategy/foundation for translations, are there any existing frameworks/concepts?
 - Add unit tests
 
 ## History
 
 The first version of RED was created by [Jonas John](http://www.jonasjohn.de/) around 2005. 
+
 Since then [a small team of contributors](https://github.com/hxseven/Remove-Empty-Directories/graphs/contributors) helped to fix bugs and add new features.
 
 ## Changelog
