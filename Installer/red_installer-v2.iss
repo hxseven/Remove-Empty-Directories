@@ -32,7 +32,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-OutputBaseFilename=red-setup-{#MyAppVersion}
+OutputBaseFilename=red-{#MyAppVersion}-setup
 DefaultGroupName={#MyAppSetupName}
 DefaultDirName={autopf}\{#MyAppSetupName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
@@ -408,6 +408,7 @@ function InitializeSetup: Boolean;
 var
   Version: String;
   UninstallerPath: String;
+  // PrevVersion: String;
   ErrorCode: Integer;
 begin
 
@@ -419,7 +420,7 @@ begin
       // ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
       // use above statement if extra level security is required usually it is not req
       //ShellExec('open', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
-      ShellExec('runas', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      ShellExec('runas', UninstallerPath, '/SILENT', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
       //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
     end;
   end;
@@ -432,7 +433,21 @@ begin
       // ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
       // use above statement if extra level security is required usually it is not req
       //ShellExec('open', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
-      ShellExec('runas', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      ShellExec('runas', UninstallerPath, '/SILENT', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
+    end;
+  end;
+
+  // Check whether application is already installed (new way with appId + WOW6432Node tree)
+  if RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{{#APP_ID}}_is1') then begin
+    if MsgBox('The setup has detected that RED is already installed on your computer. Do you wish to uninstall the previous version and continue with a fresh installation?', mbConfirmation, MB_YESNO) = IDYES then begin
+      RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{{#APP_ID}}_is1', 'UninstallString', UninstallerPath);
+      // RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{{#APP_ID}}_is1', 'DisplayVersion', PrevVersion);
+
+      // ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+      // use above statement if extra level security is required usually it is not req
+      //ShellExec('open', UninstallerPath, '/S', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+      ShellExec('runas', UninstallerPath, '/SILENT', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
       //Exec(UninstallerPath, '/S', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode);
     end;
   end;

@@ -1,6 +1,6 @@
 ﻿DISCLAIMER
 
-RED is a tool that DELETES stuff! So please be careful with it and it's settings.
+RED is a tool that DELETES stuff! So please be careful with it and its settings.
 
 
 LICENSE
