@@ -952,9 +952,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(16, 113);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(148, 13);
+            this.label7.Size = new System.Drawing.Size(218, 13);
             this.label7.TabIndex = 17;
-            this.label7.Text = "Pause between each deletion";
+            this.label7.Text = "Pause between each deletion in milliseconds";
             // 
             // label24
             // 
@@ -976,11 +976,6 @@
             this.nuPause.Name = "nuPause";
             this.nuPause.Size = new System.Drawing.Size(53, 20);
             this.nuPause.TabIndex = 8;
-            this.nuPause.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
             // 
             // nuMaxDepth
             // 

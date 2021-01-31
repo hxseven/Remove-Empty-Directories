@@ -48,6 +48,7 @@ Since then [a small team of contributors](https://github.com/hxseven/Remove-Empt
   - Added more descriptions and examples to explain settings
   - Increased default window size and added more whitespace to make it look less crowded
 - Optimized config defaults
+  - Set pause between deletions to zero because the default delete to recycle bin method is slow enough to not overwhelm the GUI
   - Deleted some unnecessary entries and updated some values
   - Removed *.tmp as default pattern to make the default settings safer because those files could still contain valuable data in some cases.
 - Long paths support and other improvements (contributed by gioccher, see #5)

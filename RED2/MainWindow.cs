@@ -686,6 +686,8 @@ namespace RED2
             if (MessageBox.Show(this, "Do you really want to reset all settings to the default values?", "Restore default settings", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
             {
                 Properties.Settings.Default.Reset();
+
+                this.tree.SetFastMode(Properties.Settings.Default.fast_search_mode);
             }
         }
 

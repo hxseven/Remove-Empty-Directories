@@ -474,6 +474,25 @@
         AeABBwH/AfgBgAEBAgAB4AEHAf8B/AL/AYABAQH4AR8B/wH8Cv8L
 </value>
   </data>
+  <metadata name="cmStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>120, 16</value>
+  </metadata>
+  <data name="label21.Text" xml:space="preserve">
+    <value>This option disables list updates during the find and delete processes and only shows you a final result at the end.
+You won't be able to see the progress but it will be much faster. Hint: Set pause time to 0 to further increase deletion speed.</value>
+  </data>
+  <data name="label23.Text" xml:space="preserve">
+    <value>Possible patterns:
+- Specific file names: test.tmp will match only files named exactly "test.tmp"
+- Wildcard expressions: *.tmp will match all files with the ending ".tmp" 
+   like "dummy.tmp" or "empty.tmp"
+- Regular expressions: /^tmp\.[0-9]+/ will match all files that are named 
+   like "tmp.001" or "tmp.002" etc</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Define which file names should be ignored when looking for empty directories. If one of those patterns in a filename
+is found RED will act as if the file doesn't exist and detect its parent directory as empty if no other files are in it.</value>
+  </data>
   <data name="tbCredits.Text" xml:space="preserve">
     <value>CREDITS
 
@@ -502,6 +521,14 @@ HINTS &amp; FAQ
 
   * Right-click on a directory in the tree to get more options.
   
+  * If you only care about speed you can activate "Fast mode", set delete mode
+    to "Bypass recycle bin and directly delete dirs" and 
+    "Pause between each deletion" to zero. This should give you a great speed 
+    improvement but you will lose the recycle bin safety net and you won't see 
+    the progress. I also measured the performance difference: 
+    1000 empty dirs in normal mode take about 40 secs, with these settings 
+    less than one second.
+	
   * Why am I getting these annoying "cannot access file" or 
     "Access to ... is denied." errors? -&gt; That means RED tried to
     scan or delete a file or directory that was locked by another 
@@ -526,25 +553,6 @@ The program is distributed under the terms of the GNU Lesser General
 Public License which you can read over here: 
 
 http://www.gnu.org/copyleft/lgpl.html</value>
-  </data>
-  <metadata name="cmStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>120, 16</value>
-  </metadata>
-  <data name="label21.Text" xml:space="preserve">
-    <value>This option disables list updates during the find and delete processes and only shows you a final result at the end.
-You won't be able to see the progress but it will be much faster. Hint: Set pause time to 0 to further increase deletion speed.</value>
-  </data>
-  <data name="label23.Text" xml:space="preserve">
-    <value>Possible patterns:
-- Specific file names: test.tmp will match only files named exactly "test.tmp"
-- Wildcard expressions: *.tmp will match all files with the ending ".tmp" 
-   like "dummy.tmp" or "empty.tmp"
-- Regular expressions: /^tmp\.[0-9]+/ will match all files that are named 
-   like "tmp.001" or "tmp.002" etc</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Define which file names should be ignored when looking for empty directories. If one of those patterns in a filename
-is found RED will act as if the file doesn't exist and detect its parent directory as empty if no other files are in it.</value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>62</value>
