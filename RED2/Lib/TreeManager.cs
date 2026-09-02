@@ -384,6 +384,8 @@ namespace RED2
 
         private void ProtectNode(TreeNode node)
         {
+            if (node != null)
+            {
             DirectoryInfo directory = (DirectoryInfo)node.Tag;
 
             if (nodePropsBackup.ContainsKey(directory.FullName))
@@ -404,6 +406,7 @@ namespace RED2
             // Recursively protect directories
             if (node.Parent != this.rootNode)
                 ProtectNode(node.Parent);
+            }
         }
 
         #endregion
