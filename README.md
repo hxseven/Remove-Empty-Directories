@@ -1,6 +1,9 @@
 Remove Empty Directories
 ========================
 
+> [!NOTE]
+> **Project status:** Maintenance of RED has recently resumed after a long pause. During that time, Robert "NotBob" Bookerby created [RED+](https://github.com/BookOfBeasts/Remove-Empty-Directories-Plus), an actively maintained fork with newer releases, fixes, and improvements. Users looking for a more recently maintained version can take a look at RED+. We are currently discussing how best to coordinate the two projects.
+
 RED finds, displays, and deletes empty directories recursively below a given start folder. Furthermore, 
 it allows you to create custom rules for keeping and deleting folders (e.g. treat directories with empty files as empty).
 
